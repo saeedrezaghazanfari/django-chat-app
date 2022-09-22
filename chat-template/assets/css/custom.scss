@@ -1,7 +1,11 @@
-@import './config/variables';
 
+/* *** COLOR *** */
+$dark: #323232;
+$primary: #2391eb;
+$secondry: #d1d1d1;
+$white: #fff;
 
-// defines Fonts
+/* *** FONTS *** */
 @font-face{
     font-family: 'tanha';
     src: url('../font/tanha.woff'), url('../font/tanha.ttf');
@@ -10,41 +14,135 @@
     font-family: 'ds';
     src: url('../font/dancing-script-bold.ttf');
 }
-
-*::selection{
+/* *** CONFIGS *** */
+section.chatapp::selection{
     color:white;
     background-color: rgb(57, 57, 58);
 }
-::-webkit-scrollbar{
-    background-color: $dark;
+section.chatapp::-webkit-scrollbar{
+    background-color: transparent;
     width: 8px;
 }
-::-webkit-scrollbar-thumb{
+section.chatapp::-webkit-scrollbar-thumb{
     border-radius: 5px;
     background-color: rgb(66, 66, 66);
 }
-::-webkit-scrollbar-thumb:hover{
+section.chatapp::-webkit-scrollbar-thumb:hover{
     background-color: rgb(77, 77, 77);
 }
 html{ scroll-behavior: smooth; }
-
-/* CSS3 cofigure codes */
-
-* {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-*::selection{
-    color: white;
-    background-color: rgb(28, 28, 29);
-}
-body{
-    direction: rtl;
-    font-family: vazir;
-    margin: 0;
-}
-
-// font classes 
+.d-none {display: none !important;}
 .font-tanha { font-family: tanha !important; }
 .font-ds { font-family: ds !important; }
+
+
+/* *** SOURCE CODE *** */
+section.chatapp {
+    box-sizing: border-box;
+    z-index: 9999 !important;
+
+    .chatapp__btn {
+        position: fixed;
+        right: 14px;
+        bottom: 14px;
+        cursor: pointer;
+        padding: 7px 10px;
+        border-radius: 10px;
+        background-color: $primary;
+
+        & + div {
+            position: relative;
+        }
+        img {
+            height: 40px;
+            width: 40px;
+        }
+        div#alert_msg {
+            position: absolute;
+            top: 17px;
+            left: 20px;
+            height: 10px;
+            width: 10px;
+            background-color: $white;
+            border-radius: 50%;
+            animation: blink 2s alternate infinite;
+            -webkit-animation: blink 2s alternate infinite;
+        }
+
+    }
+
+    .chatapp__msg {
+        position: fixed !important;
+        right: 14px;
+        border-radius: 10px;
+        bottom: 87px;
+        background: $primary;
+        box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
+
+        .msg__header {
+            border-radius: 10px 10px 0 0;
+            padding: 10px;
+            background: linear-gradient(258deg, rgba(0, 0, 0, 0.3) 0%, rgba(84, 141, 177, 0) 100%) transparent;
+            display: flex;
+            justify-content: space-between;
+            width: 375px;
+
+            .header__info {
+                display: flex;
+                img {
+                    height: 45px;
+                    width: 45px;
+                    border-radius: 50%;
+                }
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    color: $white;
+                    margin-right: 10px;
+                    position: relative;
+
+                    span:nth-child(1) {
+                        font-size: 20px;
+                    }
+                    span:nth-child(2) {
+                        font-size: 10pt;
+                        position: absolute;
+                        right: 0;
+                        bottom: 0px;     
+                        display: flex;
+                    }
+                }
+            }
+            .header__options {
+                button {
+                    background-color: transparent;
+                    border: none;
+                    color: $white;
+                    outline: none;
+                    cursor: pointer;
+                    font-size: 20px;
+                    margin-top: 5px;
+                    transition: all 0.3s;
+
+                    &:hover {
+                        background-color: $secondry;
+                        border-radius: 5px;
+                    }
+                    img {
+                        height: 27px;
+                        width: 27px;
+                    }
+                }
+            }
+        }
+        .msg__body {
+
+        }
+    }
+}
+
+/* *** ANIMATIONS *** */
+@keyframes blink {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
