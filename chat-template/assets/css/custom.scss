@@ -76,67 +76,74 @@ section.chatapp {
         right: 14px;
         border-radius: 10px;
         bottom: 87px;
-        background: $primary;
         box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
 
         .msg__header {
+            background-color: $primary;
             border-radius: 10px 10px 0 0;
-            padding: 10px;
-            background: linear-gradient(258deg, rgba(0, 0, 0, 0.3) 0%, rgba(84, 141, 177, 0) 100%) transparent;
-            display: flex;
-            justify-content: space-between;
-            width: 375px;
 
-            .header__info {
+            .msg__wrapper {
+                border-radius: 10px 10px 0 0;
+                padding: 10px;
+                background: linear-gradient(258deg, rgba(0, 0, 0, 0.3) 0%, rgba(84, 141, 177, 0) 100%) transparent;
                 display: flex;
-                img {
-                    height: 45px;
-                    width: 45px;
-                    border-radius: 50%;
-                }
-                div {
+                justify-content: space-between;
+                width: 375px;
+    
+                .header__info {
                     display: flex;
-                    flex-direction: column;
-                    color: $white;
-                    margin-right: 10px;
-                    position: relative;
-
-                    span:nth-child(1) {
-                        font-size: 20px;
+                    img {
+                        height: 45px;
+                        width: 45px;
+                        border-radius: 50%;
                     }
-                    span:nth-child(2) {
-                        font-size: 10pt;
-                        position: absolute;
-                        right: 0;
-                        bottom: 0px;     
+                    div {
                         display: flex;
+                        flex-direction: column;
+                        color: $white;
+                        margin-right: 10px;
+                        position: relative;
+    
+                        span:nth-child(1) {
+                            font-size: 20px;
+                        }
+                        span:nth-child(2) {
+                            font-size: 10pt;
+                            position: absolute;
+                            right: 0;
+                            bottom: 0px;     
+                            display: flex;
+                        }
                     }
                 }
-            }
-            .header__options {
-                button {
-                    background-color: transparent;
-                    border: none;
-                    color: $white;
-                    outline: none;
-                    cursor: pointer;
-                    font-size: 20px;
-                    margin-top: 5px;
-                    transition: all 0.3s;
-
-                    &:hover {
-                        background-color: $secondry;
-                        border-radius: 5px;
-                    }
-                    img {
-                        height: 27px;
-                        width: 27px;
+                .header__options {
+                    button {
+                        background-color: transparent;
+                        border: none;
+                        color: $white;
+                        outline: none;
+                        cursor: pointer;
+                        font-size: 20px;
+                        margin-top: 5px;
+                        transition: all 0.3s;
+    
+                        &:hover {
+                            background-color: $secondry;
+                            border-radius: 5px;
+                        }
+                        img {
+                            height: 27px;
+                            width: 27px;
+                        }
                     }
                 }
             }
         }
+        
         .msg__body {
-
+            background-color: $white;
+            padding: 10px;
+            border-radius: 0 0 10px 10px !important;
         }
     }
 }
