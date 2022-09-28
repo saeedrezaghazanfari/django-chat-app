@@ -15,22 +15,15 @@ $white: #fff;
     src: url('../font/dancing-script-bold.ttf');
 }
 /* *** CONFIGS *** */
-section.chatapp::selection{
-    color:white;
-    background-color: rgb(57, 57, 58);
-}
-section.chatapp::-webkit-scrollbar{
+.msg__body::-webkit-scrollbar{
     background-color: transparent;
-    width: 8px;
+    width: 5px;
 }
-section.chatapp::-webkit-scrollbar-thumb{
+.msg__body::-webkit-scrollbar-thumb{
     border-radius: 5px;
-    background-color: rgb(66, 66, 66);
+    background-color: $secondry;
 }
-section.chatapp::-webkit-scrollbar-thumb:hover{
-    background-color: rgb(77, 77, 77);
-}
-html{ scroll-behavior: smooth; }
+html{ scroll-behavior: smooth; direction: rtl !important; }
 .d-none {display: none !important;}
 .font-tanha { font-family: tanha !important; }
 .font-ds { font-family: ds !important; }
@@ -40,6 +33,7 @@ html{ scroll-behavior: smooth; }
 section.chatapp {
     box-sizing: border-box;
     z-index: 9999 !important;
+    font-family: tanha !important;
 
     .chatapp__btn {
         position: fixed;
@@ -92,6 +86,7 @@ section.chatapp {
     
                 .header__info {
                     display: flex;
+
                     img {
                         height: 45px;
                         width: 45px;
@@ -124,7 +119,7 @@ section.chatapp {
                         outline: none;
                         cursor: pointer;
                         font-size: 20px;
-                        margin-top: 5px;
+                        margin-top: 8px;
                         transition: all 0.3s;
     
                         &:hover {
@@ -132,18 +127,119 @@ section.chatapp {
                             border-radius: 5px;
                         }
                         img {
-                            height: 27px;
-                            width: 27px;
+                            height: 22px;
+                            width: 22px;
                         }
                     }
                 }
             }
         }
-        
+
         .msg__body {
             background-color: $white;
-            padding: 10px;
+            padding: 10px 15px;
             border-radius: 0 0 10px 10px !important;
+            overflow-y: auto;
+            height: 320px;
+
+            .body__wrapper {
+
+                .msg { 
+                    padding: 7px 10px;
+                    margin-bottom: 5px;
+                    max-width: 240px;
+                    min-width: 100px;
+                    text-align: right;
+                    color: $white;
+                    position: relative;
+
+                    p {
+                        margin: 0px !important;
+                    }
+                    div.msg__info {
+                        margin-top: 5px;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
+
+                        &__clock {
+                            font-size: 9pt;
+                        }
+                        &__status {
+                            img {
+                                height: 14px;
+                                width: 16px;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+                .msg__left { 
+                    float: left;
+                    border-radius: 5px;
+                    background-color: $secondry;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 3px;
+                        left: -8px;
+                        width: 0;
+                        height: 0;
+                        border-top: 8px solid transparent;
+                        border-bottom: 0px solid transparent;
+                        border-right: 8px solid $secondry;
+                    }
+                }
+                .msg__right { 
+                    float: right;
+                    border-radius: 5px;
+                    background-color: $primary;
+
+                    &::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 3px;
+                        right: -8px;
+                        width: 0;
+                        height: 0;
+                        border-top: 8px solid transparent;
+                        border-bottom: 0px solid transparent;
+                        border-left: 8px solid $primary;
+                    }
+                }
+                .clearfix {clear: both;}
+            }
+        }
+        .body__inputs {
+            padding: 10px 15px;
+
+            form {
+                div {
+                    background-color: $secondry;
+                    border-radius: 25px;
+                    display: flex;
+
+                    input {
+                        flex: auto;
+                        // text-align: right;
+                        font-family: tanha !important;
+                        outline: none;
+                        border: none;
+                        background-color: $secondry;
+                        padding: 10px 15px;
+                        border-radius: 25px;
+                    }
+                    button {
+                        outline: none;
+                        background-color: $primary;
+                        border: none;
+                        margin-right: 3px;
+                        border-radius: 25px;
+                        padding: 6px 20px;
+                    }
+                }
+            }
         }
     }
 }
