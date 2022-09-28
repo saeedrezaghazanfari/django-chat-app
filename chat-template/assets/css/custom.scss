@@ -156,6 +156,24 @@ section.chatapp {
                     p {
                         margin: 0px !important;
                     }
+                    p.msg__replied {
+                        padding: 3px 5px;
+                        border-right: 2px solid $white;
+                        margin-bottom: 7px !important;
+                        border-radius: 3px 0 0 3px;
+                        display: flex;
+                        flex-direction: column;
+
+                        span {
+                            font-size: 10pt;
+                        }
+                        &--right {
+                            background-color: #39a2f9;
+                        }
+                        &--left {
+                            background-color: #bebbbb;
+                        }
+                    }
                     div.msg__info {
                         margin-top: 5px;
                         display: flex;
@@ -222,7 +240,6 @@ section.chatapp {
 
                     input {
                         flex: auto;
-                        // text-align: right;
                         font-family: tanha !important;
                         outline: none;
                         border: none;
