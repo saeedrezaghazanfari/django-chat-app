@@ -43,23 +43,10 @@
             <div class="msg__body">        
                 <div class="body__wrapper">
 
-                    <div class="msg msg__right d-none">
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__status">
-                                <img src="assets/img/double-check.png" alt="single check status">
-                            </div>
-                            <div class="msg__info__clock">14:48</div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <div class="msg msg__right d-none">
-                        <p class="msg__replied msg__replied--right">
-                            <span>سعیدرضا</span>
-                            <span>Hello World</span>
+                    <div class="msg msg__right d-non" id="chatapp_msg_1">
+                        <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
+                            <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
+                            <span scholl_msg="chatapp_msg_2">Hello World</span>
                         </p>
                         <p>
                             Hello World
@@ -73,11 +60,37 @@
                     </div>
                     <div class="clearfix"></div>
 
+                    <div class="msg msg__right d-non">
+                        <p>
+                            Hello World
+                        </p>
+                        <div class="msg__info">
+                            <div class="msg__info__status">
+                                <img src="assets/img/double-check.png" alt="single check status">
+                            </div>
+                            <div class="msg__info__clock">14:48</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
 
-                    <div class="msg msg__left d-none">
-                        <p class="msg__replied msg__replied--left">
-                            <span>سعیدرضا</span>
-                            <span>Hello World</span>
+                    <div class="msg msg__right d-non">
+                        <p>
+                            Hello World
+                        </p>
+                        <div class="msg__info">
+                            <div class="msg__info__status">
+                                <img src="assets/img/double-check.png" alt="single check status">
+                            </div>
+                            <div class="msg__info__clock">14:48</div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+
+                    <div class="msg msg__left d-non" id="chatapp_msg_2">
+                        <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
+                            <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
+                            <span scholl_msg="chatapp_msg_1">Hello World</span>
                         </p>
                         <p>
                             Hello World
@@ -88,7 +101,7 @@
                     </div>
                     <div class="clearfix"></div>
 
-                    <div class="msg msg__left d-none">
+                    <div class="msg msg__left d-non">
                         <p>
                             Hello World
                         </p>
@@ -99,7 +112,7 @@
                     <div class="clearfix"></div>
 
                     <!-- + tictoctoe game -->
-                    <div class="tictoctoe__game d-non">
+                    <div class="tictoctoe__game d-none">
                         
                         <button id="restart__game">شروع دوباره</button>
                         <div id="score__game">

@@ -148,6 +148,7 @@ section.chatapp {
                     text-align: right;
                     color: $white;
                     position: relative;
+                    transition: background-color 0.3s linear;
 
                     p {
                         margin: 0px !important;

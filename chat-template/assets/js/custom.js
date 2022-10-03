@@ -15,8 +15,32 @@ document.querySelector('section.chatapp .header__options button.bottom__msgbox')
 );
 
 go_to_bottom_of_box = () => {
-    document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end" });
+    document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
 }
+
+document.querySelectorAll('.msg__replied').forEach(msg => {
+    msg.addEventListener(
+        'click', (e) => {
+            let target = e.target.getAttribute('scholl_msg'); 
+            if(target) {
+                let target_element = document.getElementById(target);
+                let initial_bgcolor = '';
+                
+                if(target_element.classList.contains('msg__right')) {
+                    initial_bgcolor = target_element.style.backgroundColor;
+                    target_element.style.backgroundColor = '#1577c6';
+                } else if (target_element.classList.contains('msg__left')) {
+                    initial_bgcolor = target_element.style.backgroundColor;
+                    target_element.style.backgroundColor = '#b2b2b2';
+                }
+                setTimeout(() => {
+                    target_element.style.backgroundColor = initial_bgcolor;
+                }, 500);
+                target_element.scrollIntoView({ behavior: "smooth", block: "end"});
+            }
+        }
+    )
+});
 
 open_close_box = () => {
     if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
