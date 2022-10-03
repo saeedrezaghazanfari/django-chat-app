@@ -11,14 +11,17 @@ document.querySelector('section.chatapp .header__options button.close__msgbox').
     'click', () => open_close_box()
 );
 document.querySelector('section.chatapp .header__options button.bottom__msgbox').addEventListener(
-    'click', () => {
-        /* --- */
-    }
+    'click', () => go_to_bottom_of_box()
 );
+
+go_to_bottom_of_box = () => {
+    document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end" });
+}
 
 open_close_box = () => {
     if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
         document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
+        go_to_bottom_of_box();
     } else {
         document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
     }
