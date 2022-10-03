@@ -23,7 +23,6 @@ $white: #fff;
     border-radius: 5px;
     background-color: $secondry;
 }
-html{ scroll-behavior: smooth; direction: rtl !important; }
 .d-none {display: none !important;}
 .font-tanha { font-family: tanha !important; }
 .font-ds { font-family: ds !important; }
@@ -34,6 +33,8 @@ section.chatapp {
     box-sizing: border-box;
     z-index: 9999 !important;
     font-family: tanha !important;
+    scroll-behavior: smooth !important; 
+    direction: rtl !important;
 
     .chatapp__btn {
         position: fixed;
@@ -121,15 +122,15 @@ section.chatapp {
                         font-size: 20px;
                         margin-top: 8px;
                         transition: all 0.3s;
-    
-                        &:hover {
-                            background-color: $secondry;
-                            border-radius: 5px;
-                        }
-                        img {
-                            height: 22px;
-                            width: 22px;
-                        }
+                    }
+                    button.bottom__msgbox img {
+                        height: 22px !important;
+                        width: 22px !important;
+                        margin-bottom: 2px;
+                    }
+                    button.close__msgbox img {
+                        height: 26px !important;
+                        width: 26px !important;
                     }
                 }
             }
@@ -138,7 +139,6 @@ section.chatapp {
         .msg__body {
             background-color: $white;
             padding: 10px 15px;
-            border-radius: 0 0 10px 10px !important;
             overflow-y: auto;
             height: 320px;
 
@@ -254,10 +254,100 @@ section.chatapp {
                         margin-right: 3px;
                         border-radius: 25px;
                         padding: 6px 20px;
+                        cursor: pointer;
+
+                        img {
+                            height: 20px;
+                            width: 21px;
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+
+.tictoctoe__game {
+
+    #restart__game {
+        border: none;
+        outline: none;
+        font-family: tanha;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #ececec;
+        margin-bottom: 15px;
+
+        &:active {
+            transform: translateY(-1px);
+        }
+    }
+
+    #score__game {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+
+        div {
+            margin: 0 15px;
+            display: flex;
+
+            span:nth-child(1) {
+                color: $secondry;
+                padding-left: 3px;
+            }
+        }
+    }
+
+    .btns__wrapper {
+        width: 208px;
+        margin: auto;
+        position: relative;
+
+        #bg__glass {
+            background-color: rgba(0, 0, 0, 0.2); //TODO transparent
+            position: absolute;
+            inset: 0;
+        }
+
+        &__btn {
+            display: flex;
+            background-color: $primary;
+
+            .btn_game {
+                padding: 0px;
+                height: 65px;
+                width: 68px;
+                border: none;
+                outline: none;
+                background-color: $white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                img {
+                    height: 50%;
+                    height: 50%;    
+                }
+            }
+            .m2px_l { margin-left: 2px; }
+            .m2px_b { margin-bottom: 2px; }
+            .disable_btn { 
+                cursor: not-allowed !important; 
+                // pointer-events:none; 
+            }
+        }
+    }
+    #game_alert_msg {
+        color: white;
+        padding: 1rem;
+        border-radius: 15px;
+        max-width: 1100px;
+        margin: 30px auto;
+        font-size: 25px;
+        text-align: center;
     }
 }
 

@@ -22,8 +22,7 @@
             </div>
         </div>
     
-        <div class="chatapp__msg">
-
+        <div class="chatapp__msg d-non">
             <div class="msg__header">
                 <div class="msg__wrapper">
                     <div class="header__info">
@@ -35,16 +34,16 @@
                         </div>
                     </div>
                     <div class="header__options">
-                        <button><img src="assets/img/close.png" alt="close chat application"></button>
+                        <button class="bottom__msgbox"><img src="assets/img/gotodown.png" alt="close chat application"></button>
+                        <button class="close__msgbox"><img src="assets/img/close.png" alt="close chat application"></button>
                     </div>
                 </div>
             </div>
 
-            <div class="msg__body">
-                
+            <div class="msg__body">        
                 <div class="body__wrapper">
 
-                    <div class="msg msg__right">
+                    <div class="msg msg__right   d-none">
                         <p>
                             Hello World
                         </p>
@@ -57,7 +56,7 @@
                     </div>
                     <div class="clearfix"></div>
 
-                    <div class="msg msg__right">
+                    <div class="msg msg__right   d-none">
                         <p class="msg__replied msg__replied--right">
                             <span>سعیدرضا</span>
                             <span>Hello World</span>
@@ -75,7 +74,7 @@
                     <div class="clearfix"></div>
 
 
-                    <div class="msg msg__left">
+                    <div class="msg msg__left   d-none">
                         <p class="msg__replied msg__replied--left">
                             <span>سعیدرضا</span>
                             <span>Hello World</span>
@@ -89,7 +88,7 @@
                     </div>
                     <div class="clearfix"></div>
 
-                    <div class="msg msg__left">
+                    <div class="msg msg__left   d-none">
                         <p>
                             Hello World
                         </p>
@@ -99,8 +98,46 @@
                     </div>
                     <div class="clearfix"></div>
 
-                </div>
 
+
+
+                    <div class="tictoctoe__game">
+                        
+                        <button id="restart__game">شروع دوباره</button>
+                        <div id="score__game">
+                            <div><span>شما:</span><span>0</span></div>
+                            <div><span>کامپیوتر:</span><span>0</span></div>
+                        </div>
+                                        
+                        <div class="btns__wrapper">
+
+                            <div id="bg__glass" class="d-none"></div>
+                            <img src="assets/img/o.png" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="assets/img/x.png" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
+
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_b m2px_l" id="btn11"></div>
+                                <div class="btn_game m2px_b m2px_l" id="btn12"></div>
+                                <div class="btn_game m2px_b" id="btn13"></div>
+                            </div>
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_b m2px_l" id="btn21"></div>
+                                <div class="btn_game m2px_b m2px_l" id="btn22"></div>
+                                <div class="btn_game m2px_b" id="btn23"></div>
+                            </div>
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_l" id="btn31"></div>
+                                <div class="btn_game m2px_l disable_btn" id="btn32"></div>
+                                <div class="btn_game" id="btn33"></div>
+                            </div>
+                        </div>
+
+                        <p id="game_alert_msg" class="d-none"></p>
+                    </div>
+                
+                    
+
+                </div>
             </div>
 
             <div class="body__inputs">
@@ -108,14 +145,12 @@
                     <div>
                         <input type="text" id="text-chatinput" placeholder="پیام خود را وارد کنید:">
                         <button type="submit">
-                            <img src="assets/img/eye.png" alt="">
+                            <img src="assets/img/send.png" alt="send image">
                         </button>
                     </div>
                 </form>
             </div>
-
         </div>
-
     </section>
 
 <script type="text/javascript" src="assets/js/custom.js"></script>

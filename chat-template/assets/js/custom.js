@@ -1,46 +1,372 @@
 
-/* P.E.A.K.A. */
 
 function rand(min , max){
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 
-clockDefner = () =>{
-
-    var m;
-    var a = new Date();
-    var b = a.getHours();
-    var c = a.getMinutes();
-    var d = a.getSeconds();
-
-    if(b >= 0 && b <= 6){
-
-        m = "خواب خوبی داشته باشید😵";
-        document.getElementById('goodsayer').innerHTML = m;
+document.querySelector('section.chatapp .chatapp__btn').addEventListener(
+    'click', () => open_close_box()
+);
+document.querySelector('section.chatapp .header__options button.close__msgbox').addEventListener(
+    'click', () => open_close_box()
+);
+document.querySelector('section.chatapp .header__options button.bottom__msgbox').addEventListener(
+    'click', () => {
+        /* --- */
     }
-    else if(b > 6 && b <= 9){
+);
 
-        m = "صبح بخیر😉";
-        document.getElementById('goodsayer').innerHTML = m;
+
+open_close_box = () => {
+    if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
+        document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
+    } else {
+        document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
     }
-    else if(b > 9 && b <= 16){
-
-        m = "روز خوبی داشته باشید😘";
-        document.getElementById('goodsayer').innerHTML = m;
-    }
-    else if(b > 16 && b <= 20){
-
-        m = "عصر خوبی داشته باشید💘";
-        document.getElementById('goodsayer').innerHTML = m;
-    }
-    else if(b > 20 && b < 24){
-
-        m = "شب خوبی داشته باشید✨";
-        document.getElementById('goodsayer').innerHTML = m;
-    }
-
-    document.getElementById('clock').innerHTML = "<span style='font-weight:bolder;'>" + d + "</span>" + "<span style='font-weight:bolder; color :red;'> : </span>" + "<span style='font-weight:bolder;'>" + c + "</span>" + "<span style='font-weight:bolder; color :red;'> : </span>" + "<span style='font-weight:bolder;'>" + b + "</span>";
-
 }
-// document.getElementById('clock').innerHTML = setInterval("clockDefner()" , 1000);  
 
+
+
+
+
+
+
+
+
+
+// game
+
+/* Tic-Toc-Toe Game */
+// Computer X .:. Human O
+
+let human_score = 0;
+let computer_score = 0;
+let all_btn = ['btn11', 'btn12', 'btn13', 'btn21', 'btn22', 'btn23', 'btn31', 'btn32', 'btn33'];
+let selected = [];
+let row1 = ['', '', ''];
+let row2 = ['', '', ''];
+let row3 = ['', '', ''];
+let endGame = false;
+let final = false;
+let alertDiv = document.getElementById('game_alert_msg');
+let bg__glass = document.getElementById('bg__glass');
+let oimg = document.getElementById('oimage_game').getAttribute('src');
+let ximg = document.getElementById('ximage_game').getAttribute('src');
+
+
+document.querySelectorAll('.btn_game').forEach((btn) => {
+    
+    btn.addEventListener('click', (e) => {
+        
+        let btnId = e.target.getAttribute('id');
+        if(!selected.find(el => el == btnId)) {
+            
+            selected.push(btnId);
+            set_image_in_btn(btnId, 'O');
+            set_config(btnId, 'O');
+            check_winner('O');
+
+            if(endGame == false && final == false) {
+                computer_select();
+                check_winner('X');
+            }
+            else if(endGame == true && final == false) {
+                setTimeout(() => {
+                    reset_game();
+                }, 2000);
+            }
+        }
+    });
+});
+
+set_image_in_btn = (btnId, human_computer) => {
+    let new_img = document.createElement("img");
+
+    if(human_computer == 'O')
+        new_img.setAttribute('src', oimg);
+    else if(human_computer == 'X')
+        new_img.setAttribute('src', ximg);
+    
+    if(human_computer == 'null') {
+        document.getElementById(btnId).innerHTML = '';
+    }
+    if(human_computer != 'null') {
+        document.getElementById(btnId).appendChild(new_img);
+    }
+}
+
+set_config = (btnId, human_computer) => {
+
+    if(btnId == 'btn11') 
+        row1[0] = human_computer;
+    if(btnId == 'btn12') 
+        row1[1] = human_computer;
+    if(btnId == 'btn13') 
+        row1[2] = human_computer;
+
+    if(btnId == 'btn21') 
+        row2[0] = human_computer;
+    if(btnId == 'btn22') 
+        row2[1] = human_computer;
+    if(btnId == 'btn23') 
+        row2[2] = human_computer;
+
+    if(btnId == 'btn31') 
+        row3[0] = human_computer;
+    if(btnId == 'btn32') 
+        row3[1] = human_computer;
+    if(btnId == 'btn33') 
+        row3[2] = human_computer;
+}
+
+check_winner = (human_computer) => {
+    if(human_computer == 'O'){
+        // win in rows
+        if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == 'O')
+            human_win();
+        if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == 'O')
+            human_win();
+        if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == 'O')
+            human_win();
+        // win in columns
+        if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == 'O')
+            human_win();
+        if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == 'O')
+            human_win();
+        if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == 'O')
+            human_win();        
+        // win in *
+        if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == 'O')
+            human_win();
+        if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == 'O')
+            human_win();
+    }
+    else if(human_computer == 'X'){
+        // win in rows
+        if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == 'X')
+            computer_win();
+        if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == 'X')
+            computer_win();
+        if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == 'X')
+            computer_win();
+        // win in columns
+        if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == 'X')
+            computer_win();
+        if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == 'X')
+            computer_win();
+        if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == 'X')
+            computer_win();        
+        // win in *
+        if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == 'X')
+            computer_win();
+        if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == 'X')
+            computer_win();
+    }
+}
+
+human_win = () => {
+
+    bg__glass.classList.remove('d-none');
+
+    human_score += 1;
+    if(human_score == 10) {
+        alertDiv.classList.remove('d-none');
+        alertDiv.innerHTML = 'HUMAN is Winner!';
+        alertDiv.classList.add('green');
+        final = true;
+    }
+    document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
+
+    endGame = true;
+}
+
+computer_win = () => {
+
+    bg__glass.classList.remove('d-none');
+
+    computer_score += 1;
+    if(computer_score == 10) {
+        alertDiv.classList.remove('d-none');
+        alertDiv.innerHTML = 'COMPUTER is Winner!';
+        alertDiv.classList.add('red');
+        final = true;
+    }
+    document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
+
+    endGame = true;
+
+    if(final == false) {
+        setTimeout(() => {
+            reset_game();
+        }, 2000);
+
+        setTimeout(() => {
+            computer_select();
+            check_winner('X');
+        }, 2100);
+    }
+}
+
+computer_select = () => {
+    let list_selection = [];
+    let computer_selection = '';
+
+    if(selected.length >= 0 && selected.length <= 8) {
+
+        list_selection = all_btn.filter((item) => !selected.includes(item));
+
+        if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
+        else if(row1[0] == 'X' && row1[2] == 'X' && row1[1] == '')
+            computer_selection = 'btn12';
+        else if(row1[1] == 'X' && row1[2] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == '')
+            computer_selection = 'btn23';
+        else if(row2[0] == 'X' && row2[2] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';    
+        else if(row2[1] == 'X' && row2[2] == 'X' && row2[0] == '')
+            computer_selection = 'btn21';    
+
+        else if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row3[0] == 'X' && row3[2] == 'X' && row3[1] == '')
+            computer_selection = 'btn32';  
+        else if(row3[1] == 'X' && row3[2] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
+
+        else if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[0] == 'X' && row3[0] == 'X' && row2[0] == '')
+            computer_selection = 'btn21';
+        else if(row3[0] == 'X' && row2[0] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == '')
+            computer_selection = 'btn32';
+        else if(row1[1] == 'X' && row3[1] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row3[1] == 'X' && row2[1] == 'X' && row1[1] == '')
+            computer_selection = 'btn12';
+
+        else if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[2] == 'X' && row3[2] == 'X' && row2[2] == '')
+            computer_selection = 'btn23';  
+        else if(row3[2] == 'X' && row2[2] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
+        
+        else if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[0] == 'X' && row3[2] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'X' && row3[2] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[2] == 'X' && row3[0] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'X' && row3[0] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
+
+        else if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+        else if(row1[0] == 'O' && row1[2] == 'O' && row1[1] == '')
+            computer_selection = 'btn12';
+        else if(row1[1] == 'O' && row1[2] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == '')
+            computer_selection = 'btn23';
+        else if(row2[0] == 'O' && row2[2] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';    
+        else if(row2[1] == 'O' && row2[2] == 'O' && row2[0] == '')
+            computer_selection = 'btn21';    
+
+        else if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row3[0] == 'O' && row3[2] == 'O' && row3[1] == '')
+            computer_selection = 'btn32';  
+        else if(row3[1] == 'O' && row3[2] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
+
+        else if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[0] == 'O' && row3[0] == 'O' && row2[0] == '')
+            computer_selection = 'btn21';
+        else if(row3[0] == 'O' && row2[0] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == '')
+            computer_selection = 'btn32';
+        else if(row1[1] == 'O' && row3[1] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row3[1] == 'O' && row2[1] == 'O' && row1[1] == '')
+            computer_selection = 'btn12';
+
+        else if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[2] == 'O' && row3[2] == 'O' && row2[2] == '')
+            computer_selection = 'btn23';  
+        else if(row3[2] == 'O' && row2[2] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+        
+        else if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[0] == 'O' && row3[2] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'O' && row3[2] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
+
+        else if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[2] == 'O' && row3[0] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'O' && row3[0] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+
+        else {
+            computer_selection = list_selection[Math.floor(Math.random()*list_selection.length)];
+        }
+
+        set_image_in_btn(computer_selection, 'X');
+        selected.push(computer_selection);
+        set_config(computer_selection, 'X');
+        
+        if(selected.length == 9) {
+            setTimeout(() => {
+                reset_game();
+            }, 1000);
+        }
+    }
+    else if(selected.length == 9) {
+        setTimeout(() => {
+            reset_game();
+        }, 1000);
+    }
+}
+
+reset_game = () => {
+    selected = [];
+    row1 = ['', '', ''];
+    row2 = ['', '', ''];
+    row3 = ['', '', ''];
+    endGame = false;
+    final = false;
+    bg__glass.classList.add('d-none');
+    all_btn.forEach(element => {
+        set_image_in_btn(element, 'null');
+    });
+    alertDiv.classList.remove('red');
+    alertDiv.classList.remove('green');
+    alertDiv.classList.add('d-none');
+}
+
+document.getElementById('restart__game').addEventListener('click', ()=> {
+    human_score = 0;
+    computer_score = 0;
+    document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
+    reset_game();
+});
