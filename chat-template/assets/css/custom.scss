@@ -10,10 +10,8 @@ $white: #fff;
     font-family: 'vazir';
     src: url('../font/vazir-medium.ttf'), url('../font/vazir-medium.woff');
 }
-@font-face{
-    font-family: 'ds';
-    src: url('../font/dancing-script-bold.ttf');
-}
+.font-vazir { font-family: vazir !important; }
+
 /* *** CONFIGS *** */
 .msg__body::-webkit-scrollbar{
     background-color: transparent;
@@ -24,7 +22,6 @@ $white: #fff;
     background-color: $secondry;
 }
 .d-none {display: none !important;}
-.font-vazir { font-family: vazir !important; }
 
 
 /* *** SOURCE CODE *** */
@@ -94,7 +91,7 @@ section.chatapp {
                         display: flex;
                         flex-direction: column;
                         color: $white;
-                        margin-right: 10px;
+                        margin: 0 10px;
                         position: relative;
     
                         span:nth-child(1) {
@@ -225,10 +222,94 @@ section.chatapp {
                     }
                 }
                 .clearfix {clear: both;}
+
+                // start tictoctoe game source code
+                .tictoctoe__game {
+
+                    #restart__game {
+                        border: none;
+                        outline: none;
+                        font-family: vazir;
+                        padding: 5px 15px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        background-color: #ececec;
+                        margin-bottom: 15px;
+                
+                        &:active {
+                            transform: translateY(-1px);
+                        }
+                    }
+                
+                    #score__game {
+                        display: flex;
+                        justify-content: center;
+                        margin-bottom: 20px;
+                
+                        div {
+                            margin: 0 15px;
+                            display: flex;
+                
+                            span:nth-child(1) {
+                                color: $secondry;
+                                padding-left: 3px;
+                            }
+                        }
+                    }
+                
+                    .btns__wrapper {
+                        width: 208px;
+                        margin: auto;
+                        position: relative;
+                
+                        #bg__glass {
+                            background-color: rgba(0, 0, 0, 0.2); //TODO transparent
+                            position: absolute;
+                            inset: 0;
+                        }
+                
+                        &__btn {
+                            display: flex;
+                            background-color: $primary;
+                
+                            .btn_game {
+                                padding: 0px;
+                                height: 65px;
+                                width: 68px;
+                                border: none;
+                                outline: none;
+                                background-color: $white;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                
+                                img {
+                                    height: 50%;
+                                    height: 50%;    
+                                }
+                            }
+                            .m2px_l { margin-left: 2px; }
+                            .m2px_b { margin-bottom: 2px; }
+                            .disable_btn { 
+                                cursor: not-allowed !important; 
+                                // pointer-events:none; 
+                            }
+                        }
+                    }
+                    #game_alert_msg {
+                        color: white;
+                        padding: 1rem;
+                        border-radius: 15px;
+                        max-width: 1100px;
+                        margin: 30px auto;
+                        font-size: 25px;
+                        text-align: center;
+                    }
+                }
             }
         }
         .body__inputs {
-            padding: 10px 15px;
+            padding: 4px 10px;
 
             form {
                 div {
@@ -266,86 +347,31 @@ section.chatapp {
 }
 
 
-.tictoctoe__game {
+section.chatapp__ltr {
+    direction: ltr !important;
 
-    #restart__game {
-        border: none;
-        outline: none;
-        font-family: vazir;
-        padding: 5px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: #ececec;
-        margin-bottom: 15px;
-
-        &:active {
-            transform: translateY(-1px);
-        }
+    .chatapp__btn {
+        left: 14px;
+        right: unset !important;
     }
-
-    #score__game {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-
-        div {
-            margin: 0 15px;
-            display: flex;
-
-            span:nth-child(1) {
-                color: $secondry;
-                padding-left: 3px;
-            }
-        }
+    .chatapp__msg {
+        left: 14px;
+        right: unset !important;
+        border-radius: 10px;
+        bottom: 87px;
+        box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
     }
-
-    .btns__wrapper {
-        width: 208px;
-        margin: auto;
-        position: relative;
-
-        #bg__glass {
-            background-color: rgba(0, 0, 0, 0.2); //TODO transparent
-            position: absolute;
-            inset: 0;
-        }
-
-        &__btn {
-            display: flex;
-            background-color: $primary;
-
-            .btn_game {
-                padding: 0px;
-                height: 65px;
-                width: 68px;
-                border: none;
-                outline: none;
-                background-color: $white;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                img {
-                    height: 50%;
-                    height: 50%;    
-                }
-            }
-            .m2px_l { margin-left: 2px; }
-            .m2px_b { margin-bottom: 2px; }
-            .disable_btn { 
-                cursor: not-allowed !important; 
-                // pointer-events:none; 
-            }
-        }
+    .msg__info__status img {
+        margin-right: 5px;
+        margin-left: unset !important;
     }
-    #game_alert_msg {
-        color: white;
-        padding: 1rem;
-        border-radius: 15px;
-        max-width: 1100px;
-        margin: 30px auto;
-        font-size: 25px;
-        text-align: center;
+    .msg__header .msg__wrapper .header__info div span:nth-child(2) {
+        right: unset !important;
+        left: 0;
+    }
+    .chatapp__msg .body__inputs form div button {
+        margin-right: unset !important;
+        margin-left: 3px;
     }
 }
 
