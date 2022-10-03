@@ -7,8 +7,8 @@ $white: #fff;
 
 /* *** FONTS *** */
 @font-face{
-    font-family: 'tanha';
-    src: url('../font/tanha.woff'), url('../font/tanha.ttf');
+    font-family: 'vazir';
+    src: url('../font/vazir-medium.ttf'), url('../font/vazir-medium.woff');
 }
 @font-face{
     font-family: 'ds';
@@ -24,15 +24,14 @@ $white: #fff;
     background-color: $secondry;
 }
 .d-none {display: none !important;}
-.font-tanha { font-family: tanha !important; }
-.font-ds { font-family: ds !important; }
+.font-vazir { font-family: vazir !important; }
 
 
 /* *** SOURCE CODE *** */
 section.chatapp {
     box-sizing: border-box;
     z-index: 9999 !important;
-    font-family: tanha !important;
+    font-family: vazir !important;
     scroll-behavior: smooth !important; 
     direction: rtl !important;
 
@@ -63,7 +62,6 @@ section.chatapp {
             animation: blink 2s alternate infinite;
             -webkit-animation: blink 2s alternate infinite;
         }
-
     }
 
     .chatapp__msg {
@@ -163,9 +161,10 @@ section.chatapp {
                         border-radius: 3px 0 0 3px;
                         display: flex;
                         flex-direction: column;
+                        cursor: pointer;
 
                         span {
-                            font-size: 10pt;
+                            font-size: 9pt;
                         }
                         &--right {
                             background-color: #39a2f9;
@@ -240,7 +239,7 @@ section.chatapp {
 
                     input {
                         flex: auto;
-                        font-family: tanha !important;
+                        font-family: vazir !important;
                         outline: none;
                         border: none;
                         background-color: $secondry;
@@ -273,7 +272,7 @@ section.chatapp {
     #restart__game {
         border: none;
         outline: none;
-        font-family: tanha;
+        font-family: vazir;
         padding: 5px 15px;
         border-radius: 5px;
         cursor: pointer;
