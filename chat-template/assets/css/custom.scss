@@ -380,3 +380,21 @@ section.chatapp__ltr {
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+/* *** Media queries *** */
+@media screen and (min-width: 1001px) {
+    .chatapp__msg .msg__header .msg__wrapper {
+        width: 375px !important;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .chatapp__msg .msg__header .msg__wrapper {
+        width: 280px !important;
+    }
+    .chatapp__msg .msg__header .msg__wrapper .header__info div span:nth-child(1) {
+        font-size: 12pt !important;
+    }
+    .chatapp__msg .msg__header .msg__wrapper .header__info div span:nth-child(2) {
+        font-size: 9pt !important;
+    }
+}
