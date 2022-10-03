@@ -51,14 +51,13 @@ section.chatapp {
             height: 40px;
             width: 40px;
         }
-        div#alert_msg {
+        div#alert_msg_ctx {
             position: absolute;
-            top: 17px;
-            left: 20px;
-            height: 10px;
-            width: 10px;
+            top: 14px;
+            left: 15px;
+            height: 18px;
+            width: 20px;
             background-color: $white;
-            border-radius: 50%;
             animation: blink 2s alternate infinite;
             -webkit-animation: blink 2s alternate infinite;
         }
