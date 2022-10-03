@@ -51,10 +51,11 @@ section.chatapp {
         }
         div#alert_msg_ctx {
             position: absolute;
-            top: 14px;
-            left: 15px;
-            height: 18px;
-            width: 20px;
+            top: 13px;
+            left: 14px;
+            height: 19px;
+            width: 22px;
+            border-radius: 2px;
             background-color: $white;
             animation: blink 2s alternate infinite;
             -webkit-animation: blink 2s alternate infinite;
@@ -386,7 +387,7 @@ section.chatapp {
 
             form {
                 div {
-                    background-color: $secondry;
+                    background-color: #ececec;
                     border-radius: 25px;
                     display: flex;
 
@@ -395,7 +396,7 @@ section.chatapp {
                         font-family: vazir !important;
                         outline: none;
                         border: none;
-                        background-color: $secondry;
+                        background-color: #ececec;
                         padding: 10px 15px;
                         border-radius: 25px;
                     }
