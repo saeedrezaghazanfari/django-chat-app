@@ -265,9 +265,10 @@ section.chatapp {
                         position: relative;
                 
                         #bg__glass {
-                            background-color: rgba(0, 0, 0, 0.2); //TODO transparent
+                            background-color: transparent;
                             position: absolute;
                             inset: 0;
+                            cursor: not-allowed !important; 
                         }
                 
                         &__btn {
@@ -294,19 +295,22 @@ section.chatapp {
                             .m2px_b { margin-bottom: 2px; }
                             .disable_btn { 
                                 cursor: not-allowed !important; 
-                                // pointer-events:none; 
+                                pointer-events: none; 
                             }
                         }
                     }
                     #game_alert_msg {
                         color: white;
-                        padding: 1rem;
-                        border-radius: 15px;
+                        padding: 8px 7px;
+                        border-radius: 7px;
                         max-width: 1100px;
-                        margin: 30px auto;
-                        font-size: 25px;
+                        margin: 20px auto;
+                        background-color: $primary;
+                        font-size: 11pt;
                         text-align: center;
                     }
+                    .game_alert_msg_win { background-color: $secondry !important; }
+                    .game_alert_msg_lose { background-color: $primary !important; }
                 }
 
                 // form

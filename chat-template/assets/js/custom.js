@@ -116,56 +116,65 @@ check_winner = (human_computer) => {
     if(human_computer == 'O'){
         // win in rows
         if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == 'O')
-            human_win();
+            human_win('btn11', 'btn12', 'btn13');
         if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == 'O')
-            human_win();
+            human_win('btn21', 'btn22', 'btn23');
         if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == 'O')
-            human_win();
+            human_win('btn31', 'btn32', 'btn33');
         // win in columns
         if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == 'O')
-            human_win();
+            human_win('btn11', 'btn21', 'btn31');
         if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == 'O')
-            human_win();
+            human_win('btn12', 'btn22', 'btn32');
         if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == 'O')
-            human_win();        
+            human_win('btn13', 'btn23', 'btn33');        
         // win in *
         if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == 'O')
-            human_win();
+            human_win('btn11', 'btn22', 'btn33');
         if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == 'O')
-            human_win();
+            human_win('btn13', 'btn22', 'btn31');
     }
     else if(human_computer == 'X'){
         // win in rows
         if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == 'X')
-            computer_win();
+            computer_win('btn11', 'btn12', 'btn13');
         if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == 'X')
-            computer_win();
+            computer_win('btn21', 'btn22', 'btn23');
         if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == 'X')
-            computer_win();
+            computer_win('btn31', 'btn32', 'btn33');
         // win in columns
         if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == 'X')
-            computer_win();
+            computer_win('btn11', 'btn21', 'btn31');
         if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == 'X')
-            computer_win();
+            computer_win('btn12', 'btn22', 'btn32');
         if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == 'X')
-            computer_win();        
+            computer_win('btn13', 'btn23', 'btn33');        
         // win in *
         if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == 'X')
-            computer_win();
+            computer_win('btn11', 'btn22', 'btn33');
         if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == 'X')
-            computer_win();
+            computer_win('btn13', 'btn22', 'btn31');
     }
 }
 
-human_win = () => {
+human_win = (btn1, btn2, btn3) => {
 
     bg__glass.classList.remove('d-none');
 
+    document.getElementById(btn1).style.backgroundColor = '#ececec';
+    document.getElementById(btn2).style.backgroundColor = '#ececec';
+    document.getElementById(btn3).style.backgroundColor = '#ececec';
+    setTimeout(() => {
+        document.getElementById(btn1).style.backgroundColor = '#fff';
+        document.getElementById(btn2).style.backgroundColor = '#fff';
+        document.getElementById(btn3).style.backgroundColor = '#fff';
+    }, 2000);
+
     human_score += 1;
-    if(human_score == 10) {
+    if(human_score == 2) {
         alertDiv.classList.remove('d-none');
-        alertDiv.innerHTML = 'HUMAN is Winner!';
-        alertDiv.classList.add('green');
+        alertDiv.innerHTML = 'شما برنده شدید!';
+        alertDiv.classList.add('game_alert_msg_win');
         final = true;
     }
     document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
@@ -173,15 +182,24 @@ human_win = () => {
     endGame = true;
 }
 
-computer_win = () => {
+computer_win = (btn1, btn2, btn3) => {
 
     bg__glass.classList.remove('d-none');
 
+    document.getElementById(btn1).style.backgroundColor = '#c8e7ff';
+    document.getElementById(btn2).style.backgroundColor = '#c8e7ff';
+    document.getElementById(btn3).style.backgroundColor = '#c8e7ff';
+    setTimeout(() => {
+        document.getElementById(btn1).style.backgroundColor = '#fff';
+        document.getElementById(btn2).style.backgroundColor = '#fff';
+        document.getElementById(btn3).style.backgroundColor = '#fff';
+    }, 2000);
+
     computer_score += 1;
-    if(computer_score == 10) {
+    if(computer_score == 2) {   
         alertDiv.classList.remove('d-none');
-        alertDiv.innerHTML = 'COMPUTER is Winner!';
-        alertDiv.classList.add('red');
+        alertDiv.innerHTML = 'کامپیوتر برنده شد!';
+        alertDiv.classList.add('game_alert_msg_lose');
         final = true;
     }
     document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
@@ -352,8 +370,8 @@ reset_game = () => {
     all_btn.forEach(element => {
         set_image_in_btn(element, 'null');
     });
-    alertDiv.classList.remove('red');
-    alertDiv.classList.remove('green');
+    alertDiv.classList.remove('game_alert_msg_lose');
+    alertDiv.classList.remove('game_alert_msg_win');
     alertDiv.classList.add('d-none');
 }
 
