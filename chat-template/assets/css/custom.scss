@@ -4,6 +4,7 @@ $dark: #323232;
 $primary: #2391eb;
 $secondry: #d1d1d1;
 $white: #fff;
+$boxshadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
 
 /* *** FONTS *** */
 @font-face{
@@ -65,7 +66,7 @@ section.chatapp {
         right: 14px;
         border-radius: 10px;
         bottom: 87px;
-        box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: $boxshadow;
 
         .msg__header {
             background-color: $primary;
@@ -306,6 +307,78 @@ section.chatapp {
                         text-align: center;
                     }
                 }
+
+                // form
+                .chatapp__form {
+                    width: 250px;
+                    margin: 20px auto;
+                    border-radius: 8px;
+                    box-shadow: $boxshadow;
+
+                    .chatform__header {
+                        border-radius: 8px 8px 0px 0px;
+                        background-color: $primary;
+                        padding: 8px;
+                        color: $white;
+                        font-size: 9pt;
+                        text-align: start;
+                        margin-bottom: 10px;
+                    }
+                    form {
+                        padding: 1rem; 
+
+                        div.chatapp_formcontrol {
+                            position: relative;
+                            margin-bottom: 23px;
+
+                            input {
+                                font-family: vazir;
+                                width: auto;
+                                padding: 7px;
+                                font-size: 13pt;
+                                color: $primary;
+                                border: 1px solid $secondry;
+                                border-radius: 5px;
+                                outline: none;
+                                background: $white !important;
+                                transition: all 0.3s linear;
+
+                                &:focus {
+                                    border-color: darken($secondry, 30%);
+                                }
+                                &:focus ~ label {
+                                    color: darken($secondry, 30%);
+                                }
+                            }
+                            label {
+                                position: absolute;
+                                pointer-events: none;
+                                top: -15px;
+                                right: 10px;
+                                color: $secondry;
+                                font-size: 13px;
+                                padding: 0 7px;
+                                background-color: white;
+                                transition: all 0.3s linear;
+                            }
+                        }
+                        .mbnone__chatapp {margin-bottom: unset !important;}
+                        .chatapp_button {
+                            width: 100%;
+                            display: flex;
+                            justify-content: end;
+                            margin-top: 13px;
+
+                            button {
+                                font-family: vazir;
+                                border: none;
+                                outline: none;
+                                padding: 5px 25px;
+                                border-radius: 5px;
+                            }
+                        }
+                    }
+                }
             }
         }
         .body__inputs {
@@ -346,7 +419,6 @@ section.chatapp {
     }
 }
 
-
 section.chatapp__ltr {
     direction: ltr !important;
 
@@ -359,7 +431,7 @@ section.chatapp__ltr {
         right: unset !important;
         border-radius: 10px;
         bottom: 87px;
-        box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: $boxshadow;
     }
     .msg__info__status img {
         margin-right: 5px;
@@ -372,6 +444,14 @@ section.chatapp__ltr {
     .chatapp__msg .body__inputs form div button {
         margin-right: unset !important;
         margin-left: 3px;
+    }
+    .chatapp__msg .msg__body .body__wrapper .chatapp__form form div.chatapp_formcontrol label {
+        right: unset !important;
+        left: 10px;
+    }
+    .m2px_l { 
+        margin-left: unset !important; 
+        margin-right: 2px; 
     }
 }
 

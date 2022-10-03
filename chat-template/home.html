@@ -98,7 +98,8 @@
                     </div>
                     <div class="clearfix"></div>
 
-                    <div class="tictoctoe__game d-none">
+                    <!-- + tictoctoe game -->
+                    <div class="tictoctoe__game d-non">
                         
                         <button id="restart__game">شروع دوباره</button>
                         <div id="score__game">
@@ -131,6 +132,34 @@
 
                         <p id="game_alert_msg" class="d-none"></p>
                     </div>
+                    <!-- - tictoctoe game -->
+
+                    <!-- + login form -->
+                    <div class="chatapp__form d-non">
+                        <div class="chatform__header">
+                            <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
+                        </div>
+
+                        <form method="POST" novalidate>
+                            <div class="chatapp_formcontrol">
+                                <input type="text" id="chatapp__fname" autofocus="on" autocomplete="off">
+                                <label for="chatapp__fname">نام</label>
+                            </div>
+                            <div class="chatapp_formcontrol">
+                                <input type="text" id="chatapp__lname" autocomplete="off">
+                                <label for="chatapp__lname">نام خانوادگی</label>
+                            </div>
+                            <div class="chatapp_formcontrol mbnone__chatapp">
+                                <input type="email" id="chatapp__email" autocomplete="off">
+                                <label for="chatapp__email">ایمیل</label>
+                            </div>
+                            <div class="chatapp_button">
+                                <button type="submit">ارسال</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- - login form -->
+
                 </div>
             </div>
 
