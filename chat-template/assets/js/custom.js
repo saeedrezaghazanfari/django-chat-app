@@ -49,7 +49,6 @@ open_close_box = () => {
             document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
             document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__show');
         }, 100);
-        
         go_to_bottom_of_box();
     } else {
         document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__show');
