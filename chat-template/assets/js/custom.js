@@ -1,8 +1,6 @@
 
-
-function rand(min , max){
-    return Math.floor(Math.random() * (max - min + 1) ) + min;
-}
+/* DJANGO CHAT APP package */
+/* v1.0.0 */
 
 document.querySelector('section.chatapp .chatapp__btn').addEventListener(
     'click', () => open_close_box()
@@ -18,6 +16,7 @@ go_to_bottom_of_box = () => {
     document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
 }
 
+// show message of a reply
 document.querySelectorAll('.msg__replied').forEach(msg => {
     msg.addEventListener(
         'click', (e) => {
@@ -26,6 +25,7 @@ document.querySelectorAll('.msg__replied').forEach(msg => {
                 let target_element = document.getElementById(target);
                 let initial_bgcolor = '';
                 
+                // change background color for message
                 if(target_element.classList.contains('msg__right')) {
                     initial_bgcolor = target_element.style.backgroundColor;
                     target_element.style.backgroundColor = '#1577c6';
@@ -36,6 +36,7 @@ document.querySelectorAll('.msg__replied').forEach(msg => {
                 setTimeout(() => {
                     target_element.style.backgroundColor = initial_bgcolor;
                 }, 500);
+                // scroll to message
                 target_element.scrollIntoView({ behavior: "smooth", block: "end"});
             }
         }
@@ -59,8 +60,6 @@ open_close_box = () => {
     }
 }
 
-// game
-
 /* Tic-Toc-Toe Game */
 // Computer X .:. Human O
 
@@ -78,7 +77,7 @@ let bg__glass = document.getElementById('bg__glass');
 let oimg = document.getElementById('oimage_game').getAttribute('src');
 let ximg = document.getElementById('ximage_game').getAttribute('src');
 
-
+// start a step with Human
 document.querySelectorAll('.btn_game').forEach((btn) => {
     
     btn.addEventListener('click', (e) => {
@@ -91,11 +90,11 @@ document.querySelectorAll('.btn_game').forEach((btn) => {
             set_config(btnId, 'O');
             check_winner('O');
 
-            if(endGame == false && final == false) {
+            if(endGame == false && final == false) { // computer select
                 computer_select();
                 check_winner('X');
             }
-            else if(endGame == true && final == false) {
+            else if(endGame == true && final == false) { // clear buttons
                 setTimeout(() => {
                     reset_game();
                 }, 2000);
@@ -104,6 +103,7 @@ document.querySelectorAll('.btn_game').forEach((btn) => {
     });
 });
 
+// computer or human selections, set a image in the buttons
 set_image_in_btn = (btnId, human_computer) => {
     let new_img = document.createElement("img");
 
@@ -120,6 +120,7 @@ set_image_in_btn = (btnId, human_computer) => {
     }
 }
 
+// set X or O in row1, row2 and row3 arrays
 set_config = (btnId, human_computer) => {
 
     if(btnId == 'btn11') 
@@ -203,7 +204,7 @@ human_win = (btn1, btn2, btn3) => {
     }, 2000);
 
     human_score += 1;
-    if(human_score == 2) {
+    if(human_score == 10) {
         alertDiv.classList.remove('d-none');
         alertDiv.innerHTML = 'شما برنده شدید!';
         alertDiv.classList.add('game_alert_msg_win');
@@ -228,7 +229,7 @@ computer_win = (btn1, btn2, btn3) => {
     }, 2000);
 
     computer_score += 1;
-    if(computer_score == 2) {   
+    if(computer_score == 10) {   
         alertDiv.classList.remove('d-none');
         alertDiv.innerHTML = 'کامپیوتر برنده شد!';
         alertDiv.classList.add('game_alert_msg_lose');
@@ -250,6 +251,7 @@ computer_win = (btn1, btn2, btn3) => {
     }
 }
 
+// set logics for computer selections - attack is first, defence is last strategy
 computer_select = () => {
     let list_selection = [];
     let computer_selection = '';
@@ -258,6 +260,7 @@ computer_select = () => {
 
         list_selection = all_btn.filter((item) => !selected.includes(item));
 
+        /* + ATTACK */
         if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == '')
             computer_selection = 'btn13';
         else if(row1[0] == 'X' && row1[2] == 'X' && row1[1] == '')
@@ -314,6 +317,9 @@ computer_select = () => {
         else if(row2[1] == 'X' && row3[0] == 'X' && row1[2] == '')
             computer_selection = 'btn13';
 
+        /* - ATTACK */
+        /* + DEFENCE */
+
         else if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == '')
             computer_selection = 'btn13';
         else if(row1[0] == 'O' && row1[2] == 'O' && row1[1] == '')
@@ -369,7 +375,9 @@ computer_select = () => {
             computer_selection = 'btn22';  
         else if(row2[1] == 'O' && row3[0] == 'O' && row1[2] == '')
             computer_selection = 'btn13';
+        /* - DEFENCE */
 
+        /* SELECT RANDOM BUTTON */
         else {
             computer_selection = list_selection[Math.floor(Math.random()*list_selection.length)];
         }
@@ -391,6 +399,7 @@ computer_select = () => {
     }
 }
 
+// clear buttons, hide alertbox [scores is not resets!]
 reset_game = () => {
     selected = [];
     row1 = ['', '', ''];
@@ -407,6 +416,7 @@ reset_game = () => {
     alertDiv.classList.add('d-none');
 }
 
+// restart all of game, reset scores
 document.getElementById('restart__game').addEventListener('click', ()=> {
     human_score = 0;
     computer_score = 0;
