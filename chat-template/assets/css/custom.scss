@@ -141,92 +141,99 @@ section.chatapp {
             height: 320px;
 
             .body__wrapper {
-                .msg { 
-                    padding: 7px 10px;
-                    margin-bottom: 5px;
-                    max-width: 240px;
-                    min-width: 100px;
-                    text-align: right;
-                    color: $white;
-                    position: relative;
-                    transition: background-color 0.3s linear;
 
-                    p {
-                        margin: 0px !important;
-                    }
-                    p.msg__replied {
-                        padding: 3px 5px;
-                        border-right: 2px solid $white;
-                        margin-bottom: 7px !important;
-                        border-radius: 4px 0 0 4px;
-                        display: flex;
-                        flex-direction: column;
-                        cursor: pointer;
-
-                        span {
-                            font-size: 9pt;
+                // messages wrapper
+                .all__msg__wrapper {
+                    .msg { 
+                        padding: 7px 10px;
+                        margin-bottom: 5px;
+                        max-width: 240px;
+                        min-width: 100px;
+                        text-align: right;
+                        color: $white;
+                        position: relative;
+                        transition: background-color 0.3s linear;
+    
+                        p {
+                            margin: 0px !important;
                         }
-                        &--right {
-                            background-color: #39a2f9;
+                        p.msg__replied {
+                            padding: 3px 5px;
+                            border-right: 2px solid $white;
+                            margin-bottom: 7px !important;
+                            border-radius: 4px 0 0 4px;
+                            display: flex;
+                            flex-direction: column;
+                            cursor: pointer;
+    
+                            span {
+                                font-size: 9pt;
+                            }
+                            &--right {
+                                background-color: #39a2f9;
+                            }
+                            &--left {
+                                background-color: #c5c5c5;
+                            }
                         }
-                        &--left {
-                            background-color: #c5c5c5;
-                        }
-                    }
-                    div.msg__info {
-                        margin-top: 5px;
-                        margin-bottom: -5px;
-                        display: flex;
-                        flex-direction: row;
-                        justify-content: flex-start;
-
-                        &__clock {
-                            font-size: 9pt;
-                        }
-                        &__status {
-                            img {
-                                height: 14px;
-                                width: 16px;
-                                margin-left: 5px;
+                        div.msg__info {
+                            margin-top: 5px;
+                            margin-bottom: -5px;
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: flex-start;
+    
+                            &__clock {
+                                font-size: 9pt;
+                            }
+                            &__status {
+                                img {
+                                    height: 14px;
+                                    width: 16px;
+                                    margin-left: 5px;
+                                }
                             }
                         }
                     }
-                }
-                .msg__left { 
-                    float: left;
-                    border-radius: 12px;
-                    background-color: $secondry;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 9px;
-                        left: -8px;
-                        width: 0;
-                        height: 0;
-                        border-top: 8px solid transparent;
-                        border-bottom: 0px solid transparent;
-                        border-right: 8px solid $secondry;
+                    .msg__left { 
+                        float: left;
+                        border-radius: 12px;
+                        background-color: $secondry;
+    
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            bottom: 9px;
+                            left: -8px;
+                            width: 0;
+                            height: 0;
+                            border-top: 8px solid transparent;
+                            border-bottom: 0px solid transparent;
+                            border-right: 8px solid $secondry;
+                        }
+                        div.msg__info__clock {
+                            padding-bottom: 4px !important;
+                        }
                     }
-                }
-                .msg__right { 
-                    float: right;
-                    border-radius: 12px;
-                    background-color: $primary;
-
-                    &::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 9px;
-                        right: -8px;
-                        width: 0;
-                        height: 0;
-                        border-top: 8px solid transparent;
-                        border-bottom: 0px solid transparent;
-                        border-left: 8px solid $primary;
+                    .msg__right { 
+                        float: right;
+                        border-radius: 12px;
+                        background-color: $primary;
+    
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            bottom: 9px;
+                            right: -8px;
+                            width: 0;
+                            height: 0;
+                            border-top: 8px solid transparent;
+                            border-bottom: 0px solid transparent;
+                            border-left: 8px solid $primary;
+                        }
                     }
+                    .clearfix {clear: both;}
                 }
-                .clearfix {clear: both;}
 
                 // start tictoctoe game source code
                 .tictoctoe__game {
@@ -316,7 +323,7 @@ section.chatapp {
                     .game_alert_msg_lose { background-color: $primary !important; }
                 }
 
-                // form
+                // chat app login form
                 .chatapp__form {
                     width: 250px;
                     margin: 20px auto;

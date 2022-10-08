@@ -13,7 +13,7 @@
 </head>
 <body>
 
-    <section class="chatapp chatapp__ltr">
+    <section class="chatapp chatapp__lt">
         
         <div class="chatapp__btn">
             <div>
@@ -42,76 +42,80 @@
             <div class="msg__body">        
                 <div class="body__wrapper">
 
-                    <div class="msg msg__right d-non" id="chatapp_msg_1">
-                        <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
-                            <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
-                            <span scholl_msg="chatapp_msg_2">Hello World</span>
-                        </p>
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__status">
-                                <img src="assets/img/double-check.png" alt="single check status">
+                    <!-- + messages wrapper -->
+                    <div class="all__msg__wrapper d-noe">
+                        <div class="msg msg__right" id="chatapp_msg_1">
+                            <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
+                                <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
+                                <span scholl_msg="chatapp_msg_2">Hello World</span>
+                            </p>
+                            <p>
+                                Hello World
+                            </p>
+                            <div class="msg__info">
+                                <div class="msg__info__status">
+                                    <img src="assets/img/double-check.png" alt="single check status">
+                                </div>
+                                <div class="msg__info__clock">14:48</div>
                             </div>
-                            <div class="msg__info__clock">14:48</div>
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <div class="msg msg__right d-non">
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__status">
-                                <img src="assets/img/double-check.png" alt="single check status">
+                        <div class="clearfix"></div>
+    
+                        <div class="msg msg__right">
+                            <p>
+                                Hello World
+                            </p>
+                            <div class="msg__info">
+                                <div class="msg__info__status">
+                                    <img src="assets/img/double-check.png" alt="single check status">
+                                </div>
+                                <div class="msg__info__clock">14:48</div>
                             </div>
-                            <div class="msg__info__clock">14:48</div>
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <div class="msg msg__right d-non">
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__status">
-                                <img src="assets/img/double-check.png" alt="single check status">
+                        <div class="clearfix"></div>
+    
+                        <div class="msg msg__right">
+                            <p>
+                                Hello World
+                            </p>
+                            <div class="msg__info">
+                                <div class="msg__info__status">
+                                    <img src="assets/img/double-check.png" alt="single check status">
+                                </div>
+                                <div class="msg__info__clock">14:48</div>
                             </div>
-                            <div class="msg__info__clock">14:48</div>
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-
-                    <div class="msg msg__left d-non" id="chatapp_msg_2">
-                        <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
-                            <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
-                            <span scholl_msg="chatapp_msg_1">Hello World</span>
-                        </p>
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__clock">14:48</div>
+                        <div class="clearfix"></div>
+    
+    
+                        <div class="msg msg__left" id="chatapp_msg_2">
+                            <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
+                                <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
+                                <span scholl_msg="chatapp_msg_1">Hello World</span>
+                            </p>
+                            <p>
+                                Hello World
+                            </p>
+                            <div class="msg__info">
+                                <div class="msg__info__clock">14:48</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="clearfix"></div>
-
-                    <div class="msg msg__left d-non">
-                        <p>
-                            Hello World
-                        </p>
-                        <div class="msg__info">
-                            <div class="msg__info__clock">14:48</div>
+                        <div class="clearfix"></div>
+    
+                        <div class="msg msg__left">
+                            <p>
+                                Hello World
+                            </p>
+                            <div class="msg__info">
+                                <div class="msg__info__clock">14:48</div>
+                            </div>
                         </div>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="clearfix"></div>
+                    <!-- - messages wrapper -->
 
                     <!-- + tictoctoe game -->
-                    <div class="tictoctoe__game d-none">
+                    <div class="tictoctoe__game d-non">
                         
                         <button id="restart__game">شروع دوباره</button>
                         <div id="score__game">
@@ -146,7 +150,7 @@
                     <!-- - tictoctoe game -->
 
                     <!-- + login form -->
-                    <div class="chatapp__form d-none">
+                    <div class="chatapp__form d-non">
                         <div class="chatform__header">
                             <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
                         </div>
