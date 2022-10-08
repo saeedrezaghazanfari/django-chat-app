@@ -468,6 +468,9 @@ section.chatapp__ltr {
             border-left: 2px solid $white;
         }
     }
+    .chatapp__msg .msg__header .msg__wrapper {
+        background: linear-gradient(258deg, rgba(84, 141, 177, 0) 0%, rgba(0, 0, 0, 0.3) 100%) transparent !important;
+    }
 }
 
 /* *** ANIMATIONS *** */
