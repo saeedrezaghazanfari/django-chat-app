@@ -169,11 +169,12 @@ section.chatapp {
                             background-color: #39a2f9;
                         }
                         &--left {
-                            background-color: #bebbbb;
+                            background-color: #c5c5c5;
                         }
                     }
                     div.msg__info {
                         margin-top: 5px;
+                        margin-bottom: -5px;
                         display: flex;
                         flex-direction: row;
                         justify-content: flex-start;
@@ -192,13 +193,13 @@ section.chatapp {
                 }
                 .msg__left { 
                     float: left;
-                    border-radius: 5px;
+                    border-radius: 12px;
                     background-color: $secondry;
 
                     &::after {
                         content: '';
                         position: absolute;
-                        bottom: 3px;
+                        bottom: 9px;
                         left: -8px;
                         width: 0;
                         height: 0;
@@ -209,13 +210,13 @@ section.chatapp {
                 }
                 .msg__right { 
                     float: right;
-                    border-radius: 5px;
+                    border-radius: 12px;
                     background-color: $primary;
 
                     &::after {
                         content: '';
                         position: absolute;
-                        bottom: 3px;
+                        bottom: 9px;
                         right: -8px;
                         width: 0;
                         height: 0;
@@ -458,6 +459,14 @@ section.chatapp__ltr {
     .m2px_l { 
         margin-left: unset !important; 
         margin-right: 2px; 
+    }
+    .msg__body .body__wrapper .msg {
+        text-align: left !important;
+
+        p.msg__replied {
+            border-right: unset !important;
+            border-left: 2px solid $white;
+        }
     }
 }
 

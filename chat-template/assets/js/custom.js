@@ -31,7 +31,7 @@ document.querySelectorAll('.msg__replied').forEach(msg => {
                     target_element.style.backgroundColor = '#1577c6';
                 } else if (target_element.classList.contains('msg__left')) {
                     initial_bgcolor = target_element.style.backgroundColor;
-                    target_element.style.backgroundColor = '#b2b2b2';
+                    target_element.style.backgroundColor = '#c2c2c2';
                 }
                 setTimeout(() => {
                     target_element.style.backgroundColor = initial_bgcolor;
