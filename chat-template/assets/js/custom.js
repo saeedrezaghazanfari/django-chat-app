@@ -45,9 +45,18 @@ document.querySelectorAll('.msg__replied').forEach(msg => {
 open_close_box = () => {
     if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
         document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
+        setTimeout(() => {
+            document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
+            document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__show');
+        }, 100);
+        
         go_to_bottom_of_box();
     } else {
-        document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
+        document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__show');
+        document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__hide');
+        setTimeout(() => {
+            document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
+        }, 120);
     }
 }
 
