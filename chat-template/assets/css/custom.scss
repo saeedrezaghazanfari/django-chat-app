@@ -449,7 +449,20 @@ section.chatapp {
                         padding: 10px 15px;
                         border-radius: 25px;
                     }
-                    button {
+                    button.show_game {
+                        outline: none;
+                        background-color: transparent;
+                        border: none;
+                        margin-right: 3px;
+                        padding: 6px 10px;
+                        cursor: pointer;
+
+                        img {
+                            height: 20px;
+                            width: 21px;
+                        }
+                    }
+                    button[type="submit"] {
                         outline: none;
                         background-color: $primary;
                         border: none;
@@ -463,6 +476,16 @@ section.chatapp {
                             width: 21px;
                         }
                     }
+                }
+            }
+            div.goback_chat_btn {
+                text-align: center;
+                padding: 4px;
+                cursor: pointer;
+                transition: all 0.3s;
+
+                &:hover {
+                    color: $primary;
                 }
             }
         }

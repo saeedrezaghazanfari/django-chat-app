@@ -18,7 +18,7 @@
         <div class="chatapp__btn">
             <div>
                 <img src="assets/img/chat-room.png" alt="Django Chat Application!">
-                <div id="alert_msg_ctx" class="d-non"></div>
+                <div id="alert_msg_ctx" class="d-none"></div>
             </div>
         </div>
     
@@ -188,11 +188,17 @@
                 <form method="POST" novalidate>
                     <div>
                         <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
+                        <button class="show_game" type="button">
+                            <img src="assets/img/x.png" alt="let's go to game">
+                        </button>
                         <button type="submit">
                             <img src="assets/img/send.png" alt="send image">
                         </button>
                     </div>
                 </form>
+                <div class="goback_chat_btn d-none">
+                    بازگشت به صفحه‌ی چت
+                </div>
             </div>
         </div>
     </section>

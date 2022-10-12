@@ -11,6 +11,22 @@ document.querySelector('section.chatapp .header__options button.close__msgbox').
 document.querySelector('section.chatapp .msg__body .body__wrapper .btn_last_msg button').addEventListener(
     'click', () => go_to_bottom_of_box()
 );
+document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').addEventListener(
+    'click', () => {
+        document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.remove('d-none');
+        document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.add('d-none');
+        document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.remove('d-none');
+        document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.add('d-none');
+    }
+)
+document.querySelector('section.chatapp .chatapp__msg .body__inputs form div button.show_game').addEventListener(
+    'click', () => {
+        document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.add('d-none');
+        document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.remove('d-none');
+        document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.add('d-none');
+        document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.remove('d-none');
+    }
+)
 
 go_to_bottom_of_box = () => {
     document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
@@ -71,6 +87,7 @@ open_close_box = () => {
 /* Tic-Toc-Toe Game */
 // Computer X .:. Human O
 
+let number_game_win = 2;
 let human_score = 0;
 let computer_score = 0;
 let all_btn = ['btn11', 'btn12', 'btn13', 'btn21', 'btn22', 'btn23', 'btn31', 'btn32', 'btn33'];
@@ -212,7 +229,7 @@ human_win = (btn1, btn2, btn3) => {
     }, 2000);
 
     human_score += 1;
-    if(human_score == 10) {
+    if(human_score == number_game_win) {
         alertDiv.classList.remove('d-none');
         alertDiv.innerHTML = 'شما برنده شدید!';
         alertDiv.classList.add('game_alert_msg_win');
@@ -237,7 +254,7 @@ computer_win = (btn1, btn2, btn3) => {
     }, 2000);
 
     computer_score += 1;
-    if(computer_score == 10) {   
+    if(computer_score == number_game_win) {   
         alertDiv.classList.remove('d-none');
         alertDiv.innerHTML = 'کامپیوتر برنده شد!';
         alertDiv.classList.add('game_alert_msg_lose');
