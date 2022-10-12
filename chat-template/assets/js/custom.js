@@ -16,6 +16,14 @@ go_to_bottom_of_box = () => {
     document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
 }
 
+function aaa() {
+    // let el = document.querySelector('.msg__body');
+    // // let el = document.querySelector('.body__wrapper');
+    // console.log('scrollHeight', el.scrollHeight);
+    // console.log('scrollTop', el.scrollTop);
+    // console.log('offsetHeight', el.offsetHeight);
+}
+
 // show message of a reply
 document.querySelectorAll('.msg__replied').forEach(msg => {
     msg.addEventListener(

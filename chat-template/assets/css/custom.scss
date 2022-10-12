@@ -1,6 +1,5 @@
 
 /* *** COLOR *** */
-$dark: #323232;
 $primary: #2391eb;
 $secondry: #d1d1d1;
 $white: #fff;
@@ -389,6 +388,7 @@ section.chatapp {
                                 border: none;
                                 outline: none;
                                 padding: 5px 25px;
+                                cursor: pointer;
                                 border-radius: 5px;
                             }
                         }

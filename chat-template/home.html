@@ -7,7 +7,7 @@
 
     <title>django-chat-app</title>
 
-    <!-- External files2 -->  <!-- TODO all css files in this project must be integerate together!! -->
+    <!-- External files2 -->
     <link rel="stylesheet" href="assets/css/custom.css">
 
 </head>
@@ -40,10 +40,10 @@
             </div>
 
             <div class="msg__body">        
-                <div class="body__wrapper">
+                <div class="body__wrapper" onclick="aaa()">
 
                     <!-- + messages wrapper -->
-                    <div class="all__msg__wrapper d-noe">
+                    <div class="all__msg__wrapper">
                         <div class="msg msg__right" id="chatapp_msg_1">
                             <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
                                 <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
@@ -115,7 +115,7 @@
                     <!-- - messages wrapper -->
 
                     <!-- + tictoctoe game -->
-                    <div class="tictoctoe__game d-non">
+                    <div class="tictoctoe__game d-none">
                         
                         <button id="restart__game">شروع دوباره</button>
                         <div id="score__game">
@@ -150,7 +150,7 @@
                     <!-- - tictoctoe game -->
 
                     <!-- + login form -->
-                    <div class="chatapp__form d-non">
+                    <div class="chatapp__form d-none">
                         <div class="chatform__header">
                             <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
                         </div>

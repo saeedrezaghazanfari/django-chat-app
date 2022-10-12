@@ -121,3 +121,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ### DJANGO CHAT APP CONFIGS ### #
+CHATAPP_DIR = 'rtl'
+CHATAPP_TITLE = 'سعیدرضا غضنفری'
+CHATAPP_SUBTITLE = 'آنلاین'
+CHATAPP_GAME = True
+CHATAPP_AUTH = True
+CHATAPP_AUTHFIELDS = ['first_name', 'last_name', 'email'] # or ['first_name', 'last_name', 'phone']
