@@ -8,7 +8,7 @@ document.querySelector('section.chatapp .chatapp__btn').addEventListener(
 document.querySelector('section.chatapp .header__options button.close__msgbox').addEventListener(
     'click', () => open_close_box()
 );
-document.querySelector('section.chatapp .header__options button.bottom__msgbox').addEventListener(
+document.querySelector('section.chatapp .msg__body .body__wrapper .btn_last_msg button').addEventListener(
     'click', () => go_to_bottom_of_box()
 );
 

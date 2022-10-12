@@ -394,6 +394,40 @@ section.chatapp {
                         }
                     }
                 }
+
+                .btn_last_msg {
+                    position: absolute;
+                    left: 20px;
+                    bottom: 60px;
+                    z-index: 9999;
+                    
+                    button {
+                        cursor: pointer;
+                        outline: none;
+                        border: none;
+                        border-radius: 50%;
+                        background-color: rgba(0,0,0, 0.3);
+                        position: relative;
+
+                        img {
+                            height: 35px;
+                            width: 35px;
+                            padding: 5px 3px;
+                            padding-top: 8px;
+                        }
+                        div.unreadmsg_counter {
+                            position: absolute;
+                            right: -2px;
+                            top: -2px;
+                            padding: 3px 7px;
+                            background-color: $primary;
+                            border-radius: 50%;
+                            font-size: 10pt;
+                            color: $white;
+                        }
+                    }
+
+                }
             }
         }
         .body__inputs {
