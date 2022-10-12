@@ -40,6 +40,31 @@ function aaa() {
     // console.log('offsetHeight', el.offsetHeight);
 }
 
+// reply a msg
+reply_msg = (msgID) => {
+    let msgbox = document.getElementById(msgID);
+    let writer = '';
+    let content = document.querySelector(`#${msgID} .msg__content`).innerText;
+
+    if(msgbox.classList.contains('msg__right'))
+        writer = 'شما';
+    else
+        writer = 'پشتیبان';
+
+    document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
+    document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
+    document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
+}
+
+// close the reply bar
+document.querySelector('.body__inputs .reply_msg_wrapper .close_replybar').addEventListener(
+    'click', () => {
+        document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
+        document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
+        document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+    }
+)
+
 // show message of a reply
 document.querySelectorAll('.msg__replied').forEach(msg => {
     msg.addEventListener(

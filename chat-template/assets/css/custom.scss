@@ -143,92 +143,119 @@ section.chatapp {
 
                 // messages wrapper
                 .all__msg__wrapper {
-                    .msg { 
-                        padding: 7px 10px;
-                        margin-bottom: 5px;
-                        max-width: 240px;
-                        min-width: 100px;
-                        text-align: right;
-                        color: $white;
-                        position: relative;
-                        transition: background-color 0.3s linear;
-    
-                        p {
-                            margin: 0px !important;
+                    div.one_msg_wrapper {
+                        width: 100%;
+                        height: auto;
+
+                        &:hover .reply_one_msg {
+                            opacity: 1;
                         }
-                        p.msg__replied {
-                            padding: 3px 5px;
-                            border-right: 2px solid $white;
-                            margin-bottom: 7px !important;
-                            border-radius: 4px 0 0 4px;
-                            display: flex;
-                            flex-direction: column;
-                            cursor: pointer;
-    
-                            span {
-                                font-size: 9pt;
+
+                        .msg { 
+                            padding: 7px 10px;
+                            margin-bottom: 5px;
+                            max-width: 240px;
+                            min-width: 100px;
+                            text-align: right;
+                            color: $white;
+                            position: relative;
+                            transition: background-color 0.3s linear;
+                            z-index: 2;
+
+                            p {
+                                margin: 0px !important;
+                                word-break: break-word;
                             }
-                            &--right {
-                                background-color: #39a2f9;
+                            p.msg__replied {
+                                padding: 3px 5px;
+                                border-right: 2px solid $white;
+                                margin-bottom: 7px !important;
+                                border-radius: 4px 0 0 4px;
+                                display: flex;
+                                flex-direction: column;
+                                cursor: pointer;
+        
+                                span {
+                                    font-size: 9pt;
+                                }
+                                &--right {
+                                    background-color: #39a2f9;
+                                }
+                                &--left {
+                                    background-color: #c5c5c5;
+                                }
                             }
-                            &--left {
-                                background-color: #c5c5c5;
-                            }
-                        }
-                        div.msg__info {
-                            margin-top: 5px;
-                            margin-bottom: -5px;
-                            display: flex;
-                            flex-direction: row;
-                            justify-content: flex-start;
-    
-                            &__clock {
-                                font-size: 9pt;
-                            }
-                            &__status {
-                                img {
-                                    height: 14px;
-                                    width: 16px;
-                                    margin-left: 5px;
+                            div.msg__info {
+                                margin-top: 5px;
+                                margin-bottom: -5px;
+                                display: flex;
+                                flex-direction: row;
+                                justify-content: flex-start;
+        
+                                &__clock {
+                                    font-size: 9pt;
+                                }
+                                &__status {
+                                    img {
+                                        height: 14px;
+                                        width: 16px;
+                                        margin-left: 5px;
+                                    }
                                 }
                             }
                         }
-                    }
-                    .msg__left { 
-                        float: left;
-                        border-radius: 12px;
-                        background-color: $secondry;
-    
-                        &::after {
-                            content: '';
-                            position: absolute;
-                            bottom: 9px;
-                            left: -8px;
-                            width: 0;
-                            height: 0;
-                            border-top: 8px solid transparent;
-                            border-bottom: 0px solid transparent;
-                            border-right: 8px solid $secondry;
+                        .msg__left { 
+                            float: left;
+                            border-radius: 12px;
+                            background-color: $secondry;
+
+                            &::after {
+                                content: '';
+                                position: absolute;
+                                bottom: 9px;
+                                left: -8px;
+                                width: 0;
+                                height: 0;
+                                border-top: 8px solid transparent;
+                                border-bottom: 0px solid transparent;
+                                border-right: 8px solid $secondry;
+                            }
+                            div.msg__info__clock {
+                                padding-bottom: 4px !important;
+                            }
                         }
-                        div.msg__info__clock {
-                            padding-bottom: 4px !important;
-                        }
-                    }
-                    .msg__right { 
-                        float: right;
-                        border-radius: 12px;
-                        background-color: $primary;
+                        .msg__right { 
+                            float: right;
+                            border-radius: 12px;
+                            background-color: $primary;
     
-                        &::after {
-                            content: '';
-                            position: absolute;
-                            bottom: 9px;
-                            right: -8px;
-                            width: 0;
-                            height: 0;
-                            border-top: 8px solid transparent;
-                            border-bottom: 0px solid transparent;
-                            border-left: 8px solid $primary;
+                            &::after {
+                                content: '';
+                                position: absolute;
+                                bottom: 9px;
+                                right: -8px;
+                                width: 0;
+                                height: 0;
+                                border-top: 8px solid transparent;
+                                border-bottom: 0px solid transparent;
+                                border-left: 8px solid $primary;
+                            }
+                        }
+                        .reply_one_msg {
+                            color: $secondry;
+                            font-size: 10pt;
+                            cursor: pointer;
+                            opacity: 0;
+                            padding-bottom: 30px;
+                            z-index: 1;
+
+                            &--right {
+                                transform: translate(-5px, 7px);
+                            }
+                            &--left {
+                                text-align: left;
+                                transform: translate(5px, 7px);
+                            }
                         }
                     }
                     .clearfix {clear: both;}
@@ -435,10 +462,11 @@ section.chatapp {
             padding-top: 4px !important;
 
             form {
-                div {
+                div.forminput_wrapper {
                     background-color: #ececec;
                     border-radius: 25px;
                     display: flex;
+                    position: relative;
 
                     input {
                         flex: auto;
@@ -449,6 +477,45 @@ section.chatapp {
                         padding: 10px 15px;
                         border-radius: 25px;
                     }
+
+                    .reply_msg_wrapper {
+                        position: absolute;
+                        bottom: 44px;
+                        border-radius: 7px;
+                        right: 0px;
+                        background-color: #ecececdb;
+                        padding: 5px 10px;
+                        z-index: 9999;
+                        width: 70%;
+
+                        div {
+                            display: flex;
+                            flex-direction: column;
+                            float: right;
+                            
+                            p {
+                                margin: 0;
+                                color: rgb(94, 94, 94);
+                                font-size: 9pt;
+                                padding: 0 5px;
+                                border-right: 2px solid $white;
+                            }
+                        }
+                        button.close_replybar {
+                            float: left;
+                            color: rgb(94, 94, 94);
+                            border: none;
+                            outline: none;
+                            font-size: 20px;
+                            cursor: pointer;
+                            padding: 0 10px 10px 0;
+
+                            &:hover {
+                                color: black;
+                            }
+                        }
+                    }
+
                     button.show_game {
                         outline: none;
                         background-color: transparent;
