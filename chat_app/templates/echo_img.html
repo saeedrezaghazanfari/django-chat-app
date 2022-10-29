@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>echo image</h1>
+
+    <div>
+        <h2>sender canvas</h2>
+        <canvas id="canvas1" style="border: 1px solid gray;">no responding</canvas>
+        <button onclick="btnchangeColor()">change color</button>
+        <button onclick="send_img()">send</button>
+    </div>
+
+    <div>
+        <h2>receiver canvas</h2>
+        <canvas id="canvas2" style="border: 1px solid gray;">no responding</canvas>
+    </div>
+
+
+    <script>
+
+        let ws = new WebSocket(`ws://${window.location.host}/echo-img`)
+        ws.binaryType = 'arraybuffer';  // blob
+
+        ws.onmessage = function(ev) {
+            let msg = ev.data;
+            let arr = new Uint8Array(msg);
+            let canvas = document.getElementById('canvas2');
+            let ctx = canvas.getContext('2d');
+            let imgdata = ctx.createImageData(canvas.width, canvas.height);
+            for(let index=0; index<arr.length; index++){
+                imgdata.data[index] = arr[index];
+            }
+            ctx.putImageData(imgdata, 0, 0);
+        };
+
+        ws.onclose = function(ev) {
+            console.log('socket closed!!');
+        }
+
+        window.onload = function() {
+            btnchangeColor();
+        }
+
+        function btnchangeColor() {
+            let canvas = document.getElementById('canvas1');
+            let ctx = canvas.getContext('2d');
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+
+            let grd = ctx.createLinearGradient(0,0,400,0);
+
+            let back = ['red', 'green', 'blue', 'gray', 'purple', 'pink'];
+            let rand = back[Math.floor(Math.random() * back.length)];
+
+            grd.addColorStop(0, rand);
+            grd.addColorStop(1, 'white');
+
+            ctx.fillStyle = grd;
+            ctx.fillRect(0,0,300,300);
+        }
+
+        function send_img() {
+            let canvas = document.getElementById('canvas1');
+            let ctx = canvas.getContext('2d');
+            let imgdata = ctx.getImageData(0,0,canvas.width, canvas.height);
+            let arr = new Uint8Array(imgdata.data);
+            ws.send(arr);
+        }
+
+    </script>
+</body>
+</html>

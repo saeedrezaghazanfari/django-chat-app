@@ -16,9 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Apps
+    'chat_app.apps.ChatAppConfig',
 
     # Packs
-
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -36,7 +37,7 @@ ROOT_URLCONF = 'App_Config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [Path('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -49,7 +50,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'App_Config.wsgi.application'
+# WSGI_APPLICATION = 'App_Config.wsgi.application'
+ASGI_APPLICATION = 'App_Config.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 
 # Database
@@ -80,22 +88,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
-STATIC_URL = 'static/'
+STATIC_URL = '/site_static/'
+STATIC_ROOT = Path("static_cdn", "static_root")
+STATICFILES_DIRS = [ Path("assets") ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = Path("static_cdn", "media_root")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # ### DJANGO CHAT APP CONFIGS ### #
-CHATAPP_DIR = 'rtl'
-CHATAPP_TITLE = 'سعیدرضا غضنفری'
-CHATAPP_SUBTITLE = 'آنلاین'
-CHATAPP_GAME = True
-CHATAPP_AUTH = True
-CHATAPP_AUTHFIELDS = ['first_name', 'last_name', 'email'] # or ['first_name', 'last_name', 'phone']
+# CHATAPP_DIR = 'rtl'
+# CHATAPP_TITLE = 'سعیدرضا غضنفری'
+# CHATAPP_SUBTITLE = 'آنلاین'
+# CHATAPP_GAME = True
+# CHATAPP_AUTH = True
+# CHATAPP_AUTHFIELDS = ['first_name', 'last_name', 'email'] # or ['first_name', 'last_name', 'phone']

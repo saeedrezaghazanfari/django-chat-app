@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>echo file</title>
+</head>
+<body>
+    <h1>echo file</h1>
+
+    <div>
+        <h2>sender file</h2>
+        <input type="file" id="fileinput">
+        <button onclick="send_img()">send</button>
+    </div>
+
+    <div>
+        <h2>receiver file</h2>
+        <a href="">show file</a>
+    </div>
+
+
+    <script>
+
+        let ws = new WebSocket(`ws://${window.location.host}/echo-file`)
+        ws.binaryType = 'arraybuffer';  // blob
+
+        ws.onmessage = function(ev) {
+            let msg = ev.data;
+            let arr = new Uint8Array(msg);
+            let canvas = document.getElementById('canvas2');
+            let ctx = canvas.getContext('2d');
+            let imgdata = ctx.createImageData(canvas.width, canvas.height);
+            for(let index=0; index<arr.length; index++){
+                imgdata.data[index] = arr[index];
+            }
+            ctx.putImageData(imgdata, 0, 0);
+        };
+
+        ws.onclose = function(ev) {
+            console.log('socket closed!!');
+        }
+
+        function send_img() {
+            let file = document.getElementById('fileinput').files[0];
+            let ctx = file.getContext('2d');
+            let imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            let arr = new Uint8Array(imgdata.data);
+            ws.send(arr);
+        }
+
+    </script>
+</body>
+</html>

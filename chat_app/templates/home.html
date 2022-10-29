@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -8,7 +10,7 @@
     <title>django-chat-app</title>
 
     <!-- External files2 -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="{% static 'django_chat_app/css/custom.css' %}">
 
 </head>
 <body>
@@ -17,7 +19,7 @@
         
         <div class="chatapp__btn">
             <div>
-                <img src="assets/img/chat-room.png" alt="Django Chat Application!">
+                <img src="{% static 'django_chat_app/img/chat-room.png' %}" alt="Django Chat Application!">
                 <div id="alert_msg_ctx" class="d-none"></div>
             </div>
         </div>
@@ -26,14 +28,14 @@
             <div class="msg__header">
                 <div class="msg__wrapper">
                     <div class="header__info">
-                        <img src="assets/img/supporter.png" alt="">
+                        <img src="{% static 'django_chat_app/img/supporter.png' %}" alt="">
                         <div>
                             <span>سعیدرضا غضنفری</span>
                             <span>آنلاین</span>
                         </div>
                     </div>
                     <div class="header__options">
-                        <button class="close__msgbox"><img src="assets/img/close.png" alt="close chat application"></button>
+                        <button class="close__msgbox"><img src="{% static 'django_chat_app/img/close.png' %}" alt="close chat application"></button>
                     </div>
                 </div>
             </div>
@@ -55,7 +57,7 @@
                                 </p>
                                 <div class="msg__info">
                                     <div class="msg__info__status">
-                                        <img src="assets/img/double-check.png" alt="single check status">
+                                        <img src="{% static 'django_chat_app/img/double-check.png' %}" alt="single check status">
                                     </div>
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
@@ -73,7 +75,7 @@
                                 </p>
                                 <div class="msg__info">
                                     <div class="msg__info__status">
-                                        <img src="assets/img/double-check.png" alt="single check status">
+                                        <img src="{% static 'django_chat_app/img/double-check.png' %}" alt="single check status">
                                     </div>
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
@@ -91,7 +93,7 @@
                                 </p>
                                 <div class="msg__info">
                                     <div class="msg__info__status">
-                                        <img src="assets/img/double-check.png" alt="single check status">
+                                        <img src="{% static 'django_chat_app/img/double-check.png' %}" alt="single check status">
                                     </div>
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
@@ -151,8 +153,8 @@
                         <div class="btns__wrapper">
 
                             <div id="bg__glass" class="d-none"></div>
-                            <img src="assets/img/o.png" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
-                            <img src="assets/img/x.png" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="{% static 'django_chat_app/img/o.png' %}" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="{% static 'django_chat_app/img/x.png' %}" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
 
                             <div class="btns__wrapper__btn">
                                 <div class="btn_game m2px_b m2px_l" id="btn11"></div>
@@ -201,7 +203,7 @@
 
                     <div class="btn_last_msg d-none">
                         <button>
-                            <img src="assets/img/gotodown.png" alt="go to last msg img">
+                            <img src="{% static 'django_chat_app/img/gotodown.png' %}" alt="go to last msg img">
                             <div class="unreadmsg_counter">2</div>
                         </button>
                     </div>
@@ -214,7 +216,7 @@
                     <div class="forminput_wrapper">
                         <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
                         <button class="show_game" type="button">
-                            <img src="assets/img/game.png" alt="let's go to game">
+                            <img src="{% static 'django_chat_app/img/game.png' %}" alt="let's go to game">
                         </button>
 
                         <div class="reply_msg_wrapper d-none">
@@ -226,7 +228,7 @@
                         </div>
 
                         <button type="submit">
-                            <img src="assets/img/send.png" alt="send image">
+                            <img src="{% static 'django_chat_app/img/send.png' %}" alt="send image">
                         </button>
                     </div>
                 </form>
@@ -237,6 +239,6 @@
         </div>
     </section>
 
-<script type="text/javascript" src="assets/js/custom.js"></script>
+<script type="text/javascript" src="{% static 'django_chat_app/js/custom.js' %}"></script>
 </body>
 </html>
