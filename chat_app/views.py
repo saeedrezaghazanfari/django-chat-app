@@ -3,17 +3,13 @@ import json
 from django.utils.safestring import mark_safe
 
 
-def integer(request):
-    return render(request, 'integer.html', {'text': 'hello world'})
+# url: / 
+def home(request):
+    return render(request, 'home.html', {'text': 'hello world'})
 
-def echo(request):
-    return render(request, 'echo.html')
 
-def echo_img(request):
-    return render(request, 'echo_img.html')
-
-def echo_file(request):
-    return render(request, 'echo_file.html')
-
+# url: /join-chat/<str:username>
 def join_chat(request, username):
-    return render(request, 'join_chat.html', {'username_json': mark_safe(json.dumps(username))})
+    return render(request, 'join_chat.html', {
+        'username_json': mark_safe(json.dumps(username))
+    })

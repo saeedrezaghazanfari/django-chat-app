@@ -15,55 +15,6 @@ class WSInteger(WebsocketConsumer):
             sleep(1)
 
 
-# echo app
-class WSEcho(WebsocketConsumer):
-    def connect(self):  # first step
-        self.user = self.scope['user']
-        if self.user.username == 'peaka':
-            self.accept()
-            print('---connected')
-        else:
-            self.close()
-
-    def disconnect(self, close_code):  # close channel
-        print('---disconnected')
-        pass
-
-    def receive(self, text_data=None):   # recieve data
-        print('---received')
-        self.send(text_data=text_data)
-
-
-# echo image
-class WSEchoIMG(WebsocketConsumer):
-    def connect(self):
-        self.accept() 
-
-    def disconnect(self, close_code):
-        pass
-
-    def receive(self, text_data=None, bytes_data=None):
-        if text_data:
-            self.send(text_data=text_data + " - sent with server")
-        elif bytes_data:
-            self.send(bytes_data=bytes_data)
-
-
-# echo file
-class WSEchoFILE(WebsocketConsumer):
-    def connect(self):
-        self.accept() 
-
-    def disconnect(self, close_code):
-        pass
-
-    def receive(self, text_data=None, bytes_data=None):
-        if text_data:
-            self.send(text_data=text_data + " - sent with server")
-        elif bytes_data:
-            self.send(bytes_data=bytes_data)
-
-
 # chat app
 class ChatConsumer(WebsocketConsumer):
     def connect(self):
