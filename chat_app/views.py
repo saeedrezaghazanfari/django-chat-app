@@ -22,7 +22,6 @@ def check_userid(request):
     if request.method == 'POST':
 
         userid = request.POST.get('user_id')
-        userid = userid[1:len(userid)-1]
         
         # send 10 msg from db to client
         if userid and UserChatModel.objects.filter(user_chat_id=userid).exists():

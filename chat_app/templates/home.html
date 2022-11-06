@@ -29,8 +29,8 @@
                     <div class="header__info">
                         <img src="site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
-                            <span>aa</span>
-                            <span>bb</span>
+                            <span>Title</span>
+                            <span>subTitle</span>
                         </div>
                     </div>
                     <div class="header__options">
@@ -243,10 +243,8 @@
         </div>
     </section>
 
-<script type="text/javascript" src="site_static/django_chat_app/js/custom.js"></script>
-<!-- <script type="text/javascript" src="site_static/django_chat_app/js/chat.js"></script> -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<!-- <script type="text/javascript" src="site_static/django_chat_app/js/custom.js"></script> -->
+<script type="text/javascript" src="site_static/django_chat_app/js/jquery-3.5.1.min.js"></script>
 
 <script>
 
@@ -273,6 +271,9 @@ let env_auth_fields;
 let env_max_report_number;
 let env_show_supporter_name;
 let is_set_env = false; 
+
+let user_is_logged = false;
+let user_id = '';
 
 set_setting = () => {
 
@@ -438,7 +439,8 @@ open_close_box = () => {
 
         /* + search for localstorage */
         let stored_userid = localStorage.getItem('chatapp_client_id');
-
+        stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
+        
         if (stored_userid) {
 
             let formdata = new FormData();
@@ -456,6 +458,10 @@ open_close_box = () => {
                 .then((response) => {
                     if(response.status == 200) {
                         let data = response.data;
+
+                        user_is_logged = true;
+                        user_id = stored_userid;
+                        // start_socket();
 
                         document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
                         document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
@@ -540,6 +546,58 @@ document.querySelector('#chatapp_submitform').addEventListener('click', () => {
     })();
 
 });
+
+// start of socket
+start_socket = () => {
+
+    let username = user_id;
+    let socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
+    
+    socket.onmessage = function(e) {
+        let message = JSON.parse(e.data);
+
+        $('.chatapp .all__msg__wrapper').prepend(`
+            <div class="media mb-2">
+                <div class="media-body">
+                    <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
+                    ${message['text']}
+                </div>
+            </div>
+        `);
+    };
+    
+    socket.onclose = function(e) {
+        console.error('Socket closed unexpectedly');
+    };
+    
+    // document.querySelector('#msg-input').focus();
+    document.querySelector('#msg-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#msg-submit').click();
+        }
+    };
+    
+    document.querySelector('#msg-submit').onclick = function(e) {
+        let username = document.querySelector('#username-input').value;
+    
+        let messageInputDom = document.querySelector('#msg-input');
+        let message = messageInputDom.value;
+    
+        $('#messages-list').prepend(`
+            <div class="media mb-2">
+            <div class="media-body">
+                <h6 class="mt-0"><strong>You</strong></h6>
+                MESSAGE
+            </div>
+            </div>
+        `.replace('MESSAGE', message));
+    
+        socket.send(JSON.stringify({'sender': username, 'receiver': username, 'text': message}));
+    
+        messageInputDom.value = '';
+    };
+}
+// end of socket
 
 
 /* Tic-Toc-Toe Game */
