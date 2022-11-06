@@ -14,8 +14,8 @@
 </head>
 <body>
 
-    <section class="chatapp">
-        
+    <section class="chatapp" id="chatapp">
+
         <div class="chatapp__btn">
             <div>
                 <img src="site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
@@ -245,8 +245,31 @@
 
 <!-- <script type="text/javascript" src="site_static/django_chat_app/js/custom.js"></script> -->
 <script type="text/javascript" src="site_static/django_chat_app/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="site_static/django_chat_app/js/vue3.js"></script>
 
 <script>
+
+    Vue.createApp({
+        
+        delimiters: [`[[`, `]]`],
+        
+        data() {
+            return {
+                data: 'saeed',
+            }
+        },
+
+        methods: {
+            oncli() {
+                console.log('saeed');
+            },
+        },
+
+    }).mount('#chatapp');
+
+</script>
+
+<!-- <script>
 
 // encrypt = (salt, text) => {
 //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
@@ -970,7 +993,7 @@ document.getElementById('restart__game').addEventListener('click', ()=> {
 
 
 
-</script>
+</script> -->
 
 </body>
 </html>
