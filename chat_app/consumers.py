@@ -1,13 +1,10 @@
-from gettext import textdomain
 from channels.generic.websocket import WebsocketConsumer
-from random import randint
-from time import sleep
 from asgiref.sync import async_to_sync
 import json
 
 
 
-# chat app
+# url: /ws/chat/<str:username>/ 
 class ChatConsumer(WebsocketConsumer):
     
     def connect(self):

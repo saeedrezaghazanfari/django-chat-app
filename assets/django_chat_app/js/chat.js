@@ -3,47 +3,56 @@
 /* v1.0.0 */
 
 
-encrypt = (salt, text) => {
-    const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-    const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
-    const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-    return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
-};
-decrypt = (salt, encoded) => {
-    const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-    const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-    return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
-};
+// encrypt = (salt, text) => {
+//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+//     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
+//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+//     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
+// };
+// decrypt = (salt, encoded) => {
+//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+//     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
+// };
 
 
-let stored_userid = localStorage.getItem('chatapp_client_id');
+// let stored_userid = localStorage.getItem('chatapp_client_id');
 
-if (stored_userid) {
+// if (stored_userid) {
 
-    // (async () => {
-    //     await fetch(`/django-chat-app/auth/?data=${stored_userid}`, {
-    //         method: 'POST',
-    //         headers: {
-    //             "Content-type": "application/json; charset=UTF-8"
-    //         },
-    //         body: JSON.stringify({data: 'saeedreza'})
-    //     })
-    //     .then(response => response.json())
-    //     .then(json => console.log(json))
-    //     .catch(err => {
-    //         console.log('err', err);
-    //     });
-    // })();
-}
-else {
+//     // (async () => {
+//     //     await fetch(`/django-chat-app/auth/?data=${stored_userid}`, {
+//     //         method: 'POST',
+//     //         headers: {
+//     //             "Content-type": "application/json; charset=UTF-8"
+//     //         },
+//     //         body: JSON.stringify({data: 'saeedreza'})
+//     //     })
+//     //     .then(response => response.json())
+//     //     .then(json => console.log(json))
+//     //     .catch(err => {
+//     //         console.log('err', err);
+//     //     });
+//     // })();
+// }
+// else {
+
+//     document.querySelector('.chatapp__form').classList.remove('d-none');
     
-    let username = 'saeed';
-    
-    localStorage.setItem(
-        'chatapp_client_id', JSON.stringify(username)
-    );
-}
+//     // localStorage.setItem(
+//     //     'chatapp_client_id', JSON.stringify(username)
+//     // );
+// }
 
+
+// chatapp_submitform = () => {
+//     let fname = document.getElementById('chatapp__fname').value;
+//     let lname = document.getElementById('chatapp__lname').value;
+//     let email = document.getElementById('chatapp__email').value;
+//     let phone = document.getElementById('chatapp__phone').value;
+
+//     console.log(fname);
+// } 
 
 
 

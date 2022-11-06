@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Supporter Home</title>
+
+    <!-- External files2 -->
+    <link rel="stylesheet" href="/site_static/django_chat_app/css/supporter.css">
+
+</head>
+<body>
+
+    <section class="chatapp chatapp__lt">
+            
+        <section class="open_navbar">
+            <button>بازکردن منو</button>
+        </section>
+
+        <nav class="nav">
+            <div class="wrapper_nav">
+
+                <div class="nav__header">
+                    <h4>پیام های کاربران</h4>
+                    <button>&times;</button>
+                </div>
+
+                <div class="wrapper__chatboxes">
+    
+                    <div class="chat__box">
+                        <div class="user_date_div">
+                            <div>سعیدرضا غضنفری</div>
+                            <div>1400/5/9</div>
+                        </div>
+                        <div class="unreadmsg_counter">3</div>
+                    </div>
+                    <div class="chat__box">
+                        <div class="user_date_div">
+                            <div>سعیدرضا غضنفری</div>
+                            <div>1400/5/9</div>
+                        </div>
+                        <div class="unreadmsg_counter">3</div>
+                    </div>
+                    <div class="chat__box">
+                        <div class="user_date_div">
+                            <div>سعیدرضا غضنفری</div>
+                            <div>1400/5/9</div>
+                        </div>
+                        <div class="unreadmsg_counter">3</div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+        <div class="chatapp__msg">
+            <div class="msg__header">
+                <div class="msg__wrapper">
+                    <div class="header__info">
+                        <img src="/site_static/django_chat_app/img/supporter.png" alt="">
+                        <div>
+                            <span>کاربر۱</span>
+                            <span>آفلاین</span>
+                        </div>
+                    </div>
+                    <div class="header__option">
+                        
+                        <div class="wrapper_btns">
+                            <button class="btns_base openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
+                            
+                            <div class="copybox_section d-none">
+                                <div class="wrapper_close_btn">
+                                    <button class="close_box">&times;</button>
+                                    <button class="goto_add_box">+</button>
+                                </div>
+
+                                <div class="wrapper_boxes">
+
+                                    <div class="msg_item">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim suscipit, optio non quisquam explicabo nobis.</p>
+                                        <div class="wrapper_btns_msgs">
+                                            <button><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
+                                            <div class="wrapper_2btn_msgs">
+                                                <button><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
+                                                <button><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="msg_item">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim suscipit, optio non quisquam explicabo nobis.</p>
+                                        <div class="wrapper_btns_msgs">
+                                            <button><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
+                                            <div class="wrapper_2btn_msgs">
+                                                <button><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
+                                                <button><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="addbox_section d-none">
+                                <div class="wrapper_close_btn">
+                                    <button class="close_box">&times;</button>
+                                </div>
+                                <form novalidate>
+                                    <input type="text" id="subject-chatinput" autocomplete="off" autofocus placeholder="عنوان متن:">
+                                    <textarea id="content-chatinput" rows="4" autocomplete="off" placeholder="محتوای متن:"></textarea>
+                                    <button type="button">ذخیره</button>
+                                </form>
+                            </div>
+
+                        </div>
+
+                        <div class="wrapper_btns">
+                            <button class="btns_base openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="msg__body">        
+                <div class="body__wrapper" onclick="aaa()">
+
+                    <!-- + messages wrapper -->
+                    <div class="all__msg__wrapper">
+
+                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_1')">
+                            <div class="msg msg__right" id="chatapp_msg_1">
+                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
+                                    <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
+                                    <span scholl_msg="chatapp_msg_2">Hello World</span>
+                                </p>
+                                <p class="msg__content">
+                                    Hello Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, obcaecati?
+                                </p>
+                                <div class="msg__info">
+                                    <div class="msg__info__status">
+                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
+                                    </div>
+                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                            </div>
+                            <div class="reply_one_msg reply_one_msg--right" onclick="reply_msg('chatapp_msg_1')">
+                                پاسخ دادن
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+    
+                        <div class="one_msg_wrapper">
+                            <div class="msg msg__right">
+                                <p class="msg__content">
+                                    Hello World
+                                </p>
+                                <div class="msg__info">
+                                    <div class="msg__info__status">
+                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
+                                    </div>
+                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                            </div>
+                            <div class="reply_one_msg reply_one_msg--right">
+                                پاسخ دادن
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+    
+                        <div class="one_msg_wrapper">
+                            <div class="msg msg__right">
+                                <p class="msg__content">
+                                    Hello World
+                                </p>
+                                <div class="msg__info">
+                                    <div class="msg__info__status">
+                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
+                                    </div>
+                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                            </div>
+                            <div class="reply_one_msg reply_one_msg--right">
+                                پاسخ دادن
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_2')">
+                            <div class="msg msg__left" id="chatapp_msg_2">
+                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
+                                    <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
+                                    <span scholl_msg="chatapp_msg_1">Hello World</span>
+                                </p>
+                                <p class="msg__content">
+                                    Hello World
+                                </p>
+                                <div class="msg__info">
+                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                            </div>
+                            <div class="reply_one_msg reply_one_msg--left" onclick="reply_msg('chatapp_msg_2')">
+                                پاسخ دادن
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+    
+                        <div class="one_msg_wrapper">
+                            <div class="msg msg__left">
+                                <p class="msg__content">
+                                    Hello World
+                                </p>
+                                <div class="msg__info">
+                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                            </div>
+                            <div class="reply_one_msg reply_one_msg--left">
+                                پاسخ دادن
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+                    <!-- - messages wrapper -->
+
+                </div>
+            </div>
+
+            <div class="body__inputs">
+                <form novalidate>
+                    <div class="forminput_wrapper">
+                        <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
+
+                        <div class="reply_msg_wrapper d-none">
+                            <button class="close_replybar" type="button">&times;</button>
+                            <div>
+                                <p class="reply__writer"></p>
+                                <p class="reply__content"></p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit_msg_client">
+                            <img src="/site_static/django_chat_app/img/send.png" alt="send image">
+                        </button>
+                    </div>
+                </form>
+
+                <div class="btn_last_msg d-non">
+                    <button>
+                        <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
+                        <div class="unreadmsg_counter">2</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </section>
+
+<script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script>
+</body>
+</html>

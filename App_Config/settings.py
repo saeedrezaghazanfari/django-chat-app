@@ -90,7 +90,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True
 USE_TZ = True
 
@@ -103,9 +103,11 @@ MEDIA_ROOT = Path("static_cdn", "media_root")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ### DJANGO CHAT APP CONFIGS ### #
-# CHATAPP_DIR = 'rtl'
+CHATAPP_DIR = 'ltr'  # rtl - ltr - auto
 CHATAPP_TITLE = 'سعیدرضا غضنفری'
 CHATAPP_SUBTITLE = 'آنلاین'
-# CHATAPP_GAME = True
-# CHATAPP_AUTH = True
-# CHATAPP_AUTHFIELDS = ['first_name', 'last_name', 'email'] # or ['first_name', 'last_name', 'phone']
+CHATAPP_GAME = True
+CHATAPP_AUTHFIELDS = 'email' # phone - email
+CHATAPP_MAX_REPORT_NUMBER=2
+CHATAPP_SHOW_SUPPORTER_NAME=False
+

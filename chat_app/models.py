@@ -1,5 +1,6 @@
+import uuid
 from django.db import models
-from django.contrib.auth import User
+from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 
@@ -24,7 +25,7 @@ class ChatModel(models.Model):
     """ this is a message data between client and supporter """
     CLIENT_SUPPORTER = (('supporter', _('پشتیبان')), ('client', _('کاربر')))
 
-    reply = models.ForeignKey(self, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('پاسخ'))
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('پاسخ'))
     client = models.ForeignKey('UserChatModel', on_delete=models.CASCADE, verbose_name=_('کاربر'))
     supporter = models.ForeignKey(SupporterModel, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('پشتیبان'))
     sender = models.CharField(max_length=255, choices=CLIENT_SUPPORTER, verbose_name=_('ارسال کننده'))
@@ -45,13 +46,13 @@ class ChatModel(models.Model):
 class UserChatModel(models.Model):
     """ create a flag for user for chat to supporter """
 
-    user_chat_id = models.CharField(max_length=255, unique=True, verbose_name=_('آیدی چت کاربر'))
+    user_chat_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
     first_name = models.CharField(max_length=255, verbose_name=_('نام'))
     last_name = models.CharField(max_length=255, verbose_name=_('نام خانوادگی'))
     email = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('ایمیل'))
     phone = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('شماره تماس'))
     is_blocked = models.BooleanField(default=False, verbose_name=_('آیا مسدود شده است؟'))
-    report_numbers = models.IntegerField(verbose_name=_('تعداد گزارش ها'))
+    report_numbers = models.IntegerField(default=0, verbose_name=_('تعداد گزارش ها'))
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -60,7 +61,7 @@ class UserChatModel(models.Model):
         verbose_name_plural = _('اطلاعات کاربران')
     
     def __str__(self):
-        return self.user_chat_id
+        return str(self.user_chat_id)
 
 
 class ReadyChatModel(models.Model):
