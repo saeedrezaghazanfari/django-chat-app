@@ -16,7 +16,7 @@
 
     <section class="chatapp" id="chatapp">
 
-        <div class="chatapp__btn">
+        <div class="chatapp__btn" @click="open_close_box">
             <div>
                 <img src="site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
                 <div id="alert_msg_ctx" class="d-none"></div>
@@ -34,20 +34,20 @@
                         </div>
                     </div>
                     <div class="header__options">
-                        <button class="close__msgbox"><img src="site_static/django_chat_app/img/close.png" alt="close chat application"></button>
+                        <button class="close__msgbox" @click="open_close_box"><img src="site_static/django_chat_app/img/close.png" alt="close chat application"></button>
                     </div>
                 </div>
             </div>
 
             <div class="msg__body">        
-                <div class="body__wrapper" onclick="aaa()">
+                <div class="body__wrapper" @click="aaa">
 
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper d-none">
 
-                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_1')">
+                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_1')">
                             <div class="msg msg__right" id="chatapp_msg_1">
-                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
+                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2" @click="msg_replied">
                                     <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
                                     <span scholl_msg="chatapp_msg_2">Hello World</span>
                                 </p>
@@ -61,7 +61,7 @@
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--right" onclick="reply_msg('chatapp_msg_1')">
+                            <div class="reply_one_msg reply_one_msg--right" @click="reply_msg('chatapp_msg_1')">
                                 پاسخ دادن
                             </div>
                         </div>
@@ -103,9 +103,9 @@
                         </div>
                         <div class="clearfix"></div>
     
-                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_2')">
+                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_2')">
                             <div class="msg msg__left" id="chatapp_msg_2">
-                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
+                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1" @click="msg_replied">
                                     <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
                                     <span scholl_msg="chatapp_msg_1">Hello World</span>
                                 </p>
@@ -116,7 +116,7 @@
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--left" onclick="reply_msg('chatapp_msg_2')">
+                            <div class="reply_one_msg reply_one_msg--left" @click="reply_msg('chatapp_msg_2')">
                                 پاسخ دادن
                             </div>
                         </div>
@@ -180,7 +180,7 @@
                             <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
                         </div>
 
-                        <form novalidate>
+                        <form novalidate @submit.prevent="chatapp_submitform">
                             <div class="chatapp_formcontrol">
                                 <input type="text" id="chatapp__fname" autofocus="on" autocomplete="off">
                                 <label for="chatapp__fname">نام</label>
@@ -199,14 +199,14 @@
                             </div>
 
                             <div class="chatapp_button">
-                                <button id="chatapp_submitform" type="button">ارسال</button>
+                                <button id="chatapp_submitform" type="submit">ارسال</button>
                             </div>
                         </form>
                     </div>
                     <!-- - login form -->
 
-                    <div class="btn_last_msg d-none">
-                        <button>
+                    <div class="btn_last_msg">
+                        <button @click="go_to_bottom_of_box">
                             <img src="site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
                             <div class="unreadmsg_counter">2</div>
                         </button>
@@ -219,12 +219,12 @@
                 <form novalidate class="d-none">
                     <div class="forminput_wrapper">
                         <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
-                        <button class="show_game" type="button">
+                        <button class="show_game" type="button" @click="show_game_btn">
                             <img src="site_static/django_chat_app/img/game.png" alt="let's go to game">
                         </button>
 
                         <div class="reply_msg_wrapper d-none">
-                            <button class="close_replybar" type="button">&times;</button>
+                            <button class="close_replybar" type="button" @click="close_replybar">&times;</button>
                             <div>
                                 <p class="reply__writer"></p>
                                 <p class="reply__content"></p>
@@ -236,7 +236,7 @@
                         </button>
                     </div>
                 </form>
-                <div class="goback_chat_btn d-none">
+                <div class="goback_chat_btn d-none" @click="goback_chat_btn">
                     بازگشت به صفحه‌ی چت
                 </div>
             </div>
@@ -249,379 +249,357 @@
 
 <script>
 
+    /* DJANGO CHAT APP package */
+    /* v1.0.0 */
+
     Vue.createApp({
         
         delimiters: [`[[`, `]]`],
         
         data() {
             return {
-                data: 'saeed',
+                // env variables
+                env_dir: '',
+                env_title: '',
+                env_subtitle: '',
+                env_game: '',
+                env_auth_fields: '',
+                env_max_report_number: '',
+                env_show_supporter_name: '',
+                is_set_env: false,
+
+                user_is_logged: false,
+                user_id: '',
             }
         },
 
-        methods: {
-            oncli() {
-                console.log('saeed');
-            },
+        created() {
+            this.set_setting();
         },
+
+        methods: {
+            
+            // encrypt(salt, text) {
+            //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+            //     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
+            //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+            //     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
+            // },
+            // decrypt(salt, encoded) {
+            //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+            //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+            //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
+            // },
+
+            set_setting() {
+
+                if(this.is_set_env)
+                    return;
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/setting/', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+
+                            this.env_dir = response.data.dir;
+                            this.env_title = response.data.title;
+                            this.env_subtitle = response.data.subtitle;
+                            this.env_game = response.data.game;
+                            this.env_auth_fields = response.data.auth_fields;
+                            this.env_max_report_number = response.data.max_report_number;
+                            this.env_show_supporter_name = response.data.show_supporter_name;
+                            this.is_set_env = true;
+
+                            // setting for direction
+                            if(this.env_dir == 'ltr') {
+                                document.querySelector('section.chatapp').classList.add('chatapp__ltr')
+                            } else if(this.env_dir == 'rtl') {
+                                document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
+                            } else if(this.env_dir == 'auto') {
+                                //TODO
+                            }
+
+                            // setting for title and subtitle
+                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
+                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
+
+                            // setting for game
+                            if(!this.env_game)
+                                document.querySelector('.chatapp .body__inputs .show_game').classList.add('d-none');
+
+
+                            // setting for email or phone
+                            if(this.env_auth_fields == 'email')
+                                document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
+                            else if(this.env_auth_fields == 'phone')
+                                document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
+                                
+
+                        } else if(response.status == 401) {
+                            localStorage.removeItem('chatapp_client_id');
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+            },
+
+            aaa() {
+                // let el = document.querySelector('.msg__body');
+                // // let el = document.querySelector('.body__wrapper');
+                // console.log('scrollHeight', el.scrollHeight);
+                // console.log('scrollTop', el.scrollTop);
+                // console.log('offsetHeight', el.offsetHeight);
+            },
+
+            go_to_bottom_of_box() {
+                document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
+            },
+
+            goback_chat_btn() {
+                document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
+                document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.remove('d-none');
+                document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.add('d-none');
+                document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.remove('d-none');
+                document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.add('d-none');
+            },
+
+            show_game_btn() {
+                document.querySelector('section.chatapp .btn_last_msg').classList.add('d-none');
+                document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.add('d-none');
+                document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.remove('d-none');
+                document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.add('d-none');
+                document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.remove('d-none');
+            },
+
+            open_close_box() {
+                if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
+                    document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
+                    setTimeout(() => {
+                        document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
+                        document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__show');
+                    }, 100);
+
+                    /* + search for localstorage */
+                    let stored_userid = localStorage.getItem('chatapp_client_id');
+                    
+                    if (stored_userid) {
+                        
+                        stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
+                        
+                        let formdata = new FormData();
+                        formdata.append('user_id', stored_userid);
+                        
+                        (async () => {
+                            await fetch('/django-chat-app/auth/check/userid/', {
+                                method: "POST",
+                                body: new URLSearchParams(formdata),
+                                headers: {
+                                    "Content-type": "application/x-www-form-urlencoded"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then((response) => {
+                                if(response.status == 200) {
+                                    let data = response.data;
+
+                                    this.user_is_logged = true;
+                                    user_id = stored_userid;
+                                    // this.start_socket();
+
+                                    document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
+                                    document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+
+                                } else if(response.status == 401) {
+                                    localStorage.removeItem('chatapp_client_id');
+                                }
+                            })
+                            .catch(err => {
+                                console.log('ERR: ', err);
+                            });
+                        })();
+
+                    }
+                    else {
+                        document.querySelector('.chatapp__form').classList.remove('d-none');
+                        document.querySelector('section.chatapp .btn_last_msg').classList.add('d-none');
+                    }
+                    /* - search for localstorage */
+
+                    this.go_to_bottom_of_box();
+
+                } else {
+                    document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__show');
+                    document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__hide');
+                    setTimeout(() => {
+                        document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
+                    }, 120);
+                }
+            },
+
+            reply_msg(msgID) {
+                let msgbox = document.getElementById(msgID);
+                let writer = '';
+                let content = document.querySelector(`#${msgID} .msg__content`).innerText;
+
+                if(msgbox.classList.contains('msg__right'))
+                    writer = 'شما';
+                else
+                    writer = 'پشتیبان';
+
+                document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
+            },
+            
+            close_replybar() {
+                document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+            },
+
+            msg_replied(e) {
+                let target = e.target.getAttribute('scholl_msg'); 
+                if(target) {
+                    let target_element = document.getElementById(target);
+                    let initial_bgcolor = '';
+                    
+                    // change background color for message
+                    if(target_element.classList.contains('msg__right')) {
+                        initial_bgcolor = target_element.style.backgroundColor;
+                        target_element.style.backgroundColor = '#1577c6';
+                    } else if (target_element.classList.contains('msg__left')) {
+                        initial_bgcolor = target_element.style.backgroundColor;
+                        target_element.style.backgroundColor = '#c2c2c2';
+                    }
+                    setTimeout(() => {
+                        target_element.style.backgroundColor = initial_bgcolor;
+                    }, 500);
+                    // scroll to message
+                    target_element.scrollIntoView({ behavior: "smooth", block: "end"});
+                }
+            },
+        
+            chatapp_submitform() {
+
+                let fname = document.getElementById('chatapp__fname');
+                let lname = document.getElementById('chatapp__lname');
+                let email_phone;
+                if (document.getElementById('chatapp__email'))
+                    email_phone = document.getElementById('chatapp__email');
+                else if (document.getElementById('chatapp__phone'))
+                    email_phone = document.getElementById('chatapp__phone');
+
+                // if(!fname.value && ) {
+                //     return;
+                // }
+                
+                // if(!lname.value && ) {
+                //     return;
+                // }
+                
+                // if(!email_phone.value && ) {
+                //     return;
+                // }
+
+                let formdata = new FormData();
+                formdata.append('fname', fname.value);
+                formdata.append('lname', lname.value);
+                formdata.append('email_phone', email_phone.value);
+
+                (async () => {
+                    await fetch('/django-chat-app/auth/create/userid/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then( (response) => {
+                        if(response.status == 200) {
+                            let user_chat_id = response.data[0].user_chat_id;
+                            localStorage.setItem(
+                                'chatapp_client_id', JSON.stringify(user_chat_id)
+                            );
+
+                            document.querySelector('.chatapp__form').classList.add('d-none');
+                            document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
+                            document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
+                            document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR', err);
+                    });
+                })();
+            },
+
+            start_socket() {
+
+                let username = this.user_id;
+                let socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
+
+                socket.onmessage = function(e) {
+                    let message = JSON.parse(e.data);
+
+                    $('.chatapp .all__msg__wrapper').prepend(`
+                        <div class="media mb-2">
+                            <div class="media-body">
+                                <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
+                                ${message['text']}
+                            </div>
+                        </div>
+                    `);
+                };
+
+                socket.onclose = function(e) {
+                    console.error('Socket closed unexpectedly');
+                };
+
+                // document.querySelector('#msg-input').focus();
+                document.querySelector('#msg-input').onkeyup = function(e) {
+                    if (e.keyCode === 13) {  // enter, return
+                        document.querySelector('#msg-submit').click();
+                    }
+                };
+
+                document.querySelector('#msg-submit').onclick = function(e) {
+                    let username = document.querySelector('#username-input').value;
+
+                    let messageInputDom = document.querySelector('#msg-input');
+                    let message = messageInputDom.value;
+
+                    $('#messages-list').prepend(`
+                        <div class="media mb-2">
+                        <div class="media-body">
+                            <h6 class="mt-0"><strong>You</strong></h6>
+                            MESSAGE
+                        </div>
+                        </div>
+                    `.replace('MESSAGE', message));
+
+                    socket.send(JSON.stringify({'sender': username, 'receiver': username, 'text': message}));
+
+                    messageInputDom.value = '';
+                };
+            },
+            
+        },
+        // another objects
 
     }).mount('#chatapp');
 
 </script>
 
-<!-- <script>
-
-// encrypt = (salt, text) => {
-//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-//     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
-//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-//     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
-// };
-// decrypt = (salt, encoded) => {
-//     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-//     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-//     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
-// };
-
-/* DJANGO CHAT APP package */
-/* v1.0.0 */
-
-let env_dir;
-let env_title;
-let env_subtitle;
-let env_game;
-let env_auth_fields;
-let env_max_report_number;
-let env_show_supporter_name;
-let is_set_env = false; 
-
-let user_is_logged = false;
-let user_id = '';
-
-set_setting = () => {
-
-    if(is_set_env)
-        return;
-
-    (async () => {
-        await fetch('/django-chat-app/chat/setting/', {
-            method: "POST",
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded"
-            }
-        })
-        .then(response => response.json())
-        .then((response) => {
-            if(response.status == 200) {
-
-                env_dir = response.data.dir;
-                env_title = response.data.title;
-                env_subtitle = response.data.subtitle;
-                env_game = response.data.game;
-                env_auth_fields = response.data.auth_fields;
-                env_max_report_number = response.data.max_report_number;
-                env_show_supporter_name = response.data.show_supporter_name;
-                is_set_env = true;
-
-                // setting for direction
-                if(env_dir == 'ltr') {
-                    document.querySelector('section.chatapp').classList.add('chatapp__ltr')
-                } else if(env_dir == 'rtl') {
-                    document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
-                } else if(env_dir == 'auto') {
-                    //TODO
-                }
-
-                // setting for title and subtitle
-                document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = env_title;
-                document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = env_subtitle;
-
-                // setting for game
-                if(!env_game)
-                    document.querySelector('.chatapp .body__inputs .show_game').classList.add('d-none');
-
-
-                // setting for email or phone
-                if(env_auth_fields == 'email')
-                    document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
-                else if(env_auth_fields == 'phone')
-                    document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
-                    
-
-            } else if(response.status == 401) {
-                localStorage.removeItem('chatapp_client_id');
-            }
-        })
-        .catch(err => {
-            console.log('ERR: ', err);
-        });
-    })();
-}
-
-// set settings
-set_setting();
-
-
-document.querySelector('section.chatapp .chatapp__btn').addEventListener(
-    'click', () => open_close_box()
-);
-document.querySelector('section.chatapp .header__options button.close__msgbox').addEventListener(
-    'click', () => open_close_box()
-);
-document.querySelector('section.chatapp .msg__body .body__wrapper .btn_last_msg button').addEventListener(
-    'click', () => go_to_bottom_of_box()
-);
-document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').addEventListener(
-    'click', () => {
-        document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.remove('d-none');
-        document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.add('d-none');
-        document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.remove('d-none');
-        document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.add('d-none');
-    }
-)
-document.querySelector('section.chatapp .chatapp__msg .body__inputs form div button.show_game').addEventListener(
-    'click', () => {
-        document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.add('d-none');
-        document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.remove('d-none');
-        document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.add('d-none');
-        document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.remove('d-none');
-    }
-)
-
-go_to_bottom_of_box = () => {
-    document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
-}
-
-function aaa() {
-    // let el = document.querySelector('.msg__body');
-    // // let el = document.querySelector('.body__wrapper');
-    // console.log('scrollHeight', el.scrollHeight);
-    // console.log('scrollTop', el.scrollTop);
-    // console.log('offsetHeight', el.offsetHeight);
-}
-
-// reply a msg
-reply_msg = (msgID) => {
-    let msgbox = document.getElementById(msgID);
-    let writer = '';
-    let content = document.querySelector(`#${msgID} .msg__content`).innerText;
-
-    if(msgbox.classList.contains('msg__right'))
-        writer = 'شما';
-    else
-        writer = 'پشتیبان';
-
-    document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
-    document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
-    document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
-}
-
-// close the reply bar
-document.querySelector('.body__inputs .reply_msg_wrapper .close_replybar').addEventListener(
-    'click', () => {
-        document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
-        document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
-        document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
-    }
-)
-
-// show message of a reply
-document.querySelectorAll('.msg__replied').forEach(msg => {
-    msg.addEventListener(
-        'click', (e) => {
-            let target = e.target.getAttribute('scholl_msg'); 
-            if(target) {
-                let target_element = document.getElementById(target);
-                let initial_bgcolor = '';
-                
-                // change background color for message
-                if(target_element.classList.contains('msg__right')) {
-                    initial_bgcolor = target_element.style.backgroundColor;
-                    target_element.style.backgroundColor = '#1577c6';
-                } else if (target_element.classList.contains('msg__left')) {
-                    initial_bgcolor = target_element.style.backgroundColor;
-                    target_element.style.backgroundColor = '#c2c2c2';
-                }
-                setTimeout(() => {
-                    target_element.style.backgroundColor = initial_bgcolor;
-                }, 500);
-                // scroll to message
-                target_element.scrollIntoView({ behavior: "smooth", block: "end"});
-            }
-        }
-    )
-});
-
-open_close_box = () => {
-    if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
-        document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
-        setTimeout(() => {
-            document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
-            document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__show');
-        }, 100);
-
-        /* + search for localstorage */
-        let stored_userid = localStorage.getItem('chatapp_client_id');
-        stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
-        
-        if (stored_userid) {
-
-            let formdata = new FormData();
-            formdata.append('user_id', stored_userid);
-            
-            (async () => {
-                await fetch('/django-chat-app/auth/check/userid/', {
-                    method: "POST",
-                    body: new URLSearchParams(formdata),
-                    headers: {
-                        "Content-type": "application/x-www-form-urlencoded"
-                    }
-                })
-                .then(response => response.json())
-                .then((response) => {
-                    if(response.status == 200) {
-                        let data = response.data;
-
-                        user_is_logged = true;
-                        user_id = stored_userid;
-                        // start_socket();
-
-                        document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
-                        document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
-
-                    } else if(response.status == 401) {
-                        localStorage.removeItem('chatapp_client_id');
-                    }
-                })
-                .catch(err => {
-                    console.log('ERR: ', err);
-                });
-            })();
-
-        }
-        else {
-            document.querySelector('.chatapp__form').classList.remove('d-none');
-        }
-        /* - search for localstorage */
-
-        go_to_bottom_of_box();
-    } else {
-        document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__show');
-        document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__hide');
-        setTimeout(() => {
-            document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
-        }, 120);
-    }
-}
-
-// submit information form to backend and get chat id and save to localstorage
-document.querySelector('#chatapp_submitform').addEventListener('click', () => {
-
-    let fname = document.getElementById('chatapp__fname');
-    let lname = document.getElementById('chatapp__lname');
-    let email_phone;
-    if (document.getElementById('chatapp__email'))
-        email_phone = document.getElementById('chatapp__email');
-    else if (document.getElementById('chatapp__phone'))
-        email_phone = document.getElementById('chatapp__phone');
-
-    // if(!fname.value && ) {
-    //     return;
-    // }
-    
-    // if(!lname.value && ) {
-    //     return;
-    // }
-    
-    // if(!email_phone.value && ) {
-    //     return;
-    // }
-
-    let formdata = new FormData();
-    formdata.append('fname', fname.value);
-    formdata.append('lname', lname.value);
-    formdata.append('email_phone', email_phone.value);
-
-    (async () => {
-        await fetch('/django-chat-app/auth/create/userid/', {
-            method: "POST",
-            body: new URLSearchParams(formdata),
-            headers: {
-                "Content-type": "application/x-www-form-urlencoded"
-            }
-        })
-        .then(response => response.json())
-        .then( (response) => {
-            if(response.status == 200) {
-                let user_chat_id = response.data[0].user_chat_id;
-                localStorage.setItem(
-                    'chatapp_client_id', JSON.stringify(user_chat_id)
-                );
-
-                document.querySelector('.chatapp__form').classList.add('d-none');
-                document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
-                document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
-            }
-        })
-        .catch(err => {
-            console.log('ERR', err);
-        });
-    })();
-
-});
-
-// start of socket
-start_socket = () => {
-
-    let username = user_id;
-    let socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
-    
-    socket.onmessage = function(e) {
-        let message = JSON.parse(e.data);
-
-        $('.chatapp .all__msg__wrapper').prepend(`
-            <div class="media mb-2">
-                <div class="media-body">
-                    <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
-                    ${message['text']}
-                </div>
-            </div>
-        `);
-    };
-    
-    socket.onclose = function(e) {
-        console.error('Socket closed unexpectedly');
-    };
-    
-    // document.querySelector('#msg-input').focus();
-    document.querySelector('#msg-input').onkeyup = function(e) {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#msg-submit').click();
-        }
-    };
-    
-    document.querySelector('#msg-submit').onclick = function(e) {
-        let username = document.querySelector('#username-input').value;
-    
-        let messageInputDom = document.querySelector('#msg-input');
-        let message = messageInputDom.value;
-    
-        $('#messages-list').prepend(`
-            <div class="media mb-2">
-            <div class="media-body">
-                <h6 class="mt-0"><strong>You</strong></h6>
-                MESSAGE
-            </div>
-            </div>
-        `.replace('MESSAGE', message));
-    
-        socket.send(JSON.stringify({'sender': username, 'receiver': username, 'text': message}));
-    
-        messageInputDom.value = '';
-    };
-}
-// end of socket
-
+<script>
 
 /* Tic-Toc-Toe Game */
 // Computer X .:. Human O
@@ -989,11 +967,7 @@ document.getElementById('restart__game').addEventListener('click', ()=> {
 });
 
 
-
-
-
-
-</script> -->
+</script>
 
 </body>
 </html>
