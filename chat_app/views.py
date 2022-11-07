@@ -22,9 +22,14 @@ def check_userid(request):
     if request.method == 'POST':
 
         userid = request.POST.get('user_id')
+        print(userid)
+        print(userid)
+        print(userid)
+        print(userid)
+        print(userid)
         
         # send 10 msg from db to client
-        if userid and UserChatModel.objects.filter(user_chat_id=userid).exists():
+        if userid and UserChatModel.objects.filter(user_chat_uid=userid).exists():
 
             setting_dict = {}
             setting_dict['dir'] = settings.CHATAPP_DIR
@@ -35,7 +40,7 @@ def check_userid(request):
             setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
             setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
 
-            client = UserChatModel.objects.get(user_chat_id=userid)
+            client = UserChatModel.objects.get(user_chat_uid=userid)
 
             chats = ChatModel.objects.filter(client=client).all()[:10]
             chats = list(
@@ -64,13 +69,7 @@ def create_userid(request):
 
         user_chat_model.save()
 
-        user_chatid = list(
-            UserChatModel.objects.filter(
-                user_chat_id=user_chat_model.user_chat_id
-            ).values('user_chat_id')
-        )
-
-        return JsonResponse({'data': user_chatid, 'status': 200})
+        return JsonResponse({'data': str(user_chat_model.user_chat_uid), 'status': 200})
     return JsonResponse({'status': 400})
 
 

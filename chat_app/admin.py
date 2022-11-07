@@ -8,7 +8,7 @@ from .models import (
 
 
 class SupporterModel_Admin(admin.ModelAdmin):
-    list_display = ['user', 'score', 'is_active']
+    list_display = ['user', 'supporter_uid', 'score', 'is_active']
     search_field = ['score']
     ordering = ['-id']
 
@@ -20,8 +20,8 @@ class ChatModel_Admin(admin.ModelAdmin):
 
     
 class UserChatModel_Admin(admin.ModelAdmin):
-    list_display = ['user_chat_id', 'created', 'is_blocked']
-    search_field = ['user_chat_id', 'email', 'phone', 'is_blocked']
+    list_display = ['user_chat_uid', 'created', 'is_blocked']
+    search_field = ['user_chat_uid', 'email', 'phone', 'is_blocked']
     ordering = ['-id']
 
     

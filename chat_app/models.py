@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 class SupporterModel(models.Model):
     """ for creating a list of supporter for your website """
 
+    supporter_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی پشتیبان'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('کاربر'))
     score = models.IntegerField(verbose_name=_('امتیاز'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال / غیرفعال'))
@@ -18,7 +19,7 @@ class SupporterModel(models.Model):
         verbose_name_plural = _('پشتیبان ها')
     
     def __str__(self):
-        return self.user
+        return 'self.user'
 
 
 class ChatModel(models.Model):
@@ -46,7 +47,7 @@ class ChatModel(models.Model):
 class UserChatModel(models.Model):
     """ create a flag for user for chat to supporter """
 
-    user_chat_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
+    user_chat_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
     first_name = models.CharField(max_length=255, verbose_name=_('نام'))
     last_name = models.CharField(max_length=255, verbose_name=_('نام خانوادگی'))
     email = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('ایمیل'))
@@ -61,7 +62,7 @@ class UserChatModel(models.Model):
         verbose_name_plural = _('اطلاعات کاربران')
     
     def __str__(self):
-        return str(self.user_chat_id)
+        return str(self.user_chat_uid)
 
 
 class ReadyChatModel(models.Model):

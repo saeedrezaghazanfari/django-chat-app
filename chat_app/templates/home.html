@@ -391,8 +391,10 @@
                     let stored_userid = localStorage.getItem('chatapp_client_id');
                     
                     if (stored_userid) {
+                        console.log(stored_userid);
                         
                         stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
+                        console.log(stored_userid);
                         
                         let formdata = new FormData();
                         formdata.append('user_id', stored_userid);
@@ -411,8 +413,8 @@
                                     let data = response.data;
 
                                     this.user_is_logged = true;
-                                    user_id = stored_userid;
-                                    // this.start_socket();
+                                    this.user_id = stored_userid;
+                                    this.start_socket();
 
                                     document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
                                     document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
@@ -525,7 +527,7 @@
                     .then(response => response.json())
                     .then( (response) => {
                         if(response.status == 200) {
-                            let user_chat_id = response.data[0].user_chat_id;
+                            let user_chat_id = response.data;
                             localStorage.setItem(
                                 'chatapp_client_id', JSON.stringify(user_chat_id)
                             );
@@ -545,6 +547,7 @@
             start_socket() {
 
                 let username = this.user_id;
+
                 let socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
 
                 socket.onmessage = function(e) {
