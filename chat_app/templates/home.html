@@ -216,9 +216,9 @@
             </div>
 
             <div class="body__inputs">
-                <form novalidate class="d-none">
+                <form novalidate class="d-none" @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
-                        <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
+                        <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
                         <button class="show_game" type="button" @click="show_game_btn">
                             <img src="site_static/django_chat_app/img/game.png" alt="let's go to game">
                         </button>
@@ -270,6 +270,9 @@
 
                 user_is_logged: false,
                 user_id: '',
+
+                socket: '',
+                msg_input: '',
             }
         },
 
@@ -285,6 +288,7 @@
             //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
             //     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
             // },
+
             // decrypt(salt, encoded) {
             //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
             //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
@@ -391,10 +395,8 @@
                     let stored_userid = localStorage.getItem('chatapp_client_id');
                     
                     if (stored_userid) {
-                        console.log(stored_userid);
                         
                         stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
-                        console.log(stored_userid);
                         
                         let formdata = new FormData();
                         formdata.append('user_id', stored_userid);
@@ -548,53 +550,43 @@
 
                 let username = this.user_id;
 
-                let socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
+                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
 
-                socket.onmessage = function(e) {
+                this.socket.onmessage = function(e) {
                     let message = JSON.parse(e.data);
 
-                    $('.chatapp .all__msg__wrapper').prepend(`
-                        <div class="media mb-2">
-                            <div class="media-body">
-                                <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
-                                ${message['text']}
-                            </div>
-                        </div>
-                    `);
+                    // $('.chatapp .all__msg__wrapper').prepend(`
+                    //     <div class="media mb-2">
+                    //         <div class="media-body">
+                    //             <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
+                    //             ${message['text']}
+                    //         </div>
+                    //     </div>
+                    // `);
                 };
 
-                socket.onclose = function(e) {
+                this.socket.onclose = function(e) {
                     console.error('Socket closed unexpectedly');
                 };
 
-                // document.querySelector('#msg-input').focus();
-                document.querySelector('#msg-input').onkeyup = function(e) {
-                    if (e.keyCode === 13) {  // enter, return
-                        document.querySelector('#msg-submit').click();
-                    }
-                };
-
-                document.querySelector('#msg-submit').onclick = function(e) {
-                    let username = document.querySelector('#username-input').value;
-
-                    let messageInputDom = document.querySelector('#msg-input');
-                    let message = messageInputDom.value;
-
-                    $('#messages-list').prepend(`
-                        <div class="media mb-2">
-                        <div class="media-body">
-                            <h6 class="mt-0"><strong>You</strong></h6>
-                            MESSAGE
-                        </div>
-                        </div>
-                    `.replace('MESSAGE', message));
-
-                    socket.send(JSON.stringify({'sender': username, 'receiver': username, 'text': message}));
-
-                    messageInputDom.value = '';
-                };
             },
             
+            sned_msg_socket(e) {
+
+                $('#messages-list').prepend(`
+                    <div class="media mb-2">
+                    <div class="media-body">
+                        <h6 class="mt-0"><strong>You</strong></h6>
+                        MESSAGE
+                    </div>
+                    </div>
+                `.replace('MESSAGE', this.msg_input));
+
+                this.socket.send(JSON.stringify({'sender': this.user_id, 'text': this.msg_input}));
+
+                this.msg_input = '';
+            },
+
         },
         // another objects
 

@@ -1,7 +1,7 @@
+import json
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
-import json
-
+from .models import SupporterModel
 
 
 # url: /ws/chat/<str:username>/ 
@@ -26,7 +26,12 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         if text_data:
             text_data_json = json.loads(text_data)
-            username = text_data_json['receiver']
+
+            print(text_data_json)
+
+            # SupporterModel.objects.filter()
+
+            username = text_data_json['sender']
             user_group_name = f"chat_{username}"
             
             async_to_sync(self.channel_layer.group_send)(

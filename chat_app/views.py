@@ -10,7 +10,6 @@ from .models import (
 )
 
 
-
 # url: / 
 def home(request):
     return render(request, 'home.html')
@@ -22,11 +21,6 @@ def check_userid(request):
     if request.method == 'POST':
 
         userid = request.POST.get('user_id')
-        print(userid)
-        print(userid)
-        print(userid)
-        print(userid)
-        print(userid)
         
         # send 10 msg from db to client
         if userid and UserChatModel.objects.filter(user_chat_uid=userid).exists():

@@ -15,10 +15,10 @@
 </head>
 <body>
 
-    <section class="chatapp chatapp__lt">
+    <section class="chatapp" id="chatapp">
             
         <section class="open_navbar">
-            <button>بازکردن منو</button>
+            <button @click="open_sidebar">بازکردن منو</button>
         </section>
 
         <nav class="nav">
@@ -26,7 +26,7 @@
 
                 <div class="nav__header">
                     <h4>پیام های کاربران</h4>
-                    <button>&times;</button>
+                    <button @click="close_sidebar">&times;</button>
                 </div>
 
                 <div class="wrapper__chatboxes">
@@ -70,12 +70,12 @@
                     <div class="header__option">
                         
                         <div class="wrapper_btns">
-                            <button class="btns_base openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
+                            <button class="btns_base openclose_addreadymsg" @click="openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
                             
                             <div class="copybox_section d-none">
                                 <div class="wrapper_close_btn">
-                                    <button class="close_box">&times;</button>
-                                    <button class="goto_add_box">+</button>
+                                    <button class="close_box" @click="close_addcopy_box">&times;</button>
+                                    <button class="goto_add_box" @click="open_add_box">+</button>
                                 </div>
 
                                 <div class="wrapper_boxes">
@@ -106,7 +106,7 @@
 
                             <div class="addbox_section d-none">
                                 <div class="wrapper_close_btn">
-                                    <button class="close_box">&times;</button>
+                                    <button class="close_box" @click="close_addcopy_box">&times;</button>
                                 </div>
                                 <form novalidate>
                                     <input type="text" id="subject-chatinput" autocomplete="off" autofocus placeholder="عنوان متن:">
@@ -118,7 +118,7 @@
                         </div>
 
                         <div class="wrapper_btns">
-                            <button class="btns_base openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
+                            <button class="btns_base openclose_copyreadymsg" @click="openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
                         </div>
 
                     </div>
@@ -126,14 +126,14 @@
             </div>
 
             <div class="msg__body">        
-                <div class="body__wrapper" onclick="aaa()">
+                <div class="body__wrapper" @click="aaa">
 
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper">
 
-                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_1')">
+                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_1')">
                             <div class="msg msg__right" id="chatapp_msg_1">
-                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2">
+                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2" @click="msg_replied">
                                     <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
                                     <span scholl_msg="chatapp_msg_2">Hello World</span>
                                 </p>
@@ -147,7 +147,7 @@
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--right" onclick="reply_msg('chatapp_msg_1')">
+                            <div class="reply_one_msg reply_one_msg--right" @click="reply_msg('chatapp_msg_1')">
                                 پاسخ دادن
                             </div>
                         </div>
@@ -189,9 +189,9 @@
                         </div>
                         <div class="clearfix"></div>
 
-                        <div class="one_msg_wrapper" ondblclick="reply_msg('chatapp_msg_2')">
+                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_2')">
                             <div class="msg msg__left" id="chatapp_msg_2">
-                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1">
+                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1" @click="msg_replied">
                                     <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
                                     <span scholl_msg="chatapp_msg_1">Hello World</span>
                                 </p>
@@ -202,7 +202,7 @@
                                     <div class="msg__info__clock">14:48</div>
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--left" onclick="reply_msg('chatapp_msg_2')">
+                            <div class="reply_one_msg reply_one_msg--left" @click="reply_msg('chatapp_msg_2')">
                                 پاسخ دادن
                             </div>
                         </div>
@@ -230,12 +230,12 @@
             </div>
 
             <div class="body__inputs">
-                <form novalidate>
+                <form novalidate @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
-                        <input type="text" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
+                        <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
 
                         <div class="reply_msg_wrapper d-none">
-                            <button class="close_replybar" type="button">&times;</button>
+                            <button class="close_replybar" type="button" @click="close_replybar">&times;</button>
                             <div>
                                 <p class="reply__writer"></p>
                                 <p class="reply__content"></p>
@@ -248,8 +248,8 @@
                     </div>
                 </form>
 
-                <div class="btn_last_msg d-non">
-                    <button>
+                <div class="btn_last_msg" @click="go_to_bottom_of_box">
+                    <button @click="go_to_bottom_of_box">
                         <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
                         <div class="unreadmsg_counter">2</div>
                     </button>
@@ -262,6 +262,251 @@
 
     </section>
 
-<script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script>
+<!-- <script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script> -->
+<script type="text/javascript" src="/site_static/django_chat_app/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/site_static/django_chat_app/js/vue3.js"></script>
+
+<script>
+
+    /* DJANGO CHAT APP package */
+    /* v1.0.0 */
+
+    Vue.createApp({
+        
+        delimiters: [`[[`, `]]`],
+        
+        data() {
+            return {
+                // env variables
+                env_dir: '',
+                env_title: '',
+                env_subtitle: '',
+                env_show_supporter_name: '',
+                is_set_env: false,
+
+                user_id: '',
+
+                socket: '',
+                msg_input: '',
+            }
+        },
+
+        created() {
+            this.set_setting();
+            this.start_socket();
+        },
+
+        methods: {
+            
+            // encrypt(salt, text) {
+            //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+            //     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
+            //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+            //     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
+            // },
+
+            // decrypt(salt, encoded) {
+            //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
+            //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
+            //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
+            // },
+
+            set_setting() {
+
+                if(this.is_set_env)
+                    return;
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/setting/', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+
+                            this.env_dir = response.data.dir;
+                            this.env_title = response.data.title;
+                            this.env_subtitle = response.data.subtitle;
+                            this.env_show_supporter_name = response.data.show_supporter_name;
+                            this.is_set_env = true;
+
+                            // setting for direction
+                            if(this.env_dir == 'ltr') {
+                                document.querySelector('section.chatapp').classList.add('chatapp__ltr')
+                            } else if(this.env_dir == 'rtl') {
+                                document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
+                            } else if(this.env_dir == 'auto') {
+                                //TODO
+                            }
+
+                            // setting for title and subtitle
+                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
+                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
+
+                            // setting for email or phone
+                            if(this.env_auth_fields == 'email')
+                                document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
+                            else if(this.env_auth_fields == 'phone')
+                                document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
+                                
+
+                        } else if(response.status == 401) {
+                            localStorage.removeItem('chatapp_client_id');
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+            },
+
+            aaa() {
+                // let el = document.querySelector('.msg__body');
+                // // let el = document.querySelector('.body__wrapper');
+                // console.log('scrollHeight', el.scrollHeight);
+                // console.log('scrollTop', el.scrollTop);
+                // console.log('offsetHeight', el.offsetHeight);
+            },
+
+            go_to_bottom_of_box() {
+                document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
+            },
+
+            reply_msg(msgID) {
+                let msgbox = document.getElementById(msgID);
+                let writer = '';
+                let content = document.querySelector(`#${msgID} .msg__content`).innerText;
+
+                if(msgbox.classList.contains('msg__right'))
+                    writer = 'شما';
+                else
+                    writer = 'پشتیبان';
+
+                document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
+            },
+            
+            close_replybar() {
+                document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+            },
+
+            msg_replied(e) {
+                let target = e.target.getAttribute('scholl_msg'); 
+                if(target) {
+                    let target_element = document.getElementById(target);
+                    let initial_bgcolor = '';
+                    
+                    // change background color for message
+                    if(target_element.classList.contains('msg__right')) {
+                        initial_bgcolor = target_element.style.backgroundColor;
+                        target_element.style.backgroundColor = '#1577c6';
+                    } else if (target_element.classList.contains('msg__left')) {
+                        initial_bgcolor = target_element.style.backgroundColor;
+                        target_element.style.backgroundColor = '#c2c2c2';
+                    }
+                    setTimeout(() => {
+                        target_element.style.backgroundColor = initial_bgcolor;
+                    }, 500);
+                    // scroll to message
+                    target_element.scrollIntoView({ behavior: "smooth", block: "end"});
+                }
+            },
+
+            start_socket() {
+
+                let username = this.user_id;
+
+                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
+
+                this.socket.onmessage = function(e) {
+                    let message = JSON.parse(e.data);
+
+                    // $('.chatapp .all__msg__wrapper').prepend(`
+                    //     <div class="media mb-2">
+                    //         <div class="media-body">
+                    //             <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
+                    //             ${message['text']}
+                    //         </div>
+                    //     </div>
+                    // `);
+                };
+
+                this.socket.onclose = function(e) {
+                    console.error('Socket closed unexpectedly');
+                };
+
+            },
+            
+            sned_msg_socket(e) {
+
+                $('#messages-list').prepend(`
+                    <div class="media mb-2">
+                    <div class="media-body">
+                        <h6 class="mt-0"><strong>You</strong></h6>
+                        MESSAGE
+                    </div>
+                    </div>
+                `.replace('MESSAGE', this.msg_input));
+
+                this.socket.send(JSON.stringify({'sender': this.user_id, 'text': this.msg_input}));
+
+                this.msg_input = '';
+            },
+
+            close_sidebar() {
+                document.querySelector('.nav').style.transform = 'translateX(500px)';
+                setTimeout(()=>{
+                    document.querySelector('.nav').style.display = 'none';
+                }, 200);
+            },
+
+            open_sidebar() {
+                document.querySelector('.nav').style.display = 'block';
+                setTimeout(()=>{
+                    document.querySelector('.nav').style.transform = 'translateX(0px)';
+                }, 1)
+            },
+
+            openclose_addreadymsg() {
+                if(document.querySelector('.addbox_section').classList.contains('d-none')) {
+                    document.querySelector('.copybox_section').classList.add('d-none');
+                    document.querySelector('.addbox_section').classList.remove('d-none');
+                } else {
+                    document.querySelector('.copybox_section').classList.add('d-none');
+                    document.querySelector('.addbox_section').classList.add('d-none');
+                }
+            },
+            
+            openclose_copyreadymsg() {
+                if(document.querySelector('.copybox_section').classList.contains('d-none')) {
+                    document.querySelector('.addbox_section').classList.add('d-none');
+                    document.querySelector('.copybox_section').classList.remove('d-none');
+                }else {
+                    document.querySelector('.addbox_section').classList.add('d-none');
+                    document.querySelector('.copybox_section').classList.add('d-none');
+                }
+            },
+
+            close_addcopy_box() {
+                document.querySelector('.addbox_section').classList.add('d-none');
+                document.querySelector('.copybox_section').classList.add('d-none');
+            },
+
+            open_add_box() {
+                document.querySelector('.copybox_section').classList.add('d-none');
+                document.querySelector('.addbox_section').classList.remove('d-none');
+            },
+
+        },
+
+    }).mount('#chatapp');
+
+</script>
 </body>
 </html>
