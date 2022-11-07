@@ -16,7 +16,9 @@
 <body>
 
     <section class="chatapp" id="chatapp">
-            
+        
+        <p class="d-none" id="supporter_uid">{{ supporter_uid }}</p>
+
         <section class="open_navbar">
             <button @click="open_sidebar">بازکردن منو</button>
         </section>
@@ -284,7 +286,8 @@
                 env_show_supporter_name: '',
                 is_set_env: false,
 
-                user_id: '',
+                client_id: 'a7873152-1456-438c-a0a0-10a3f18460ae',
+                supporter_uid: '',
 
                 socket: '',
                 msg_input: '',
@@ -293,6 +296,10 @@
 
         created() {
             this.set_setting();
+        },
+
+        mounted() {
+            this.supporter_uid = document.getElementById('supporter_uid').innerText;
             this.start_socket();
         },
 
@@ -353,8 +360,6 @@
                                 document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
                                 
 
-                        } else if(response.status == 401) {
-                            localStorage.removeItem('chatapp_client_id');
                         }
                     })
                     .catch(err => {
@@ -420,12 +425,11 @@
 
             start_socket() {
 
-                let username = this.user_id;
-
-                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
+                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + this.supporter_uid + '/supporter/');
 
                 this.socket.onmessage = function(e) {
                     let message = JSON.parse(e.data);
+                    console.log(message);
 
                     // $('.chatapp .all__msg__wrapper').prepend(`
                     //     <div class="media mb-2">
@@ -454,7 +458,16 @@
                     </div>
                 `.replace('MESSAGE', this.msg_input));
 
-                this.socket.send(JSON.stringify({'sender': this.user_id, 'text': this.msg_input}));
+                this.socket.send(JSON.stringify({
+                    'id': 0,
+                    'sender_type': 'supporter', 
+                    'receiver_id': this.client_id, 
+                    'reply_title': '', 
+                    'reply_msg': '', 
+                    'is_seen': 0,
+                    'created': '',
+                    'text': this.msg_input
+                }));
 
                 this.msg_input = '';
             },

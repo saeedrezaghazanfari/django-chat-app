@@ -14,7 +14,7 @@ class SupporterModel_Admin(admin.ModelAdmin):
 
     
 class ChatModel_Admin(admin.ModelAdmin):
-    list_display = ['client', 'supporter', 'sender', 'is_seen']
+    list_display = ['id', 'client', 'supporter', 'sender', 'is_seen']
     search_field = ['supporter']
     ordering = ['-id']
 

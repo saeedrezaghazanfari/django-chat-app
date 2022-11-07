@@ -1,10 +1,13 @@
 import json
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
 from .models import (
+    SupporterModel,
     UserChatModel,
     ChatModel,
 )
@@ -36,13 +39,34 @@ def check_userid(request):
 
             client = UserChatModel.objects.get(user_chat_uid=userid)
 
-            chats = ChatModel.objects.filter(client=client).all()[:10]
-            chats = list(
-                chats.values(
-                    'reply', 'client', 'supporter', 'sender', 'msg', 'is_send', 'is_seen', 'created'
-                )
-            )
-            return JsonResponse({'data': chats, 'setting': setting_dict, 'status': 200})
+            chats = ChatModel.objects.filter(client=client).order_by('id')[:10]
+            chats_arr = []
+
+            for item in chats:
+                if item.reply:
+                    chats_arr.append({
+                        'id': item.id,
+                        'sender_type': item.sender,
+                        'receiver_id': '',
+                        'reply_title': item.reply.sender,
+                        'reply_msg': item.reply.msg,
+                        'is_seen': item.is_seen,
+                        'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                        'text': item.msg
+                    })
+                else:
+                    chats_arr.append({
+                        'id': item.id,
+                        'sender_type': item.sender,
+                        'receiver_id': '',
+                        'reply_title': '',
+                        'reply_msg': '',
+                        'is_seen': item.is_seen,
+                        'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                        'text': item.msg
+                    })
+
+            return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
         return JsonResponse({'status': 401})
     return JsonResponse({'status': 400})
 
@@ -87,9 +111,18 @@ def setting_chat(request):
 
 
 # url: /django-chat-app/chat/supporter/
+@login_required
 def supporter_homepage(request):
-    return render(request, 'supporter.html')
 
+    if SupporterModel.objects.filter(user__username=request.user.username).exists():
+        
+        supporter_uid = SupporterModel.objects.get(user=request.user)
+
+        return render(request, 'supporter.html', {
+            'supporter_uid': supporter_uid.supporter_uid
+        })
+    return HttpResponse('You are not a supporter!')
+    
 
 # url: /join-chat/<str:username>
 def join_chat(request, username):

@@ -1,3 +1,4 @@
+from hashlib import blake2b
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
@@ -19,7 +20,7 @@ class SupporterModel(models.Model):
         verbose_name_plural = _('پشتیبان ها')
     
     def __str__(self):
-        return 'self.user'
+        return str(self.supporter_uid)
 
 
 class ChatModel(models.Model):
@@ -31,7 +32,6 @@ class ChatModel(models.Model):
     supporter = models.ForeignKey(SupporterModel, blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('پشتیبان'))
     sender = models.CharField(max_length=255, choices=CLIENT_SUPPORTER, verbose_name=_('ارسال کننده'))
     msg = models.TextField(verbose_name=_('متن پیام'))
-    is_send = models.BooleanField(default=False, verbose_name=_('آیا این پیام ارسال شده است؟'))
     is_seen = models.BooleanField(default=False, verbose_name=_('آیا این پیام دیده شده است؟'))
     created = models.DateTimeField(auto_now_add=True)
     
@@ -48,6 +48,7 @@ class UserChatModel(models.Model):
     """ create a flag for user for chat to supporter """
 
     user_chat_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
+    have_supporter = models.ForeignKey(SupporterModel, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('آیا پشتیبان دارد؟'))
     first_name = models.CharField(max_length=255, verbose_name=_('نام'))
     last_name = models.CharField(max_length=255, verbose_name=_('نام خانوادگی'))
     email = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('ایمیل'))

@@ -45,97 +45,31 @@
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper d-none">
 
-                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_1')">
-                            <div class="msg msg__right" id="chatapp_msg_1">
-                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2" @click="msg_replied">
-                                    <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
-                                    <span scholl_msg="chatapp_msg_2">Hello World</span>
-                                </p>
-                                <p class="msg__content">
-                                    Hello Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, obcaecati?
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="site_static/django_chat_app/img/double-check.png" alt="single check status">
+                        <template v-for="msg_item in message_list" :key="msg_item">
+                            <div  class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`)">
+                                <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" :scholl_msg="'chatapp_msg_' + msg_item.reply" @click="msg_replied">
+                                        <span :scholl_msg="'chatapp_msg_' + msg_item.reply">[[ msg_item.reply_title ]]</span>
+                                        <span :scholl_msg="'chatapp_msg_' + msg_item.reply">[[ msg_item.reply_msg ]]</span>
+                                    </p>
+                                    <p class="msg__content">
+                                        [[ msg_item.text ]]
+                                    </p>
+                                    <div class="msg__info">
+                                        <div class="msg__info__status">
+                                            <img v-if="msg_item.is_seen" src="site_static/django_chat_app/img/double-check.png" alt="double check status">
+                                            <img v-else src="site_static/django_chat_app/img/single-check.png" alt="single check status">
+                                        </div>
+                                        <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                     </div>
-                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                                <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`)">
+                                    پاسخ دادن
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--right" @click="reply_msg('chatapp_msg_1')">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
+                            <div class="clearfix"></div>
+                        </template>
     
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__right">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="site_static/django_chat_app/img/double-check.png" alt="single check status">
-                                    </div>
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--right">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__right">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="site_static/django_chat_app/img/double-check.png" alt="single check status">
-                                    </div>
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--right">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_2')">
-                            <div class="msg msg__left" id="chatapp_msg_2">
-                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1" @click="msg_replied">
-                                    <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
-                                    <span scholl_msg="chatapp_msg_1">Hello World</span>
-                                </p>
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--left" @click="reply_msg('chatapp_msg_2')">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__left">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--left">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
                     </div>
                     <!-- - messages wrapper -->
 
@@ -270,9 +204,12 @@
 
                 user_is_logged: false,
                 user_id: '',
+                supporter_id: '',
 
                 socket: '',
                 msg_input: '',
+
+                message_list: [],
             }
         },
 
@@ -412,8 +349,8 @@
                             .then(response => response.json())
                             .then((response) => {
                                 if(response.status == 200) {
-                                    let data = response.data;
 
+                                    this.message_list = response.data;
                                     this.user_is_logged = true;
                                     this.user_id = stored_userid;
                                     this.start_socket();
@@ -550,19 +487,13 @@
 
                 let username = this.user_id;
 
-                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/');
-
+                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + username + '/client/');
+                
+                let mythis = this;
                 this.socket.onmessage = function(e) {
                     let message = JSON.parse(e.data);
-
-                    // $('.chatapp .all__msg__wrapper').prepend(`
-                    //     <div class="media mb-2">
-                    //         <div class="media-body">
-                    //             <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
-                    //             ${message['text']}
-                    //         </div>
-                    //     </div>
-                    // `);
+                    console.log(message);
+                    mythis.message_list.push(message);
                 };
 
                 this.socket.onclose = function(e) {
@@ -582,7 +513,16 @@
                     </div>
                 `.replace('MESSAGE', this.msg_input));
 
-                this.socket.send(JSON.stringify({'sender': this.user_id, 'text': this.msg_input}));
+                this.socket.send(JSON.stringify({
+                    'id': 0,
+                    'sender_type': 'client', 
+                    'receiver_id': this.supporter_id, 
+                    'reply_title': '', 
+                    'reply_msg': '', 
+                    'is_seen': 0,
+                    'created': '',
+                    'text': this.msg_input
+                }));
 
                 this.msg_input = '';
             },
