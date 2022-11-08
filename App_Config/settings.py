@@ -103,11 +103,11 @@ MEDIA_ROOT = Path("static_cdn", "media_root")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ### DJANGO CHAT APP CONFIGS ### #
-CHATAPP_DIR = 'rtl'  # rtl - ltr - auto
+CHATAPP_DIR = 'rtl'              # rtl - ltr - auto
+CHATAPP_SHOW_SUPPORTER_NAME = False
 CHATAPP_TITLE = 'سعیدرضا غضنفری'
 CHATAPP_SUBTITLE = 'آنلاین'
 CHATAPP_GAME = True
-CHATAPP_AUTHFIELDS = 'email' # phone - email
-CHATAPP_MAX_REPORT_NUMBER=2
-CHATAPP_SHOW_SUPPORTER_NAME=False
+CHATAPP_AUTHFIELDS = 'email'     # phone - email
+CHATAPP_MAX_REPORT_NUMBER = 2
 

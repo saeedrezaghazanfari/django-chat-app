@@ -26,7 +26,7 @@ def check_userid(request):
         userid = request.POST.get('user_id')
         
         # send 10 msg from db to client
-        if userid and UserChatModel.objects.filter(user_chat_uid=userid).exists():
+        if userid and UserChatModel.objects.filter(user_chat_uid=userid, is_blocked=False).exists():
 
             setting_dict = {}
             setting_dict['dir'] = settings.CHATAPP_DIR
@@ -37,34 +37,38 @@ def check_userid(request):
             setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
             setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
 
-            client = UserChatModel.objects.get(user_chat_uid=userid)
+            client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
 
             chats = ChatModel.objects.filter(client=client).order_by('id')[:10]
             chats_arr = []
 
             for item in chats:
+
                 if item.reply:
-                    chats_arr.append({
+                    obj = {
                         'id': item.id,
                         'sender_type': item.sender,
-                        'receiver_id': '',
+                        'reply_id': item.reply.id,
                         'reply_title': item.reply.sender,
                         'reply_msg': item.reply.msg,
                         'is_seen': item.is_seen,
                         'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                         'text': item.msg
-                    })
+                    }
+                    chats_arr.append(obj)
+
                 else:
-                    chats_arr.append({
+                    obj = {
                         'id': item.id,
                         'sender_type': item.sender,
-                        'receiver_id': '',
+                        'reply_id': '',
                         'reply_title': '',
                         'reply_msg': '',
                         'is_seen': item.is_seen,
                         'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                         'text': item.msg
-                    })
+                    }
+                    chats_arr.append(obj)
 
             return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
         return JsonResponse({'status': 401})
@@ -78,12 +82,22 @@ def create_userid(request):
 
         fname = request.POST.get('fname')
         lname = request.POST.get('lname')
-        email_phone = request.POST.get('email_phone')
+        email = ''
+        phone = ''
+        if request.POST.get('email'):
+            email = request.POST.get('email')
+        elif request.POST.get('phone'):
+            phone = request.POST.get('phone')
 
         user_chat_model = UserChatModel(
             first_name=fname,
             last_name=lname
         )
+
+        if email:
+            user_chat_model.email = email
+        elif phone:
+            user_chat_model.phone = phone
 
         user_chat_model.save()
 
@@ -114,9 +128,9 @@ def setting_chat(request):
 @login_required
 def supporter_homepage(request):
 
-    if SupporterModel.objects.filter(user__username=request.user.username).exists():
+    if SupporterModel.objects.filter(user__username=request.user.username, is_active=True).exists():
         
-        supporter_uid = SupporterModel.objects.get(user=request.user)
+        supporter_uid = SupporterModel.objects.get(user=request.user, is_active=True)
 
         return render(request, 'supporter.html', {
             'supporter_uid': supporter_uid.supporter_uid

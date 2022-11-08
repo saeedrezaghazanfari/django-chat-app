@@ -45,12 +45,12 @@
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper d-none">
 
-                        <template v-for="msg_item in message_list" :key="msg_item">
-                            <div  class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`)">
+                        <template v-for="msg_item in message_list" :key="msg_item.id">
+                            <div class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                 <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
-                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" :scholl_msg="'chatapp_msg_' + msg_item.reply" @click="msg_replied">
-                                        <span :scholl_msg="'chatapp_msg_' + msg_item.reply">[[ msg_item.reply_title ]]</span>
-                                        <span :scholl_msg="'chatapp_msg_' + msg_item.reply">[[ msg_item.reply_msg ]]</span>
+                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
+                                        <span>[[ msg_item.reply_title == 'client' ? 'شما' : 'پشتیبان' ]]</span>
+                                        <span>[[ msg_item.reply_msg ]]</span>
                                     </p>
                                     <p class="msg__content">
                                         [[ msg_item.text ]]
@@ -63,7 +63,7 @@
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                     </div>
                                 </div>
-                                <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`)">
+                                <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                     پاسخ دادن
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                                 <label for="chatapp__email">ایمیل</label>
                             </div>
                             <div class="chatapp_formcontrol chatapp_control_phone mbnone__chat-app d-none">
-                                <input type="phone" id="chatapp__phone" autocomplete="off">
+                                <input type="number" id="chatapp__phone" autocomplete="off">
                                 <label for="chatapp__phone">شماره تماس</label>
                             </div>
 
@@ -162,6 +162,7 @@
                             <div>
                                 <p class="reply__writer"></p>
                                 <p class="reply__content"></p>
+                                <p class="reply__reply_id d-none"></p>
                             </div>
                         </div>
 
@@ -178,7 +179,7 @@
     </section>
 
 <!-- <script type="text/javascript" src="site_static/django_chat_app/js/custom.js"></script> -->
-<script type="text/javascript" src="site_static/django_chat_app/js/jquery-3.5.1.min.js"></script>
+<!-- <script type="text/javascript" src="site_static/django_chat_app/js/jquery-3.5.1.min.js"></script> -->
 <script type="text/javascript" src="site_static/django_chat_app/js/vue3.js"></script>
 
 <script>
@@ -204,7 +205,6 @@
 
                 user_is_logged: false,
                 user_id: '',
-                supporter_id: '',
 
                 socket: '',
                 msg_input: '',
@@ -249,12 +249,12 @@
                         if(response.status == 200) {
 
                             this.env_dir = response.data.dir;
+                            this.env_show_supporter_name = response.data.show_supporter_name;
                             this.env_title = response.data.title;
                             this.env_subtitle = response.data.subtitle;
                             this.env_game = response.data.game;
                             this.env_auth_fields = response.data.auth_fields;
                             this.env_max_report_number = response.data.max_report_number;
-                            this.env_show_supporter_name = response.data.show_supporter_name;
                             this.is_set_env = true;
 
                             // setting for direction
@@ -274,13 +274,19 @@
                             if(!this.env_game)
                                 document.querySelector('.chatapp .body__inputs .show_game').classList.add('d-none');
 
-
                             // setting for email or phone
                             if(this.env_auth_fields == 'email')
                                 document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
                             else if(this.env_auth_fields == 'phone')
                                 document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
-                                
+
+                            if(this.env_show_supporter_name) {
+                                //TODO
+                            }
+
+                            if(this.env_max_report_number) {
+                                //TODO
+                            }
 
                         } else if(response.status == 401) {
                             localStorage.removeItem('chatapp_client_id');
@@ -322,6 +328,7 @@
 
             open_close_box() {
                 if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
+                    document.querySelector('section.chatapp .body__inputs #text-chatinput').setAttribute('autofocus', 'on');
                     document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
                     setTimeout(() => {
                         document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
@@ -349,7 +356,8 @@
                             .then(response => response.json())
                             .then((response) => {
                                 if(response.status == 200) {
-
+                                    
+                                    this.go_to_bottom_of_box();
                                     this.message_list = response.data;
                                     this.user_is_logged = true;
                                     this.user_id = stored_userid;
@@ -385,46 +393,51 @@
                 }
             },
 
-            reply_msg(msgID) {
-                let msgbox = document.getElementById(msgID);
-                let writer = '';
-                let content = document.querySelector(`#${msgID} .msg__content`).innerText;
+            reply_msg(elementId, msgId) {
+                let msgbox = document.getElementById(elementId);
+                let reply_writer = '';
+                let reply_id = msgId;
+                let reply_content = document.querySelector(`#${elementId} .msg__content`).innerText;
 
                 if(msgbox.classList.contains('msg__right'))
-                    writer = 'شما';
+                    reply_writer = 'شما';
                 else
-                    writer = 'پشتیبان';
+                    reply_writer = 'پشتیبان';
 
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
-                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
-                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = reply_content;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = reply_id;
             },
             
             close_replybar() {
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = '';
             },
 
-            msg_replied(e) {
-                let target = e.target.getAttribute('scholl_msg'); 
+            msg_replied(scholl_msg) {
+                let target = document.getElementById(scholl_msg); 
+
                 if(target) {
-                    let target_element = document.getElementById(target);
                     let initial_bgcolor = '';
-                    
+
                     // change background color for message
-                    if(target_element.classList.contains('msg__right')) {
-                        initial_bgcolor = target_element.style.backgroundColor;
-                        target_element.style.backgroundColor = '#1577c6';
-                    } else if (target_element.classList.contains('msg__left')) {
-                        initial_bgcolor = target_element.style.backgroundColor;
-                        target_element.style.backgroundColor = '#c2c2c2';
+                    if(target.classList.contains('msg__right')) {
+                        initial_bgcolor = target.style.backgroundColor;
+                        target.style.backgroundColor = '#1577c6';
+                    } else if (target.classList.contains('msg__left')) {
+                        initial_bgcolor = target.style.backgroundColor;
+                        target.style.backgroundColor = '#c2c2c2';
                     }
+
                     setTimeout(() => {
-                        target_element.style.backgroundColor = initial_bgcolor;
+                        target.style.backgroundColor = initial_bgcolor;
                     }, 500);
+
                     // scroll to message
-                    target_element.scrollIntoView({ behavior: "smooth", block: "end"});
+                    target.scrollIntoView({ behavior: "smooth", block: "end"});
                 }
             },
         
@@ -433,27 +446,36 @@
                 let fname = document.getElementById('chatapp__fname');
                 let lname = document.getElementById('chatapp__lname');
                 let email_phone;
-                if (document.getElementById('chatapp__email'))
+                if (this.is_set_env && this.env_auth_fields == 'email')
                     email_phone = document.getElementById('chatapp__email');
-                else if (document.getElementById('chatapp__phone'))
+                else if (this.is_set_env && this.env_auth_fields == 'phone')
                     email_phone = document.getElementById('chatapp__phone');
 
-                // if(!fname.value && ) {
-                //     return;
-                // }
+                const email_regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                const phone_regex = /^\d{11,12}$/i;
+                let formdata;
                 
-                // if(!lname.value && ) {
-                //     return;
-                // }
+                if(!fname.value.length >= 1)
+                    return;
                 
-                // if(!email_phone.value && ) {
-                //     return;
-                // }
-
-                let formdata = new FormData();
-                formdata.append('fname', fname.value);
-                formdata.append('lname', lname.value);
-                formdata.append('email_phone', email_phone.value);
+                if(!lname.value.length >= 1)
+                    return;
+                
+                if(email_phone.value.match(email_regex)) {
+                    formdata = new FormData();
+                    formdata.append('fname', fname.value);
+                    formdata.append('lname', lname.value);
+                    formdata.append('email', email_phone.value);
+                    
+                } else if(email_phone.value.match(phone_regex)) {
+                    formdata = new FormData();
+                    formdata.append('fname', fname.value);
+                    formdata.append('lname', lname.value);
+                    formdata.append('phone', email_phone.value);
+                }
+                else {
+                    return;
+                }
 
                 (async () => {
                     await fetch('/django-chat-app/auth/create/userid/', {
@@ -499,30 +521,43 @@
                 this.socket.onclose = function(e) {
                     console.error('Socket closed unexpectedly');
                 };
-
             },
             
             sned_msg_socket(e) {
 
-                $('#messages-list').prepend(`
-                    <div class="media mb-2">
-                    <div class="media-body">
-                        <h6 class="mt-0"><strong>You</strong></h6>
-                        MESSAGE
-                    </div>
-                    </div>
-                `.replace('MESSAGE', this.msg_input));
+                if(!this.msg_input)
+                    return;
 
-                this.socket.send(JSON.stringify({
-                    'id': 0,
-                    'sender_type': 'client', 
-                    'receiver_id': this.supporter_id, 
-                    'reply_title': '', 
-                    'reply_msg': '', 
-                    'is_seen': 0,
-                    'created': '',
-                    'text': this.msg_input
-                }));
+                if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
+                    this.socket.send(JSON.stringify({
+                        'id': 0,
+                        'sender_type': 'client', 
+                        'reply_id': '',
+                        'reply_title': '', 
+                        'reply_msg': '', 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': this.msg_input
+                    }));    
+
+                } else {
+                    let writer = document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText;
+                    let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
+                    let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+
+                    this.socket.send(JSON.stringify({
+                        'id': 0,
+                        'sender_type': 'client', 
+                        'reply_id': reply_id,
+                        'reply_title': this.user_id, 
+                        'reply_msg': content, 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': this.msg_input
+                    }));
+
+                    this.close_replybar();
+                }
 
                 this.msg_input = '';
             },
