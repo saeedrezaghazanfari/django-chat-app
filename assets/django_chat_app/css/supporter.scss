@@ -90,6 +90,13 @@ section.chatapp {
             }
             .wrapper__chatboxes {
                 
+                h4 {
+                    margin: 0;
+                    padding: 0 10px;
+                    font-size: 15px;
+                    margin-bottom: 10px;
+                }
+
                 .chat__box {
                     cursor: pointer;
                     display: flex;

@@ -1,5 +1,4 @@
 import json
-from socket import send_fds
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -45,35 +44,19 @@ def check_userid(request):
 
             for item in chats:
 
-                if item.reply:
-                    obj = {
-                        'id': item.id,
-                        'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
-                        'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
-                        'sender_type': item.sender,
-                        'reply_id': item.reply.id,
-                        'reply_title': item.reply.sender,
-                        'reply_msg': item.reply.msg,
-                        'is_seen': item.is_seen,
-                        'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
-                        'text': item.msg
-                    }
-                    chats_arr.append(obj)
-
-                else:
-                    obj = {
-                        'id': item.id,
-                        'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
-                        'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
-                        'sender_type': item.sender,
-                        'reply_id': '',
-                        'reply_title': '',
-                        'reply_msg': '',
-                        'is_seen': item.is_seen,
-                        'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
-                        'text': item.msg
-                    }
-                    chats_arr.append(obj)
+                obj = {
+                    'id': item.id,
+                    'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                    'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
+                    'sender_type': item.sender,
+                    'reply_id': item.reply.id if item.reply else '',
+                    'reply_title': item.reply.sender if item.reply else '',
+                    'reply_msg': item.reply.msg if item.reply else '',
+                    'is_seen': item.is_seen,
+                    'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                    'text': item.msg
+                }
+                chats_arr.append(obj)
 
             return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
         return JsonResponse({'status': 401})
@@ -142,6 +125,69 @@ def supporter_homepage(request):
         })
     return HttpResponse('You are not a supporter!')
     
+
+# url: /django-chat-app/chat/supporter/unreads/
+@login_required
+@csrf_exempt
+def supporter_unreads(request):
+    
+    if request.method == 'POST':
+
+        supporter_uid = request.POST.get('supporter_uid')
+        
+        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+            return HttpResponse('You are not a supporter!')
+        
+        chats__nosupporter = ChatModel.objects.filter(
+            sender='client',
+            is_seen=False,
+            supporter=None
+        ).order_by('id')
+
+        chats__thissupporter = ChatModel.objects.filter(
+            sender='client',
+            is_seen=False,
+            supporter__user=request.user
+        ).order_by('id')
+
+        unreads_nosupoorter = []
+        unreads_thissupporter = []
+
+        for item in chats__nosupporter:
+
+            obj = {
+                'id': item.id,
+                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
+                'sender_type': item.sender,
+                'reply_id': item.reply.id if item.reply else '',
+                'reply_title': item.reply.sender if item.reply else '',
+                'reply_msg': item.reply.msg if item.reply else '',
+                'is_seen': item.is_seen,
+                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'text': item.msg
+            }
+            unreads_nosupoorter.append(obj)
+
+        for item in chats__thissupporter:
+
+            obj = {
+                'id': item.id,
+                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
+                'sender_type': item.sender,
+                'reply_id': item.reply.id if item.reply else '',
+                'reply_title': item.reply.sender if item.reply else '',
+                'reply_msg': item.reply.msg if item.reply else '',
+                'is_seen': item.is_seen,
+                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'text': item.msg
+            }
+            unreads_thissupporter.append(obj)
+
+        return JsonResponse({'unreads_nosupoorter': unreads_nosupoorter, 'unreads_thissupporter': unreads_thissupporter, 'status': 200})
+    return JsonResponse({'status': 400})
+
 
 # url: /join-chat/<str:username>
 def join_chat(request, username):

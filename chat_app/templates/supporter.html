@@ -33,17 +33,28 @@
 
                 <div class="wrapper__chatboxes">
     
-                    <!-- <template v-for="msg in board_msgs" :key="msg">
+                    <h4>پیام های ناخوانده ی شما</h4>
+
+                    <template v-for="msg in unreads_thissupporter" :key="msg">
                         <div class="chat__box">
                             <div class="user_date_div">
-                                <div>[[ msg.client_name ]]</div>
-                                <div>[[ msg.created ]]</div>
+                                <div>[[ msg.owner_name ]]</div>
+                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
-                    </template> -->
-                    <template v-for="msg in board_msgs" :key="msg">
-                        <p>[[ msg ]]</p>
+                    </template>
+                    
+                    <h4>سایر پیام های ناخوانده</h4>
+
+                    <template v-for="msg in unreads_nosupoorter" :key="msg">
+                        <div class="chat__box">
+                            <div class="user_date_div">
+                                <div>[[ msg.owner_name ]]</div>
+                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
+                            </div>
+                            <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                        </div>
                     </template>
 
                 </div>
@@ -209,15 +220,14 @@
                 env_show_supporter_name: '',
                 is_set_env: false,
 
-                user_is_logged: false,
-                user_id: '',
                 supporter_uid: '',
 
                 socket: '',
                 msg_input: '',
 
                 message_list: [],
-                board_msgs: [],
+                unreads_nosupoorter: [],
+                unreads_thissupporter: [],
             }
         },
 
@@ -227,6 +237,7 @@
 
         mounted() {
             this.supporter_uid = document.getElementById('supporter_uid').innerText;
+            this.get_board_msgs();
             this.start_socket();
             this.open_sidebar();
         },
@@ -295,6 +306,80 @@
                         console.log('ERR: ', err);
                     });
                 })();
+            },
+
+            get_board_msgs() {
+
+                let formdata = new FormData();
+                formdata.append('supporter_uid', this.supporter_uid);
+                
+                (async () => {
+                    await fetch('/django-chat-app/chat/supporter/unreads/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+                            
+                            // let unreads_thissupporter = response.unreads_thissupporter;
+
+                            let unreads_nosupoorter = response.unreads_nosupoorter;
+                            let nosupoorter_count = {};
+                            let nosupoorter_result = [];
+
+                            unreads_nosupoorter.forEach(element => {
+                                nosupoorter_count[element.owner_id] = (nosupoorter_count[element.owner_id] || 0) + 1;
+                            });
+                            
+                            for (const key in nosupoorter_count) {
+                                for (let i = 0; i < unreads_nosupoorter.length; i++) {
+                                    if(key == unreads_nosupoorter[i].owner_id) {
+                                        nosupoorter_result.push({
+                                            "owner_id": unreads_nosupoorter[i].owner_id,
+                                            "owner_name": unreads_nosupoorter[i].owner_name,
+                                            "counter": nosupoorter_count[key]
+                                        })
+                                        break;
+                                    }
+                                }
+                            }
+                            this.unreads_nosupoorter = nosupoorter_result;
+
+
+
+                            let unreads_thissupporter = response.unreads_thissupporter;
+                            let thissupporter_count = {};
+                            let thissupporter_result = [];
+
+                            unreads_thissupporter.forEach(element => {
+                                thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
+                            });
+                            
+                            for (const key in thissupporter_count) {
+                                for (let i = 0; i < unreads_thissupporter.length; i++) {
+                                    if(key == unreads_thissupporter[i].owner_id) {
+                                        thissupporter_result.push({
+                                            "owner_id": unreads_thissupporter[i].owner_id,
+                                            "owner_name": unreads_thissupporter[i].owner_name,
+                                            "counter": thissupporter_count[key]
+                                        })
+                                        break;
+                                    }
+                                }
+                            }
+                            this.unreads_thissupporter = thissupporter_result;
+
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+
             },
 
             aaa() {
@@ -381,7 +466,7 @@
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
                     this.socket.send(JSON.stringify({
-                        'owner_id': mythis.user_id,
+                        'owner_id': mythis.supporter_uid,
                         'owner_name': '',
                         'id': 0,
                         'sender_type': 'client', 
@@ -399,7 +484,7 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
-                        'owner_id': mythis.user_id,
+                        'owner_id': mythis.supporter_uid,
                         'owner_name': '',
                         'id': 0,
                         'sender_type': 'client', 
