@@ -226,7 +226,9 @@
                 msg_input: '',
 
                 message_list: [],
+                unreads_nosupoorter_pre: [],
                 unreads_nosupoorter: [],
+                unreads_thissupporter_pre: [],
                 unreads_thissupporter: [],
             }
         },
@@ -325,54 +327,11 @@
                     .then((response) => {
                         if(response.status == 200) {
                             
-                            // let unreads_thissupporter = response.unreads_thissupporter;
-
-                            let unreads_nosupoorter = response.unreads_nosupoorter;
-                            let nosupoorter_count = {};
-                            let nosupoorter_result = [];
-
-                            unreads_nosupoorter.forEach(element => {
-                                nosupoorter_count[element.owner_id] = (nosupoorter_count[element.owner_id] || 0) + 1;
-                            });
-                            
-                            for (const key in nosupoorter_count) {
-                                for (let i = 0; i < unreads_nosupoorter.length; i++) {
-                                    if(key == unreads_nosupoorter[i].owner_id) {
-                                        nosupoorter_result.push({
-                                            "owner_id": unreads_nosupoorter[i].owner_id,
-                                            "owner_name": unreads_nosupoorter[i].owner_name,
-                                            "counter": nosupoorter_count[key]
-                                        })
-                                        break;
-                                    }
-                                }
-                            }
-                            this.unreads_nosupoorter = nosupoorter_result;
-
-
-
-                            let unreads_thissupporter = response.unreads_thissupporter;
-                            let thissupporter_count = {};
-                            let thissupporter_result = [];
-
-                            unreads_thissupporter.forEach(element => {
-                                thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
-                            });
-                            
-                            for (const key in thissupporter_count) {
-                                for (let i = 0; i < unreads_thissupporter.length; i++) {
-                                    if(key == unreads_thissupporter[i].owner_id) {
-                                        thissupporter_result.push({
-                                            "owner_id": unreads_thissupporter[i].owner_id,
-                                            "owner_name": unreads_thissupporter[i].owner_name,
-                                            "counter": thissupporter_count[key]
-                                        })
-                                        break;
-                                    }
-                                }
-                            }
-                            this.unreads_thissupporter = thissupporter_result;
-
+                            // set to board
+                            this.set_unread_msgs_to_board(
+                                response.unreads_nosupoorter,
+                                response.unreads_thissupporter
+                            )
                         }
                     })
                     .catch(err => {
@@ -380,6 +339,55 @@
                     });
                 })();
 
+            },
+
+            set_unread_msgs_to_board(GetNosupoorter, GetThissupporter) {
+
+                // get nosupoorter
+                this.unreads_nosupoorter_pre_pre = GetNosupoorter;
+                let nosupoorter_count = {};
+                let nosupoorter_result = [];
+
+                this.unreads_nosupoorter_pre.forEach(element => {
+                    nosupoorter_count[element.owner_id] = (nosupoorter_count[element.owner_id] || 0) + 1;
+                });
+                
+                for (const key in nosupoorter_count) {
+                    for (let i = 0; i < this.unreads_nosupoorter_pre.length; i++) {
+                        if(key == this.unreads_nosupoorter_pre[i].owner_id) {
+                            nosupoorter_result.push({
+                                "owner_id": this.unreads_nosupoorter_pre[i].owner_id,
+                                "owner_name": this.unreads_nosupoorter_pre[i].owner_name,
+                                "counter": nosupoorter_count[key]
+                            })
+                            break;
+                        }
+                    }
+                }
+                this.unreads_nosupoorter = nosupoorter_result;
+                
+                // get thissupporter
+                this.unreads_thissupporter_pre = GetThissupporter;
+                let thissupporter_count = {};
+                let thissupporter_result = [];
+
+                this.unreads_thissupporter_pre.forEach(element => {
+                    thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
+                });
+                
+                for (const key in thissupporter_count) {
+                    for (let i = 0; i < this.unreads_thissupporter_pre.length; i++) {
+                        if(key == this.unreads_thissupporter_pre[i].owner_id) {
+                            thissupporter_result.push({
+                                "owner_id": this.unreads_thissupporter_pre[i].owner_id,
+                                "owner_name": this.unreads_thissupporter_pre[i].owner_name,
+                                "counter": thissupporter_count[key]
+                            })
+                            break;
+                        }
+                    }
+                }
+                this.unreads_thissupporter = thissupporter_result;
             },
 
             aaa() {
@@ -447,10 +455,38 @@
                 this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/supporter/chat/' + this.supporter_uid + '/');
                 
                 let mythis = this;
+
                 this.socket.onmessage = function(e) {
+
                     let message = JSON.parse(e.data);
                     console.log(message);
-                    mythis.board_msgs.push(message);
+
+                    // + add message to board
+                    mythis.unreads_thissupporter_pre.push(message);
+                    let thissupporter_count = {};
+                    let thissupporter_result = [];
+
+                    mythis.unreads_thissupporter_pre.forEach(element => {
+                        thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
+                    });
+                    
+                    for (const key in thissupporter_count) {
+                        for (let i = 0; i < mythis.unreads_thissupporter_pre.length; i++) {
+                            if(key == mythis.unreads_thissupporter_pre[i].owner_id) {
+                                thissupporter_result.push({
+                                    "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
+                                    "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
+                                    "counter": thissupporter_count[key]
+                                })
+                                break;
+                            }
+                        }
+                    }
+                    mythis.unreads_thissupporter = thissupporter_result;
+                    // - add message to board
+
+                    
+
                 };
 
                 this.socket.onclose = function(e) {
