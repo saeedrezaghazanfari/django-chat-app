@@ -11,7 +11,7 @@ from .models import (
 # from django.conf import settings
 
 
-# url: /ws/chat/<str:username>/<str:type>/
+# url: /ws/<str:type>/chat/<str:username>/
 class ChatConsumer(WebsocketConsumer):
     
     def connect(self):
@@ -22,7 +22,7 @@ class ChatConsumer(WebsocketConsumer):
         if self.type == 'supporter':
 
             # self.group_name = f"chat_supporter_{self.user_id}"
-            self.group_name = f"unread_msg_board"
+            self.group_name = 'unread_msg_board'
 
             if SupporterModel.objects.filter(supporter_uid=self.user_id, is_active=True).exists():
                 self.user = SupporterModel.objects.get(supporter_uid=self.user_id, is_active=True)
@@ -74,7 +74,8 @@ class ChatConsumer(WebsocketConsumer):
                     client_receiver.have_supporter = self.user
                     client_receiver.save()
 
-                # update id-created-isseen-reply of message
+                # update id-created-isseen-reply-ownername of message
+                text_data_json['owner_name'] = 'supporter'
                 text_data_json['id'] = chat_obj.id
                 text_data_json['created'] = f'{timezone.localtime(chat_obj.created).hour}:{timezone.localtime(chat_obj.created).minute}'
                 text_data_json['is_seen'] = chat_obj.is_seen
@@ -90,7 +91,7 @@ class ChatConsumer(WebsocketConsumer):
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name,
                     {
-                        'type': 'chat_message',
+                        'type': 'send_msg',
                         'message': text_data
                     }
                 )
@@ -105,12 +106,13 @@ class ChatConsumer(WebsocketConsumer):
                 if self.user.have_supporter:
                     chat_obj.supporter = self.user.have_supporter
 
-                if text_data_json['reply_id'] and text_data_json['reply_title'] and text_data_json['reply_msg']:
+                if text_data_json['reply_id']:
                     chat_obj.reply = ChatModel.objects.get(id=text_data_json['reply_id'])
                 
                 chat_obj.save()
 
-                # update id-created-isseen-reply of message
+                # update id-created-isseen-reply-ownername of message
+                text_data_json['owner_name'] = f'{self.user.first_name} {self.user.last_name}'
                 text_data_json['id'] = chat_obj.id
                 text_data_json['created'] = f'{timezone.localtime(chat_obj.created).hour}:{timezone.localtime(chat_obj.created).minute}'
                 text_data_json['is_seen'] = chat_obj.is_seen
@@ -120,26 +122,30 @@ class ChatConsumer(WebsocketConsumer):
                     text_data_json['reply_id'] = chat_obj.reply.id
                 text_data = json.dumps(text_data_json)
 
-                # Echo msg client
+                # send msg to unread msgs board
                 user_group_name_1 = "unread_msg_board"    
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name_1,
                     {
-                        'type': 'chat_message',
+                        'type': 'send_msg_board',
                         'message': text_data
                     }
                 )
-                # send msg to unread msgs board
+                # Echo msg client
                 user_group_name_2 = f"chat_client_{self.user_id}"    
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name_2,
                     {
-                        'type': 'chat_message',
+                        'type': 'send_msg',
                         'message': text_data
                     }
                 )
 
-    def chat_message(self, event):
+    def send_msg(self, event):
         message = event['message']
         self.send(text_data=message)
 
+
+    def send_msg_board(self, event):
+        message = event['message']
+        self.send(text_data=message)

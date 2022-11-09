@@ -33,27 +33,18 @@
 
                 <div class="wrapper__chatboxes">
     
-                    <div class="chat__box">
-                        <div class="user_date_div">
-                            <div>سعیدرضا غضنفری</div>
-                            <div>1400/5/9</div>
+                    <!-- <template v-for="msg in board_msgs" :key="msg">
+                        <div class="chat__box">
+                            <div class="user_date_div">
+                                <div>[[ msg.client_name ]]</div>
+                                <div>[[ msg.created ]]</div>
+                            </div>
+                            <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
-                        <div class="unreadmsg_counter">3</div>
-                    </div>
-                    <div class="chat__box">
-                        <div class="user_date_div">
-                            <div>سعیدرضا غضنفری</div>
-                            <div>1400/5/9</div>
-                        </div>
-                        <div class="unreadmsg_counter">3</div>
-                    </div>
-                    <div class="chat__box">
-                        <div class="user_date_div">
-                            <div>سعیدرضا غضنفری</div>
-                            <div>1400/5/9</div>
-                        </div>
-                        <div class="unreadmsg_counter">3</div>
-                    </div>
+                    </template> -->
+                    <template v-for="msg in board_msgs" :key="msg">
+                        <p>[[ msg ]]</p>
+                    </template>
 
                 </div>
             </div>
@@ -65,8 +56,8 @@
                     <div class="header__info">
                         <img src="/site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
-                            <span>کاربر۱</span>
-                            <span>آفلاین</span>
+                            <span></span>
+                            <span></span>
                         </div>
                     </div>
                     <div class="header__option">
@@ -133,97 +124,30 @@
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper">
 
-                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_1')">
-                            <div class="msg msg__right" id="chatapp_msg_1">
-                                <p class="msg__replied msg__replied--right" scholl_msg="chatapp_msg_2" @click="msg_replied">
-                                    <span scholl_msg="chatapp_msg_2">سعیدرضا</span>
-                                    <span scholl_msg="chatapp_msg_2">Hello World</span>
-                                </p>
-                                <p class="msg__content">
-                                    Hello Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita, obcaecati?
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
+                        <template v-for="msg_item in message_list" :key="msg_item.id">
+                            <div class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
+                                <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'supporter' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
+                                        <span>[[ msg_item.reply_title == 'supporter' ? 'شما' : 'کاربر' ]]</span>
+                                        <span>[[ msg_item.reply_msg ]]</span>
+                                    </p>
+                                    <p class="msg__content">
+                                        [[ msg_item.text ]]
+                                    </p>
+                                    <div class="msg__info">
+                                        <div class="msg__info__status" v-if="msg_item.sender_type == 'supporter'">
+                                            <img v-if="msg_item.is_seen" src="/site_static/django_chat_app/img/double-check.png" alt="double check status">
+                                            <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
+                                        </div>
+                                        <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                     </div>
-                                    <div class="msg__info__clock">14:48</div>
+                                </div>
+                                <div class="reply_one_msg" :class="msg_item.sender_type == 'supporter' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
+                                    پاسخ دادن
                                 </div>
                             </div>
-                            <div class="reply_one_msg reply_one_msg--right" @click="reply_msg('chatapp_msg_1')">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__right">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
-                                    </div>
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--right">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__right">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__status">
-                                        <img src="/site_static/django_chat_app/img/double-check.png" alt="single check status">
-                                    </div>
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--right">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-
-                        <div class="one_msg_wrapper" @dblclick="reply_msg('chatapp_msg_2')">
-                            <div class="msg msg__left" id="chatapp_msg_2">
-                                <p class="msg__replied msg__replied--left" scholl_msg="chatapp_msg_1" @click="msg_replied">
-                                    <span scholl_msg="chatapp_msg_1">سعیدرضا</span>
-                                    <span scholl_msg="chatapp_msg_1">Hello World</span>
-                                </p>
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--left" @click="reply_msg('chatapp_msg_2')">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-    
-                        <div class="one_msg_wrapper">
-                            <div class="msg msg__left">
-                                <p class="msg__content">
-                                    Hello World
-                                </p>
-                                <div class="msg__info">
-                                    <div class="msg__info__clock">14:48</div>
-                                </div>
-                            </div>
-                            <div class="reply_one_msg reply_one_msg--left">
-                                پاسخ دادن
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
+                            <div class="clearfix"></div>
+                        </template>
 
                     </div>
                     <!-- - messages wrapper -->
@@ -231,7 +155,7 @@
                 </div>
             </div>
 
-            <div class="body__inputs">
+            <div class="body__inputs d-none">
                 <form novalidate @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
                         <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
@@ -241,6 +165,7 @@
                             <div>
                                 <p class="reply__writer"></p>
                                 <p class="reply__content"></p>
+                                <p class="reply__reply_id d-none"></p>
                             </div>
                         </div>
 
@@ -256,16 +181,13 @@
                         <div class="unreadmsg_counter">2</div>
                     </button>
                 </div>
+
             </div>
         </div>
-
-
-
 
     </section>
 
 <!-- <script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script> -->
-<!-- <script type="text/javascript" src="/site_static/django_chat_app/js/jquery-3.5.1.min.js"></script> -->
 <script type="text/javascript" src="/site_static/django_chat_app/js/vue3.js"></script>
 
 <script>
@@ -283,14 +205,19 @@
                 env_dir: '',
                 env_title: '',
                 env_subtitle: '',
+                env_max_report_number: '',
                 env_show_supporter_name: '',
                 is_set_env: false,
 
-                client_id: 'a7873152-1456-438c-a0a0-10a3f18460ae',
+                user_is_logged: false,
+                user_id: '',
                 supporter_uid: '',
 
                 socket: '',
                 msg_input: '',
+
+                message_list: [],
+                board_msgs: [],
             }
         },
 
@@ -301,6 +228,7 @@
         mounted() {
             this.supporter_uid = document.getElementById('supporter_uid').innerText;
             this.start_socket();
+            this.open_sidebar();
         },
 
         methods: {
@@ -335,9 +263,10 @@
                         if(response.status == 200) {
 
                             this.env_dir = response.data.dir;
+                            this.env_show_supporter_name = response.data.show_supporter_name;
                             this.env_title = response.data.title;
                             this.env_subtitle = response.data.subtitle;
-                            this.env_show_supporter_name = response.data.show_supporter_name;
+                            this.env_max_report_number = response.data.max_report_number;
                             this.is_set_env = true;
 
                             // setting for direction
@@ -352,14 +281,14 @@
                             // setting for title and subtitle
                             document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
                             document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
+                            
+                            if(this.env_show_supporter_name) {
+                                //TODO
+                            }
 
-                            // setting for email or phone
-                            if(this.env_auth_fields == 'email')
-                                document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
-                            else if(this.env_auth_fields == 'phone')
-                                document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
-                                
-
+                            if(this.env_max_report_number) {
+                                //TODO
+                            }
                         }
                     })
                     .catch(err => {
@@ -379,95 +308,111 @@
             go_to_bottom_of_box() {
                 document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
             },
-
-            reply_msg(msgID) {
-                let msgbox = document.getElementById(msgID);
-                let writer = '';
-                let content = document.querySelector(`#${msgID} .msg__content`).innerText;
+            
+            reply_msg(elementId, msgId) {
+                let msgbox = document.getElementById(elementId);
+                let reply_writer = '';
+                let reply_id = msgId;
+                let reply_content = document.querySelector(`#${elementId} .msg__content`).innerText;
 
                 if(msgbox.classList.contains('msg__right'))
-                    writer = 'شما';
+                    reply_writer = 'شما';
                 else
-                    writer = 'پشتیبان';
+                    reply_writer = 'پشتیبان';
 
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
-                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = writer;
-                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = content;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = reply_content;
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = reply_id;
             },
             
             close_replybar() {
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+                document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = '';
             },
 
-            msg_replied(e) {
-                let target = e.target.getAttribute('scholl_msg'); 
+            msg_replied(scholl_msg) {
+                let target = document.getElementById(scholl_msg); 
+
                 if(target) {
-                    let target_element = document.getElementById(target);
                     let initial_bgcolor = '';
-                    
+
                     // change background color for message
-                    if(target_element.classList.contains('msg__right')) {
-                        initial_bgcolor = target_element.style.backgroundColor;
-                        target_element.style.backgroundColor = '#1577c6';
-                    } else if (target_element.classList.contains('msg__left')) {
-                        initial_bgcolor = target_element.style.backgroundColor;
-                        target_element.style.backgroundColor = '#c2c2c2';
+                    if(target.classList.contains('msg__right')) {
+                        initial_bgcolor = target.style.backgroundColor;
+                        target.style.backgroundColor = '#1577c6';
+                    } else if (target.classList.contains('msg__left')) {
+                        initial_bgcolor = target.style.backgroundColor;
+                        target.style.backgroundColor = '#c2c2c2';
                     }
+
                     setTimeout(() => {
-                        target_element.style.backgroundColor = initial_bgcolor;
+                        target.style.backgroundColor = initial_bgcolor;
                     }, 500);
+
                     // scroll to message
-                    target_element.scrollIntoView({ behavior: "smooth", block: "end"});
+                    target.scrollIntoView({ behavior: "smooth", block: "end"});
                 }
             },
 
             start_socket() {
 
-                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/chat/' + this.supporter_uid + '/supporter/');
-
+                this.socket = new WebSocket( 'ws://' + window.location.host + '/ws/supporter/chat/' + this.supporter_uid + '/');
+                
+                let mythis = this;
                 this.socket.onmessage = function(e) {
                     let message = JSON.parse(e.data);
                     console.log(message);
-
-                    // $('.chatapp .all__msg__wrapper').prepend(`
-                    //     <div class="media mb-2">
-                    //         <div class="media-body">
-                    //             <h6 class="mt-0"><strong>${message['sender']}</strong></h6>
-                    //             ${message['text']}
-                    //         </div>
-                    //     </div>
-                    // `);
+                    mythis.board_msgs.push(message);
                 };
 
                 this.socket.onclose = function(e) {
                     console.error('Socket closed unexpectedly');
                 };
-
             },
             
             sned_msg_socket(e) {
 
-                $('#messages-list').prepend(`
-                    <div class="media mb-2">
-                    <div class="media-body">
-                        <h6 class="mt-0"><strong>You</strong></h6>
-                        MESSAGE
-                    </div>
-                    </div>
-                `.replace('MESSAGE', this.msg_input));
+                if(!this.msg_input)
+                    return;
 
-                this.socket.send(JSON.stringify({
-                    'id': 0,
-                    'sender_type': 'supporter', 
-                    'receiver_id': this.client_id, 
-                    'reply_title': '', 
-                    'reply_msg': '', 
-                    'is_seen': 0,
-                    'created': '',
-                    'text': this.msg_input
-                }));
+                if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
+                    let mythis = this;
+                    this.socket.send(JSON.stringify({
+                        'owner_id': mythis.user_id,
+                        'owner_name': '',
+                        'id': 0,
+                        'sender_type': 'client', 
+                        'reply_id': '',
+                        'reply_title': '', 
+                        'reply_msg': '', 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': mythis.msg_input
+                    }));    
+
+                } else {
+                    let writer = document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText;
+                    let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
+                    let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+                    let mythis = this;
+                    this.socket.send(JSON.stringify({
+                        'owner_id': mythis.user_id,
+                        'owner_name': '',
+                        'id': 0,
+                        'sender_type': 'client', 
+                        'reply_id': reply_id,
+                        'reply_title': '', 
+                        'reply_msg': content, 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': mythis.msg_input
+                    }));
+
+                    this.close_replybar();
+                }
 
                 this.msg_input = '';
             },

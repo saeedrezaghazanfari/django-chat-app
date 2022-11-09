@@ -1,4 +1,5 @@
 import json
+from socket import send_fds
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -47,6 +48,8 @@ def check_userid(request):
                 if item.reply:
                     obj = {
                         'id': item.id,
+                        'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                        'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                         'sender_type': item.sender,
                         'reply_id': item.reply.id,
                         'reply_title': item.reply.sender,
@@ -60,6 +63,8 @@ def check_userid(request):
                 else:
                     obj = {
                         'id': item.id,
+                        'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                        'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                         'sender_type': item.sender,
                         'reply_id': '',
                         'reply_title': '',
