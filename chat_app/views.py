@@ -189,6 +189,54 @@ def supporter_unreads(request):
     return JsonResponse({'status': 400})
 
 
+# url: /django-chat-app/chat/supporter/read-all/
+@login_required
+@csrf_exempt
+def supporter_read_all(request):
+    if request.method == 'POST':
+
+        supporter_uid = request.POST.get('supporter_uid')
+        client_id= request.POST.get('client_id')
+        
+        if not client_id or not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+            return HttpResponse('You are not a supporter!')
+        
+        # update the unread messages
+        # ChatModel.objects.filter(
+        #     sender='client',
+        #     is_seen=False,
+        #     supporter__user=request.user
+        # ).update(is_seen=True)
+
+        supporter = SupporterModel.objects.get(user=request.user, is_active=True)
+        print(client_id)
+
+        chats = ChatModel.objects.filter(
+            supporter=supporter,
+            client__user_chat_uid=client_id
+        ).order_by('id')[:10]
+        chats_arr = []
+
+        for item in chats:
+
+            obj = {
+                'id': item.id,
+                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
+                'sender_type': item.sender,
+                'reply_id': item.reply.id if item.reply else '',
+                'reply_title': item.reply.sender if item.reply else '',
+                'reply_msg': item.reply.msg if item.reply else '',
+                'is_seen': item.is_seen,
+                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'text': item.msg
+            }
+            chats_arr.append(obj)
+
+        return JsonResponse({'data': chats_arr, 'status': 200})
+    return JsonResponse({'status': 400})
+
+
 # url: /join-chat/<str:username>
 def join_chat(request, username):
     return render(request, 'join_chat.html', {

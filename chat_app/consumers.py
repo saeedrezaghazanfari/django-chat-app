@@ -21,13 +21,17 @@ class ChatConsumer(WebsocketConsumer):
 
         if self.type == 'supporter':
 
-            # self.group_name = f"chat_supporter_{self.user_id}"
-            self.group_name = 'unread_msg_board'
+            self.group_name1 = f'chat_supporter_{self.user_id}'
+            self.group_name2 = 'unread_msg_board'
 
             if SupporterModel.objects.filter(supporter_uid=self.user_id, is_active=True).exists():
                 self.user = SupporterModel.objects.get(supporter_uid=self.user_id, is_active=True)
                 async_to_sync(self.channel_layer.group_add)(
-                    self.group_name,
+                    self.group_name1,
+                    self.channel_name
+                )
+                async_to_sync(self.channel_layer.group_add)(
+                    self.group_name2,
                     self.channel_name
                 )
                 self.accept()
@@ -46,10 +50,20 @@ class ChatConsumer(WebsocketConsumer):
                 self.accept()
 
     def disconnect(self, close_code):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.group_name,
-            self.channel_name
-        )
+        if self.type == 'client':
+            async_to_sync(self.channel_layer.group_discard)(
+                self.group_name,
+                self.channel_name
+            )
+        elif self.type == 'supporter':
+            async_to_sync(self.channel_layer.group_discard)(
+                self.group_name1,
+                self.channel_name
+            )
+            async_to_sync(self.channel_layer.group_discard)(
+                self.group_name2,
+                self.channel_name
+            )
 
     def receive(self, text_data=None, bytes_data=None):
         if text_data:
@@ -58,24 +72,26 @@ class ChatConsumer(WebsocketConsumer):
             print(text_data_json)
 
             if self.type == 'supporter':
-                client_receiver = UserChatModel.objects.get(
-                    # user_chat_uid=, 
+
+                user_client = UserChatModel.objects.get(
+                    user_chat_uid=text_data_json['client_id'], 
                     is_blocked=False
                 )
 
-                chat_obj = ChatModel.objects.create(
-                    client=client_receiver,
+                chat_obj = ChatModel(
                     supporter=self.user,
+                    client=user_client,
                     sender=text_data_json['sender_type'],
                     msg=text_data_json['text']
                 )
 
-                if not client_receiver.have_supporter:
-                    client_receiver.have_supporter = self.user
-                    client_receiver.save()
+                if text_data_json['reply_id']:
+                    chat_obj.reply = ChatModel.objects.get(id=text_data_json['reply_id'])
+
+                chat_obj.save()
 
                 # update id-created-isseen-reply-ownername of message
-                text_data_json['owner_name'] = 'supporter'
+                text_data_json['owner_name'] = f'{self.user.user.first_name} {self.user.user.last_name}' if self.user.user.first_name else 'supporter'
                 text_data_json['id'] = chat_obj.id
                 text_data_json['created'] = f'{timezone.localtime(chat_obj.created).hour}:{timezone.localtime(chat_obj.created).minute}'
                 text_data_json['is_seen'] = chat_obj.is_seen
@@ -85,11 +101,19 @@ class ChatConsumer(WebsocketConsumer):
                     text_data_json['reply_id'] = chat_obj.reply.id
                 text_data = json.dumps(text_data_json)
 
-                # send msg
-                user_group_name = f"chat_client_{str(client_receiver.user_chat_uid)}"
-                print('cilent2  ', user_group_name)
+                # send msg to client
+                user_group_name_1 = f"chat_client_{str(chat_obj.client.user_chat_uid)}" 
                 async_to_sync(self.channel_layer.group_send)(
-                    user_group_name,
+                    user_group_name_1,
+                    {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
+                # Echo msg supporter
+                user_group_name_2 = 'unread_msg_board'
+                async_to_sync(self.channel_layer.group_send)(
+                    user_group_name_2,
                     {
                         'type': 'send_msg',
                         'message': text_data

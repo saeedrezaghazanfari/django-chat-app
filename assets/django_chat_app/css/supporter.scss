@@ -136,6 +136,15 @@ section.chatapp {
                         }
                     }
                 }
+                .msg_item_active {
+                    .user_date_div div:nth-child(1) {
+                        font-weight: 900 !important;
+                        color: $white !important;
+                    }
+                    .unreadmsg_counter {
+                        background-color: $white !important;
+                    }
+                }
             }
         }
     }

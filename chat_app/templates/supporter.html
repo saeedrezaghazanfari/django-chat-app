@@ -35,8 +35,8 @@
     
                     <h4>پیام های ناخوانده ی شما</h4>
 
-                    <template v-for="msg in unreads_thissupporter" :key="msg">
-                        <div class="chat__box">
+                    <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
+                        <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
                                 <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
@@ -48,7 +48,7 @@
                     <h4>سایر پیام های ناخوانده</h4>
 
                     <template v-for="msg in unreads_nosupoorter" :key="msg">
-                        <div class="chat__box">
+                        <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
                                 <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
@@ -67,8 +67,9 @@
                     <div class="header__info">
                         <img src="/site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
-                            <span></span>
-                            <span></span>
+                            <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
+                            <span v-else>برای پاسخگویی لطفا یکی از آیتم های داخل سایدبار را انتخاب کنید</span>
+                            <span v-if="client_id">آفلاین</span>
                         </div>
                     </div>
                     <div class="header__option">
@@ -214,13 +215,13 @@
             return {
                 // env variables
                 env_dir: '',
-                env_title: '',
-                env_subtitle: '',
                 env_max_report_number: '',
                 env_show_supporter_name: '',
                 is_set_env: false,
 
                 supporter_uid: '',
+                client_id: '',
+                client_name: '',
 
                 socket: '',
                 msg_input: '',
@@ -277,8 +278,6 @@
 
                             this.env_dir = response.data.dir;
                             this.env_show_supporter_name = response.data.show_supporter_name;
-                            this.env_title = response.data.title;
-                            this.env_subtitle = response.data.subtitle;
                             this.env_max_report_number = response.data.max_report_number;
                             this.is_set_env = true;
 
@@ -290,10 +289,6 @@
                             } else if(this.env_dir == 'auto') {
                                 //TODO
                             }
-
-                            // setting for title and subtitle
-                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
-                            document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
                             
                             if(this.env_show_supporter_name) {
                                 //TODO
@@ -411,7 +406,7 @@
                 if(msgbox.classList.contains('msg__right'))
                     reply_writer = 'شما';
                 else
-                    reply_writer = 'پشتیبان';
+                    reply_writer = 'کاربر';
 
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
@@ -462,31 +457,34 @@
                     console.log(message);
 
                     // + add message to board
-                    mythis.unreads_thissupporter_pre.push(message);
-                    let thissupporter_count = {};
-                    let thissupporter_result = [];
+                    if(message.sender_type == 'client' && mythis.client_id == '') {
 
-                    mythis.unreads_thissupporter_pre.forEach(element => {
-                        thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
-                    });
-                    
-                    for (const key in thissupporter_count) {
-                        for (let i = 0; i < mythis.unreads_thissupporter_pre.length; i++) {
-                            if(key == mythis.unreads_thissupporter_pre[i].owner_id) {
-                                thissupporter_result.push({
-                                    "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
-                                    "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
-                                    "counter": thissupporter_count[key]
-                                })
-                                break;
+                        mythis.unreads_thissupporter_pre.push(message);
+                        let thissupporter_count = {};
+                        let thissupporter_result = [];
+
+                        mythis.unreads_thissupporter_pre.forEach(element => {
+                            thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
+                        });
+                        
+                        for (const key in thissupporter_count) {
+                            for (let i = 0; i < mythis.unreads_thissupporter_pre.length; i++) {
+                                if(key == mythis.unreads_thissupporter_pre[i].owner_id) {
+                                    thissupporter_result.push({
+                                        "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
+                                        "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
+                                        "counter": thissupporter_count[key]
+                                    })
+                                    break;
+                                }
                             }
                         }
+                        mythis.unreads_thissupporter = thissupporter_result;
                     }
-                    mythis.unreads_thissupporter = thissupporter_result;
                     // - add message to board
-
-                    
-
+                    else if(mythis.client_id) {
+                        mythis.message_list.push(message);
+                    }
                 };
 
                 this.socket.onclose = function(e) {
@@ -494,6 +492,50 @@
                 };
             },
             
+            show_user_chat_page(client_id, client_name, client_item, msg_type, index_item) {
+                document.querySelectorAll('.chatapp .wrapper__chatboxes .chat__box').forEach(element => {
+                    if(element.classList.contains('msg_item_active'))
+                        element.classList.remove('msg_item_active');
+                });
+                this.close_sidebar();
+                document.querySelector(`.chatapp .wrapper__chatboxes .${client_item}`).classList.add('msg_item_active');
+                document.querySelector('.chatapp .body__inputs').classList.remove('d-none');
+                
+                this.client_id = client_id;
+                this.client_name = client_name;
+
+                let formdata = new FormData();
+                formdata.append('supporter_uid', this.supporter_uid);
+                formdata.append('client_id', client_id);
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/supporter/read-all/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+
+                            this.go_to_bottom_of_box();
+                            this.message_list = response.data;
+
+                            if(msg_type == 'thissupporter') {
+                                this.unreads_thissupporter[index_item].counter = 0;
+                            } else if(msg_type == 'nosupoorter') {
+                                this.unreads_nosupoorter[index_item].counter = 0;
+                            }
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+            },
+                        
             sned_msg_socket(e) {
 
                 if(!this.msg_input)
@@ -502,10 +544,11 @@
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        'client_id': mythis.client_id,
                         'owner_id': mythis.supporter_uid,
                         'owner_name': '',
                         'id': 0,
-                        'sender_type': 'client', 
+                        'sender_type': 'supporter', 
                         'reply_id': '',
                         'reply_title': '', 
                         'reply_msg': '', 
@@ -520,10 +563,11 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        'client_id': mythis.client_id,
                         'owner_id': mythis.supporter_uid,
                         'owner_name': '',
                         'id': 0,
-                        'sender_type': 'client', 
+                        'sender_type': 'supporter', 
                         'reply_id': reply_id,
                         'reply_title': '', 
                         'reply_msg': content, 
