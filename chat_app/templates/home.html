@@ -552,6 +552,10 @@
                     // play send sound
                     this.play_send_sound();
 
+                    setTimeout(()=> {
+                        this.go_to_bottom_of_box();
+                    }, 500);
+
                 } else {
                     let writer = document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText;
                     let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
@@ -574,6 +578,10 @@
                     this.play_send_sound();
 
                     this.close_replybar();
+
+                    setTimeout(()=> {
+                        this.go_to_bottom_of_box();
+                    }, 500);
                 }
 
                 this.msg_input = '';
