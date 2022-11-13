@@ -383,6 +383,14 @@
                             });
                         })();
 
+                        // send online status
+                        setTimeout(() => {
+                            let mythis = this;
+                            this.socket.send(JSON.stringify({
+                                'receiver_status': 'online',
+                                'client_id': '',
+                            }));
+                        }, 1500);
                     }
                     else {
                         document.querySelector('.chatapp__form').classList.remove('d-none');
@@ -398,6 +406,12 @@
                     setTimeout(() => {
                         document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
                     }, 120);
+
+                    // send offline status
+                    this.socket.send(JSON.stringify({
+                        'receiver_status': 'offline',
+                        'client_id': '',
+                    }));
                 }
             },
 

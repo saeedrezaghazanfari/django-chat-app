@@ -69,7 +69,7 @@
                         <div>
                             <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
                             <span v-else>برای پاسخگویی لطفا یکی از آیتم های داخل سایدبار را انتخاب کنید</span>
-                            <span v-if="client_id">آفلاین</span>
+                            <span v-if="client_id && receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آفلاین' ]]</span>
                         </div>
                     </div>
                     <div class="header__option">
@@ -226,6 +226,8 @@
 
                 socket: '',
                 msg_input: '',
+
+                receiver_status: '',
 
                 message_list: [],
                 unreads_nosupoorter_pre: [],
@@ -461,8 +463,14 @@
                     let message = JSON.parse(e.data);
                     console.log(message);
 
+                    
+
+                    if(message.receiver_status) {
+                        mythis.receiver_status = message.receiver_status;
+                    }
+
                     // + add message to board
-                    if(message.sender_type == 'client' && mythis.client_id == '') {
+                    else if(!message.receiver_status && message.sender_type == 'client' && mythis.client_id == '') {
 
                         mythis.unreads_thissupporter_pre.push(message);
                         let thissupporter_count = {};
@@ -491,7 +499,7 @@
                         }, 400);
                     }
                     // - add message to board
-                    else if(mythis.client_id) {
+                    else if(!message.receiver_status && mythis.client_id) {
                         mythis.message_list.push(message);
                         setTimeout(()=> {
                             mythis.go_to_bottom_of_box();
@@ -566,7 +574,7 @@
                 this.close_sidebar();
                 document.querySelector('.chatapp .body__inputs').classList.add('d-none');
                 
-                // send online status
+                // send offline status
                 let mythis = this;
                 this.socket.send(JSON.stringify({
                     'receiver_status': 'offline',

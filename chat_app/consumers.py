@@ -82,17 +82,16 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
 
-            # send status to supporter
+            # send status to supporter (unread msgs board)
             if self.type == 'client' and text_data_json.get('receiver_status'):
-                ...
-                # user_group_name_1 = f"chat_client_{text_data_json['client_id']}" 
-                # async_to_sync(self.channel_layer.group_send)(
-                #     user_group_name_1,
-                #     {
-                #         'type': 'send_msg',
-                #         'message': text_data
-                #     }
-                # )
+                user_group_name_1 = "unread_msg_board"    
+                async_to_sync(self.channel_layer.group_send)(
+                    user_group_name_1,
+                    {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
                 
             # send msg from supporter to client
             elif self.type == 'supporter' and not text_data_json.get('receiver_status'):
