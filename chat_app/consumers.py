@@ -71,7 +71,31 @@ class ChatConsumer(WebsocketConsumer):
 
             print(text_data_json)
 
-            if self.type == 'supporter':
+            # send status to client
+            if self.type == 'supporter' and text_data_json.get('receiver_status'):
+                user_group_name_1 = f"chat_client_{text_data_json['client_id']}" 
+                async_to_sync(self.channel_layer.group_send)(
+                    user_group_name_1,
+                    {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
+
+            # send status to supporter
+            if self.type == 'client' and text_data_json.get('receiver_status'):
+                ...
+                # user_group_name_1 = f"chat_client_{text_data_json['client_id']}" 
+                # async_to_sync(self.channel_layer.group_send)(
+                #     user_group_name_1,
+                #     {
+                #         'type': 'send_msg',
+                #         'message': text_data
+                #     }
+                # )
+                
+            # send msg from supporter to client
+            elif self.type == 'supporter' and not text_data_json.get('receiver_status'):
 
                 user_client = UserChatModel.objects.get(
                     user_chat_uid=text_data_json['client_id'], 
@@ -120,7 +144,10 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
 
-            elif self.type == 'client':
+            
+            # send msg from client to supporter
+            elif self.type == 'client' and not text_data_json.get('receiver_status'):
+
                 chat_obj = ChatModel(
                     client=self.user,
                     sender=text_data_json['sender_type'],
@@ -151,7 +178,7 @@ class ChatConsumer(WebsocketConsumer):
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name_1,
                     {
-                        'type': 'send_msg_board',
+                        'type': 'send_msg',
                         'message': text_data
                     }
                 )
@@ -165,11 +192,8 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
 
+    
     def send_msg(self, event):
         message = event['message']
         self.send(text_data=message)
 
-
-    def send_msg_board(self, event):
-        message = event['message']
-        self.send(text_data=message)

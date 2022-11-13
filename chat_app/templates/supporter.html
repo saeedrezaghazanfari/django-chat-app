@@ -75,6 +75,7 @@
                     <div class="header__option">
                         
                         <div class="wrapper_btns">
+                            <button class="btns_base" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
                             <button class="btns_base openclose_addreadymsg" @click="openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
                             
                             <div class="copybox_section d-none">
@@ -541,7 +542,14 @@
 
                             setTimeout(()=> {
                                 this.go_to_bottom_of_box();
-                            }, 500);
+                            }, 500);    
+
+                            // send online status
+                            let mythis = this;
+                            this.socket.send(JSON.stringify({
+                                'receiver_status': 'online',
+                                'client_id': mythis.client_id,
+                            }));
                         }
                     })
                     .catch(err => {
@@ -550,6 +558,27 @@
                 })();
             },
            
+            reset_close_chat_box() {
+                document.querySelectorAll('.chatapp .wrapper__chatboxes .chat__box').forEach(element => {
+                    if(element.classList.contains('msg_item_active'))
+                        element.classList.remove('msg_item_active');
+                });
+                this.close_sidebar();
+                document.querySelector('.chatapp .body__inputs').classList.add('d-none');
+                
+                // send online status
+                let mythis = this;
+                this.socket.send(JSON.stringify({
+                    'receiver_status': 'offline',
+                    'client_id': mythis.client_id,
+                }));
+
+                this.client_id = '';
+                this.client_name = '';
+                this.msg_input = '';
+                this.message_list = [];
+            },
+            
             sned_msg_socket(e) {
 
                 if(!this.msg_input)
@@ -621,7 +650,7 @@
                 document.querySelector('.nav').style.display = 'block';
                 setTimeout(()=>{
                     document.querySelector('.nav').style.transform = 'translateX(0px)';
-                }, 1)
+                }, 1);
             },
 
             openclose_addreadymsg() {

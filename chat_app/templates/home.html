@@ -30,7 +30,7 @@
                         <img src="site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
                             <span>Title</span>
-                            <span>subTitle</span>
+                            <span v-if="receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آفلاین' ]]</span>
                         </div>
                     </div>
                     <div class="header__options">
@@ -204,6 +204,8 @@
 
                 user_is_logged: false,
                 user_id: '',
+
+                receiver_status: '',
 
                 socket: '',
                 msg_input: '',
@@ -521,7 +523,11 @@
                 this.socket.onmessage = function(e) {
                     let message = JSON.parse(e.data);
                     console.log(message);
-                    mythis.message_list.push(message);
+
+                    if(message.receiver_status == 'online' || message.receiver_status == 'offline')
+                        mythis.receiver_status = message.receiver_status;
+                    else
+                        mythis.message_list.push(message);
 
                     setTimeout(()=> {
                         mythis.go_to_bottom_of_box();
