@@ -522,6 +522,10 @@
                     let message = JSON.parse(e.data);
                     console.log(message);
                     mythis.message_list.push(message);
+
+                    setTimeout(()=> {
+                        mythis.go_to_bottom_of_box();
+                    }, 200);
                 };
 
                 this.socket.onclose = function(e) {

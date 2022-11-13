@@ -39,7 +39,7 @@ def check_userid(request):
 
             client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
 
-            chats = ChatModel.objects.filter(client=client).order_by('id')[:10]
+            chats = ChatModel.objects.filter(client=client).all()[:15]
             chats_arr = []
 
             for item in chats:
@@ -57,6 +57,8 @@ def check_userid(request):
                     'text': item.msg
                 }
                 chats_arr.append(obj)
+
+            chats_arr.reverse()
 
             return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
         return JsonResponse({'status': 401})
@@ -214,7 +216,7 @@ def supporter_read_all(request):
         chats = ChatModel.objects.filter(
             supporter=supporter,
             client__user_chat_uid=client_id
-        ).order_by('id')[:10]
+        ).all()[:15]
         chats_arr = []
 
         for item in chats:
@@ -232,6 +234,8 @@ def supporter_read_all(request):
                 'text': item.msg
             }
             chats_arr.append(obj)
+        
+        chats_arr.reverse()
 
         return JsonResponse({'data': chats_arr, 'status': 200})
     return JsonResponse({'status': 400})

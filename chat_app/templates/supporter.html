@@ -484,10 +484,17 @@
                             }
                         }
                         mythis.unreads_thissupporter = thissupporter_result;
+
+                        setTimeout(()=> {
+                            mythis.go_to_bottom_of_box();
+                        }, 400);
                     }
                     // - add message to board
                     else if(mythis.client_id) {
                         mythis.message_list.push(message);
+                        setTimeout(()=> {
+                            mythis.go_to_bottom_of_box();
+                        }, 400);
                     }
                 };
 
