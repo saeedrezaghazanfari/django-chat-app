@@ -360,7 +360,6 @@
                             .then((response) => {
                                 if(response.status == 200) {
                                     
-                                    this.go_to_bottom_of_box();
                                     this.message_list = response.data;
                                     this.user_is_logged = true;
                                     this.user_id = stored_userid;
@@ -368,6 +367,10 @@
 
                                     document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
                                     document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+
+                                    setTimeout(()=> {
+                                        this.go_to_bottom_of_box();
+                                    }, 500);
 
                                 } else if(response.status == 401) {
                                     localStorage.removeItem('chatapp_client_id');
@@ -566,7 +569,7 @@
                         'created': '',
                         'text': mythis.msg_input
                     }));
-                    
+
                     // play send sound
                     this.play_send_sound();
 

@@ -524,7 +524,6 @@
                     .then((response) => {
                         if(response.status == 200) {
 
-                            this.go_to_bottom_of_box();
                             this.message_list = response.data;
 
                             if(msg_type == 'thissupporter') {
@@ -532,6 +531,10 @@
                             } else if(msg_type == 'nosupoorter') {
                                 this.unreads_nosupoorter[index_item].counter = 0;
                             }
+
+                            setTimeout(()=> {
+                                this.go_to_bottom_of_box();
+                            }, 500);
                         }
                     })
                     .catch(err => {
