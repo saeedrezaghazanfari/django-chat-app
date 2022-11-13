@@ -29,8 +29,8 @@
                     <div class="header__info">
                         <img src="site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
-                            <span>Title</span>
-                            <span v-if="receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آفلاین' ]]</span>
+                            <span></span>
+                            <span v-if="receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
                         </div>
                     </div>
                     <div class="header__options">
@@ -388,7 +388,8 @@
                             let mythis = this;
                             this.socket.send(JSON.stringify({
                                 'receiver_status': 'online',
-                                'client_id': '',
+                                'client_id': 'supporter',
+                                'user_id': mythis.user_id,
                             }));
                         }, 1500);
                     }
@@ -408,9 +409,11 @@
                     }, 120);
 
                     // send offline status
+                    let mythis = this;
                     this.socket.send(JSON.stringify({
                         'receiver_status': 'offline',
-                        'client_id': '',
+                        'client_id': 'supporter',
+                        'user_id': mythis.user_id,
                     }));
                 }
             },

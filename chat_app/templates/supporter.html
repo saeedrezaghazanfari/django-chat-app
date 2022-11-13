@@ -39,7 +39,7 @@
                         <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
+                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
@@ -51,7 +51,7 @@
                         <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]]</div>
+                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
@@ -69,7 +69,7 @@
                         <div>
                             <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
                             <span v-else>برای پاسخگویی لطفا یکی از آیتم های داخل سایدبار را انتخاب کنید</span>
-                            <span v-if="client_id && receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آفلاین' ]]</span>
+                            <span v-if="client_id && receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
                         </div>
                     </div>
                     <div class="header__option">
@@ -360,7 +360,8 @@
                             nosupoorter_result.push({
                                 "owner_id": this.unreads_nosupoorter_pre[i].owner_id,
                                 "owner_name": this.unreads_nosupoorter_pre[i].owner_name,
-                                "counter": nosupoorter_count[key]
+                                "counter": nosupoorter_count[key],
+                                "status": ""
                             })
                             break;
                         }
@@ -383,7 +384,8 @@
                             thissupporter_result.push({
                                 "owner_id": this.unreads_thissupporter_pre[i].owner_id,
                                 "owner_name": this.unreads_thissupporter_pre[i].owner_name,
-                                "counter": thissupporter_count[key]
+                                "counter": thissupporter_count[key],
+                                "status": ""
                             })
                             break;
                         }
@@ -463,10 +465,18 @@
                     let message = JSON.parse(e.data);
                     console.log(message);
 
-                    
-
                     if(message.receiver_status) {
-                        mythis.receiver_status = message.receiver_status;
+                        if(mythis.client_id)
+                            mythis.receiver_status = message.receiver_status;
+
+                        mythis.unreads_thissupporter.forEach(element => {
+                            if(element.owner_id == message.user_id) 
+                                element.status = message.receiver_status;
+                        });
+                        mythis.unreads_nosupoorter.forEach(element => {
+                            if(element.owner_id == message.user_id) 
+                                element.status = message.receiver_status;
+                        });
                     }
 
                     // + add message to board
@@ -486,7 +496,8 @@
                                     thissupporter_result.push({
                                         "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
                                         "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
-                                        "counter": thissupporter_count[key]
+                                        "counter": thissupporter_count[key],
+                                        "status": ""
                                     })
                                     break;
                                 }
@@ -581,6 +592,7 @@
                     'client_id': mythis.client_id,
                 }));
 
+                this.receiver_status = '';
                 this.client_id = '';
                 this.client_name = '';
                 this.msg_input = '';

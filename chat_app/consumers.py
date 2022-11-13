@@ -73,9 +73,9 @@ class ChatConsumer(WebsocketConsumer):
 
             # send status to client
             if self.type == 'supporter' and text_data_json.get('receiver_status'):
-                user_group_name_1 = f"chat_client_{text_data_json['client_id']}" 
+                user_group_name = f"chat_client_{text_data_json['client_id']}" 
                 async_to_sync(self.channel_layer.group_send)(
-                    user_group_name_1,
+                    user_group_name,
                     {
                         'type': 'send_msg',
                         'message': text_data
@@ -84,9 +84,9 @@ class ChatConsumer(WebsocketConsumer):
 
             # send status to supporter (unread msgs board)
             if self.type == 'client' and text_data_json.get('receiver_status'):
-                user_group_name_1 = "unread_msg_board"    
+                user_group_name = "unread_msg_board"    
                 async_to_sync(self.channel_layer.group_send)(
-                    user_group_name_1,
+                    user_group_name,
                     {
                         'type': 'send_msg',
                         'message': text_data
