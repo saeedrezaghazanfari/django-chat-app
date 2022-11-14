@@ -58,6 +58,13 @@ def check_userid(request):
                 }
                 chats_arr.append(obj)
 
+            # update the unread messages
+            ChatModel.objects.filter(
+                sender='supporter',
+                is_seen=False,
+                client=client
+            ).update(is_seen=True)
+
             chats_arr.reverse()
 
             return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
@@ -204,11 +211,11 @@ def supporter_read_all(request):
             return HttpResponse('You are not a supporter!')
         
         # update the unread messages
-        # ChatModel.objects.filter(
-        #     sender='client',
-        #     is_seen=False,
-        #     supporter__user=request.user
-        # ).update(is_seen=True)
+        ChatModel.objects.filter(
+            sender='client',
+            is_seen=False,
+            supporter__user=request.user
+        ).update(is_seen=True)
 
         supporter = SupporterModel.objects.get(user=request.user, is_active=True)
         print(client_id)

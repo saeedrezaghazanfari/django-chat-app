@@ -75,7 +75,7 @@
                     <div class="header__option">
                         
                         <div class="wrapper_btns">
-                            <button class="btns_base" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
+                            <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
                             <button class="btns_base openclose_addreadymsg" @click="openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
                             
                             <div class="copybox_section d-none">
