@@ -39,7 +39,6 @@ class ChatConsumer(WebsocketConsumer):
         elif self.type == 'client':
 
             self.group_name = f"chat_client_{self.user_id}"
-            # print('client: ', self.group_name)
 
             if UserChatModel.objects.filter(user_chat_uid=self.user_id, is_blocked=False).exists():
                 self.user = UserChatModel.objects.get(user_chat_uid=self.user_id, is_blocked=False)
@@ -83,7 +82,7 @@ class ChatConsumer(WebsocketConsumer):
                 )
 
             # send status to supporter (unread msgs board)
-            if self.type == 'client' and text_data_json.get('receiver_status'):
+            elif self.type == 'client' and text_data_json.get('receiver_status'):
                 user_group_name = "unread_msg_board"    
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name,
@@ -92,7 +91,46 @@ class ChatConsumer(WebsocketConsumer):
                         'message': text_data
                     }
                 )
+
+            elif self.type == 'supporter' and text_data_json.get('message_id'):
+                if text_data_json.get('message_sender') == 'client':
+
+                    client = UserChatModel.objects.get(user_chat_uid=str(text_data_json.get('client_id')))
+
+                    ChatModel.objects.filter(
+                        sender='client',
+                        client=client,
+                        supporter=self.user,
+                        is_seen=False
+                    ).update(is_seen=True)
+
+                    user_group_name = f"chat_client_{str(client.user_chat_uid)}" 
+                    async_to_sync(self.channel_layer.group_send)(
+                        user_group_name,
+                        {
+                            'type': 'send_msg',
+                            'message': text_data
+                        }
+                    )
+
                 
+            elif self.type == 'client' and text_data_json.get('message_id'):
+                if text_data_json.get('message_sender') == 'supporter':
+
+                    chatobj = ChatModel.objects.get(
+                        id=text_data_json['message_id']
+                    )
+                    chatobj.is_seen=True
+                    chatobj.save()
+
+                    async_to_sync(self.channel_layer.group_send)(
+                        "unread_msg_board",
+                        {
+                            'type': 'send_msg',
+                            'message': text_data
+                        }
+                    )
+
             # send msg from supporter to client
             elif self.type == 'supporter' and not text_data_json.get('receiver_status'):
 

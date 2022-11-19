@@ -543,7 +543,14 @@
 
                     if(message.receiver_status == 'online' || message.receiver_status == 'offline')
                         mythis.receiver_status = message.receiver_status;
-                    else
+                    
+                    else if(message.message_id){
+                        mythis.message_list.forEach(element => {
+                            element.is_seen = true;
+                        });
+                    }
+
+                    else if (!message.receiver_status && !message.message_id)
                         mythis.message_list.push(message);
 
                     setTimeout(()=> {

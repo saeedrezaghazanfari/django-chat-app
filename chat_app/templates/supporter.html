@@ -465,6 +465,17 @@
                     let message = JSON.parse(e.data);
                     console.log(message);
 
+                    // + read this message if this page is open
+                    if(message.owner_id == mythis.client_id){       
+                        // read this msg signal
+                        mythis.socket.send(JSON.stringify({
+                            'message_id': 'all-msg',
+                            'message_sender': 'client',
+                            'client_id': mythis.client_id,
+                        }));
+                    }
+                    // - read this message if this page is open
+
                     if(message.receiver_status) {
                         if(mythis.client_id)
                             mythis.receiver_status = message.receiver_status;
@@ -567,6 +578,13 @@
                             let mythis = this;
                             this.socket.send(JSON.stringify({
                                 'receiver_status': 'online',
+                                'client_id': mythis.client_id,
+                            }));
+
+                            // read all message signal
+                            this.socket.send(JSON.stringify({
+                                'message_id': 'all-msg',
+                                'message_sender': 'client',
                                 'client_id': mythis.client_id,
                             }));
                         }
