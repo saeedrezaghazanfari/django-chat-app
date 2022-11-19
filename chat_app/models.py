@@ -1,3 +1,4 @@
+from email.policy import default
 from hashlib import blake2b
 import uuid
 from django.db import models
@@ -10,7 +11,7 @@ class SupporterModel(models.Model):
 
     supporter_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی پشتیبان'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('کاربر'))
-    score = models.IntegerField(verbose_name=_('امتیاز'))
+    score = models.IntegerField(default=0, verbose_name=_('امتیاز'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال / غیرفعال'))
     created = models.DateTimeField(auto_now_add=True)
     

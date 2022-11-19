@@ -19,7 +19,7 @@
         <div class="chatapp__btn" @click="open_close_box">
             <div>
                 <img src="site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
-                <div id="alert_msg_ctx" class="d-none"></div>
+                <div id="alert_msg_ctx" :class="have_new_msg ? '' : 'd-none'"></div>
             </div>
         </div>
     
@@ -30,7 +30,7 @@
                         <img src="site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
                             <span></span>
-                            <span v-if="receiver_status">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
+                            <span>[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
                         </div>
                     </div>
                     <div class="header__options">
@@ -152,7 +152,7 @@
             <div class="body__inputs">
                 <form novalidate class="d-none" @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
-                        <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" autofocus placeholder="پیام خود را وارد کنید:">
+                        <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" placeholder="پیام خود را وارد کنید:">
                         <button class="show_game" type="button" @click="show_game_btn">
                             <img src="site_static/django_chat_app/img/game.png" alt="let's go to game">
                         </button>
@@ -205,6 +205,9 @@
                 user_is_logged: false,
                 user_id: '',
 
+                is_open_box: false,
+                have_new_msg: false,
+
                 receiver_status: '',
 
                 socket: '',
@@ -237,6 +240,12 @@
                 new Audio('/site_static/django_chat_app/media/send.mp3').play();
             },
 
+            focus_msg_input() {
+                setTimeout(() => {
+                    document.querySelector('section.chatapp .body__inputs #text-chatinput').focus();
+                }, 200);
+            },
+            
             set_setting() {
 
                 if(this.is_set_env)
@@ -332,8 +341,12 @@
             },
 
             open_close_box() {
+
                 if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
-                    document.querySelector('section.chatapp .body__inputs #text-chatinput').setAttribute('autofocus', 'on');
+
+                    this.is_open_box = true;
+                    this.have_new_msg = false;
+                    this.focus_msg_input();
                     document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
                     setTimeout(() => {
                         document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
@@ -391,6 +404,13 @@
                                 'client_id': 'supporter',
                                 'user_id': mythis.user_id,
                             }));
+
+                            // read all message signal
+                            this.socket.send(JSON.stringify({
+                                'message_id': 'all-msg',
+                                'message_sender': 'supporter',
+                                'client_id': 'supporter',
+                            }));
                         }, 1500);
                     }
                     else {
@@ -401,7 +421,9 @@
 
                     this.go_to_bottom_of_box();
 
-                } else {
+                } 
+                else {
+                    this.is_open_box = false;
                     document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__show');
                     document.querySelector('section.chatapp .chatapp__msg').classList.add('chatapp__hide');
                     setTimeout(() => {
@@ -419,6 +441,7 @@
             },
 
             reply_msg(elementId, msgId) {
+                this.focus_msg_input();
                 let msgbox = document.getElementById(elementId);
                 let reply_writer = '';
                 let reply_id = msgId;
@@ -538,24 +561,39 @@
                 
                 let mythis = this;
                 this.socket.onmessage = function(e) {
+
                     let message = JSON.parse(e.data);
                     console.log(message);
 
                     if(message.receiver_status == 'online' || message.receiver_status == 'offline')
                         mythis.receiver_status = message.receiver_status;
                     
-                    else if(message.message_id){
+                    if(message.message_id && mythis.is_open_box){
                         mythis.message_list.forEach(element => {
                             element.is_seen = true;
                         });
                     }
 
-                    else if (!message.receiver_status && !message.message_id)
+                    else if (!message.receiver_status && !message.message_id){
                         mythis.message_list.push(message);
+
+                        if(!mythis.is_open_box)
+                            mythis.have_new_msg = true;
+                    }
 
                     setTimeout(()=> {
                         mythis.go_to_bottom_of_box();
                     }, 200);
+
+                    if(mythis.is_open_box){
+                        // read all message signal
+                        mythis.socket.send(JSON.stringify({
+                            'message_id': 'all-msg',
+                            'message_sender': 'supporter',
+                            'client_id': 'supporter',
+                        }));
+                        mythis.have_new_msg = false;
+                    }
                 };
 
                 this.socket.onclose = function(e) {
