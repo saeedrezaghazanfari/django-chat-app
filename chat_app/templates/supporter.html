@@ -33,6 +33,7 @@
 
                 <div class="wrapper__chatboxes">
     
+                    <br>
                     <h4>پیام های ناخوانده ی شما</h4>
 
                     <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
@@ -45,6 +46,7 @@
                         </div>
                     </template>
                     
+                    <br>
                     <h4>سایر پیام های ناخوانده</h4>
 
                     <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
@@ -54,6 +56,18 @@
                                 <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                        </div>
+                    </template>
+
+                    <br>
+                    <h4>سایر کاربران</h4>
+
+                    <template v-for="(chat, index) in chat_to_all" :key="chat">
+                        <div class="chat__box" :class="'page3_item_' + index" @click="show_user_chat_page(chat.user_chat_uid, `${chat.first_name} ${chat.last_name}`, `page3_item_${index}`, 'anyone', index)">
+                            <div class="user_date_div">
+                                <div>[[ chat.first_name ]] [[ chat.last_name ]]</div>
+                                <div>[[ chat.user_chat_uid.slice(0,3) ]]****[[ chat.user_chat_uid.slice(7) ]]</div>
+                            </div>
                         </div>
                     </template>
 
@@ -224,6 +238,8 @@
 
                 ready_msgs: [],
 
+                chat_to_all: [],
+
                 message_list: [],
                 unreads_nosupoorter_pre: [],
                 unreads_nosupoorter: [],
@@ -335,6 +351,8 @@
                                 response.unreads_nosupoorter,
                                 response.unreads_thissupporter
                             )
+
+                            this.chat_to_all = response.chat_to_all;
                         }
                     })
                     .catch(err => {
@@ -596,11 +614,10 @@
                             this.message_list = response.data;
                             console.log(response);
 
-                            if(msg_type == 'thissupporter') {
+                            if(msg_type == 'thissupporter')
                                 this.unreads_thissupporter[index_item].counter = 0;
-                            } else if(msg_type == 'nosupoorter') {
+                            else if(msg_type == 'nosupoorter')
                                 this.unreads_nosupoorter[index_item].counter = 0;
-                            }
 
                             setTimeout(()=> {
                                 this.go_to_bottom_of_box();

@@ -193,9 +193,18 @@ def supporter_unreads(request):
             }
             unreads_thissupporter.append(obj)
 
+        chat_to_all = list(
+            UserChatModel.objects.filter(
+                is_blocked=False #TODO add filter: return users who actived just in 30 days ago
+            ).values(
+                'user_chat_uid', 'first_name', 'last_name'
+            )
+        )
+
         return JsonResponse({
             'unreads_nosupoorter': unreads_nosupoorter, 
             'unreads_thissupporter': unreads_thissupporter, 
+            'chat_to_all': chat_to_all,
             'status': 200
         })
     return JsonResponse({'status': 400})
