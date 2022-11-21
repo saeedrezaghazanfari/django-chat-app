@@ -8,8 +8,8 @@ from .models import (
 
 
 class SupporterModel_Admin(admin.ModelAdmin):
-    list_display = ['user', 'supporter_uid', 'score', 'is_active']
-    search_field = ['score']
+    list_display = ['user', 'supporter_uid', 'fullname' 'is_active']
+    search_field = ['supporter_uid', 'fullname']
     ordering = ['-id']
 
     
@@ -31,7 +31,7 @@ class ReadyChatModel_Admin(admin.ModelAdmin):
     ordering = ['-id']
     
 
-admin.site.register(SupporterModel, SupporterModel_Admin)
+admin.site.register(SupporterModel)
 admin.site.register(ChatModel, ChatModel_Admin)
 admin.site.register(UserChatModel, UserChatModel_Admin)
 admin.site.register(ReadyChatModel, ReadyChatModel_Admin)

@@ -9,8 +9,7 @@ class SupporterModel(models.Model):
 
     supporter_uid = models.CharField(default=unique_username, max_length=255, editable=False, unique=True, verbose_name=_('آیدی پشتیبان'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('کاربر'))
-    full_name = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('نام نمایشی'))
-    score = models.IntegerField(default=0, verbose_name=_('امتیاز'))
+    fullname = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('نام نمایشی'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال / غیرفعال'))
     created = models.DateTimeField(auto_now_add=True)
     
