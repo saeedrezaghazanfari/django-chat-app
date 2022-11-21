@@ -1,15 +1,14 @@
-import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
 from django.shortcuts import render
-from django.utils.safestring import mark_safe
 from .models import (
     SupporterModel,
     UserChatModel,
     ChatModel,
+    ReadyChatModel
 )
 
 
@@ -46,7 +45,7 @@ def check_userid(request):
 
                 obj = {
                     'id': item.id,
-                    'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                    'owner_id': item.supporter.supporter_uid if item.sender == 'supporter' else item.client.user_chat_uid,
                     'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                     'sender_type': item.sender,
                     'reply_id': item.reply.id if item.reply else '',
@@ -98,7 +97,7 @@ def create_userid(request):
 
         user_chat_model.save()
 
-        return JsonResponse({'data': str(user_chat_model.user_chat_uid), 'status': 200})
+        return JsonResponse({'data': user_chat_model.user_chat_uid, 'status': 200})
     return JsonResponse({'status': 400})
 
 
@@ -166,7 +165,7 @@ def supporter_unreads(request):
 
             obj = {
                 'id': item.id,
-                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_id': item.supporter.supporter_uid if item.sender == 'supporter' else item.client.user_chat_uid,
                 'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                 'sender_type': item.sender,
                 'reply_id': item.reply.id if item.reply else '',
@@ -182,7 +181,7 @@ def supporter_unreads(request):
 
             obj = {
                 'id': item.id,
-                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_id': item.supporter.supporter_uid if item.sender == 'supporter' else item.client.user_chat_uid,
                 'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                 'sender_type': item.sender,
                 'reply_id': item.reply.id if item.reply else '',
@@ -194,7 +193,11 @@ def supporter_unreads(request):
             }
             unreads_thissupporter.append(obj)
 
-        return JsonResponse({'unreads_nosupoorter': unreads_nosupoorter, 'unreads_thissupporter': unreads_thissupporter, 'status': 200})
+        return JsonResponse({
+            'unreads_nosupoorter': unreads_nosupoorter, 
+            'unreads_thissupporter': unreads_thissupporter, 
+            'status': 200
+        })
     return JsonResponse({'status': 400})
 
 
@@ -206,23 +209,49 @@ def supporter_read_all(request):
 
         supporter_uid = request.POST.get('supporter_uid')
         client_id= request.POST.get('client_id')
+        msg_type= request.POST.get('msg_type')
         
-        if not client_id or not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+        if not client_id or not msg_type or not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
             return HttpResponse('You are not a supporter!')
         
-        # update the unread messages
-        ChatModel.objects.filter(
-            sender='client',
-            is_seen=False,
-            supporter__user=request.user
-        ).update(is_seen=True)
-
         supporter = SupporterModel.objects.get(user=request.user, is_active=True)
-        print(client_id)
+        client = UserChatModel.objects.get(user_chat_uid=client_id, is_blocked=False)
+        
+        if msg_type == 'thissupporter':
+
+            # update the unread messages
+            ChatModel.objects.filter(
+                sender='client',
+                is_seen=False,
+                supporter=supporter,
+                client=client
+            ).update(is_seen=True)
+    
+    
+        elif msg_type == 'nosupoorter':
+
+            # add supporter to client
+            UserChatModel.objects.filter(
+                user_chat_uid=client_id,
+                have_supporter=None
+            ).update(
+                have_supporter=supporter
+            )
+
+            # update the unread messages
+            ChatModel.objects.filter(
+                sender='client',
+                is_seen=False,
+                client=client,
+                supporter=None
+            ).update(
+                supporter=supporter,
+                is_seen=True
+            )
 
         chats = ChatModel.objects.filter(
             supporter=supporter,
-            client__user_chat_uid=client_id
+            client=client
         ).all()[:15]
         chats_arr = []
 
@@ -230,7 +259,7 @@ def supporter_read_all(request):
 
             obj = {
                 'id': item.id,
-                'owner_id': str(item.supporter.supporter_uid) if item.sender == 'supporter' else str(item.client.user_chat_uid),
+                'owner_id': item.supporter.supporter_uid if item.sender == 'supporter' else item.client.user_chat_uid,
                 'owner_name': 'supporter' if item.sender == 'supporter' else f'{item.client.first_name} {item.client.last_name}',
                 'sender_type': item.sender,
                 'reply_id': item.reply.id if item.reply else '',
@@ -245,12 +274,70 @@ def supporter_read_all(request):
         chats_arr.reverse()
 
         return JsonResponse({'data': chats_arr, 'status': 200})
+    
     return JsonResponse({'status': 400})
 
 
-# url: /join-chat/<str:username>
-def join_chat(request, username):
-    return render(request, 'join_chat.html', {
-        'username_json': mark_safe(json.dumps(username))
-    })
+# url: /django-chat-app/chat/supporter/ready-msg/get/
+@login_required
+@csrf_exempt
+def get_ready_msg(request):
+    if request.method == 'POST':
 
+        supporter_uid = request.POST.get('supporter_uid')
+        
+        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+            return HttpResponse('You are not a supporter!')
+
+        ready_chats = ReadyChatModel.objects.all()
+        ready_chats_obj = list(ready_chats.values(
+            'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
+        ))
+        return JsonResponse({'data': ready_chats_obj, 'status': 200})
+    return JsonResponse({'status': 400}) 
+
+            
+# url: /django-chat-app/chat/supporter/ready-msg/del/
+@login_required
+@csrf_exempt
+def delete_ready_msg(request):
+    if request.method == 'POST':
+
+        supporter_uid = request.POST.get('supporter_uid')
+        
+        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+            return HttpResponse('You are not a supporter!')
+
+        # delete msg
+        ReadyChatModel.objects.get(
+            id=request.POST.get('msgID')
+        ).delete()
+
+        ready_chats = ReadyChatModel.objects.all()
+        ready_chats_obj = list(ready_chats.values(
+            'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
+        ))
+        return JsonResponse({'data': ready_chats_obj, 'status': 200})
+    return JsonResponse({'status': 400}) 
+
+
+# url: /django-chat-app/chat/supporter/ready-msg/create/
+@login_required
+@csrf_exempt
+def create_ready_msg(request):
+    if request.method == 'POST':
+
+        supporter_uid = request.POST.get('supporter_uid')
+        
+        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
+            return HttpResponse('You are not a supporter!')
+
+        new_msg = ReadyChatModel.objects.create(
+            subject=request.POST.get('subject'),
+            content=request.POST.get('content'),
+            supporter=SupporterModel.objects.get(supporter_uid=supporter_uid)
+        )
+        all_msg = ReadyChatModel.objects.all().values('id', 'subject', 'content', 'supporter__supporter_uid', 'is_public')
+
+        return JsonResponse({'data': list(all_msg), 'status': 200})
+    return JsonResponse({'status': 400}) 

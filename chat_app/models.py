@@ -1,16 +1,15 @@
-from email.policy import default
-from hashlib import blake2b
-import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from .utils import unique_username
 
 
 class SupporterModel(models.Model):
     """ for creating a list of supporter for your website """
 
-    supporter_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی پشتیبان'))
+    supporter_uid = models.CharField(default=unique_username, max_length=255, editable=False, unique=True, verbose_name=_('آیدی پشتیبان'))
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name=_('کاربر'))
+    full_name = models.CharField(max_length=255, blank=True, null=True, verbose_name=_('نام نمایشی'))
     score = models.IntegerField(default=0, verbose_name=_('امتیاز'))
     is_active = models.BooleanField(default=False, verbose_name=_('فعال / غیرفعال'))
     created = models.DateTimeField(auto_now_add=True)
@@ -48,7 +47,7 @@ class ChatModel(models.Model):
 class UserChatModel(models.Model):
     """ create a flag for user for chat to supporter """
 
-    user_chat_uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
+    user_chat_uid = models.CharField(default=unique_username, max_length=255, editable=False, unique=True, verbose_name=_('آیدی چت کاربر'))
     have_supporter = models.ForeignKey(SupporterModel, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('آیا پشتیبان دارد؟'))
     first_name = models.CharField(max_length=255, verbose_name=_('نام'))
     last_name = models.CharField(max_length=255, verbose_name=_('نام خانوادگی'))

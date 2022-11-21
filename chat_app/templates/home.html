@@ -19,7 +19,7 @@
         <div class="chatapp__btn" @click="open_close_box">
             <div>
                 <img src="site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
-                <div id="alert_msg_ctx" :class="have_new_msg ? '' : 'd-none'"></div>
+                <div id="alert_msg_ctx" :class="counter_new_msg > 0 ? '' : 'd-none'"></div>
             </div>
         </div>
     
@@ -116,7 +116,7 @@
 
                         <form novalidate @submit.prevent="chatapp_submitform">
                             <div class="chatapp_formcontrol">
-                                <input type="text" id="chatapp__fname" autofocus="on" autocomplete="off">
+                                <input type="text" id="chatapp__fname" autocomplete="off">
                                 <label for="chatapp__fname">نام</label>
                             </div>
                             <div class="chatapp_formcontrol">
@@ -139,10 +139,10 @@
                     </div>
                     <!-- - login form -->
 
-                    <div class="btn_last_msg">
+                    <div class="btn_last_msg d-none">
                         <button @click="go_to_bottom_of_box">
                             <img src="site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
-                            <div class="unreadmsg_counter">2</div>
+                            <div class="unreadmsg_counter" v-if="counter_new_msg > 0">[[ counter_new_msg ]]</div>
                         </button>
                     </div>
 
@@ -206,7 +206,7 @@
                 user_id: '',
 
                 is_open_box: false,
-                have_new_msg: false,
+                counter_new_msg: 0,
 
                 receiver_status: '',
 
@@ -345,7 +345,7 @@
                 if(document.querySelector('section.chatapp .chatapp__msg').classList.contains('d-none')) {
 
                     this.is_open_box = true;
-                    this.have_new_msg = false;
+                    this.counter_new_msg = 0;
                     this.focus_msg_input();
                     document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
                     setTimeout(() => {
@@ -354,11 +354,9 @@
                     }, 100);
 
                     /* + search for localstorage */
-                    let stored_userid = localStorage.getItem('chatapp_client_id');
+                    let stored_userid = JSON.parse(localStorage.getItem('chatapp_client_id'));
                     
                     if (stored_userid) {
-                        
-                        stored_userid = stored_userid.slice(1, (stored_userid.length)-1);
                         
                         let formdata = new FormData();
                         formdata.append('user_id', stored_userid);
@@ -415,6 +413,9 @@
                     }
                     else {
                         document.querySelector('.chatapp__form').classList.remove('d-none');
+                        setTimeout(() => {
+                            document.querySelector('section.chatapp .chatapp__form input#chatapp__fname').focus();
+                        }, 200);
                         document.querySelector('section.chatapp .btn_last_msg').classList.add('d-none');
                     }
                     /* - search for localstorage */
@@ -431,12 +432,14 @@
                     }, 120);
 
                     // send offline status
-                    let mythis = this;
-                    this.socket.send(JSON.stringify({
-                        'receiver_status': 'offline',
-                        'client_id': 'supporter',
-                        'user_id': mythis.user_id,
-                    }));
+                    if(this.socket) {
+                        let mythis = this;
+                        this.socket.send(JSON.stringify({
+                            'receiver_status': 'offline',
+                            'client_id': 'supporter',
+                            'user_id': mythis.user_id,
+                        }));
+                    }
                 }
             },
 
@@ -536,15 +539,20 @@
                     .then(response => response.json())
                     .then( (response) => {
                         if(response.status == 200) {
-                            let user_chat_id = response.data;
-                            localStorage.setItem(
-                                'chatapp_client_id', JSON.stringify(user_chat_id)
-                            );
 
+                            this.user_id = response.data;
+                            localStorage.setItem(
+                                'chatapp_client_id', JSON.stringify(this.user_id)
+                            );
+                            this.start_socket();
+                            
                             document.querySelector('.chatapp__form').classList.add('d-none');
                             document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
                             document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
                             document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+                            setTimeout(()=> {
+                                this.focus_msg_input();
+                            }, 500);
                         }
                     })
                     .catch(err => {
@@ -578,7 +586,7 @@
                         mythis.message_list.push(message);
 
                         if(!mythis.is_open_box)
-                            mythis.have_new_msg = true;
+                            mythis.counter_new_msg += 1;
                     }
 
                     setTimeout(()=> {
@@ -592,7 +600,7 @@
                             'message_sender': 'supporter',
                             'client_id': 'supporter',
                         }));
-                        mythis.have_new_msg = false;
+                        mythis.counter_new_msg = 0;
                     }
                 };
 

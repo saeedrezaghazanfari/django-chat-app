@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>Supporter Home</title>
+    <title>صفحه‌ی پشتیبان</title>
 
     <!-- External files2 -->
     <link rel="stylesheet" href="/site_static/django_chat_app/css/supporter.css">
@@ -39,7 +39,7 @@
                         <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
+                                <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
@@ -47,11 +47,11 @@
                     
                     <h4>سایر پیام های ناخوانده</h4>
 
-                    <template v-for="msg in unreads_nosupoorter" :key="msg">
+                    <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
                         <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
                             <div class="user_date_div">
                                 <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,5) ]]***[[ msg.owner_id.slice(31) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
+                                <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
                             </div>
                             <div class="unreadmsg_counter">[[ msg.counter ]]</div>
                         </div>
@@ -86,23 +86,13 @@
 
                                 <div class="wrapper_boxes">
 
-                                    <div class="msg_item">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim suscipit, optio non quisquam explicabo nobis.</p>
+                                    <div class="msg_item" v-for="ready_msg in ready_msgs" :key="ready_msg.id">
+                                        <p :title="ready_msg.subject">[[ ready_msg.content ]]</p>
                                         <div class="wrapper_btns_msgs">
-                                            <button><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
+                                            <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
                                             <div class="wrapper_2btn_msgs">
-                                                <button><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
-                                                <button><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="msg_item">
-                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim suscipit, optio non quisquam explicabo nobis.</p>
-                                        <div class="wrapper_btns_msgs">
-                                            <button><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
-                                            <div class="wrapper_2btn_msgs">
-                                                <button><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
-                                                <button><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
+                                                <button @click="msg_input+=ready_msg.content" v-if="client_id"><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
+                                                <button @click="copy_ready_msg(ready_msg.content)"><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
                                             </div>
                                         </div>
                                     </div>
@@ -114,10 +104,10 @@
                                 <div class="wrapper_close_btn">
                                     <button class="close_box" @click="close_addcopy_box">&times;</button>
                                 </div>
-                                <form novalidate>
-                                    <input type="text" id="subject-chatinput" autocomplete="off" autofocus placeholder="عنوان متن:">
-                                    <textarea id="content-chatinput" rows="4" autocomplete="off" placeholder="محتوای متن:"></textarea>
-                                    <button type="button">ذخیره</button>
+                                <form novalidate @submit.prevent="submit_new_readymsg">
+                                    <input type="text" id="subject-chatinput" v-model="new_readymsg_subject" autocomplete="off" autofocus placeholder="عنوان متن:">
+                                    <textarea id="content-chatinput" rows="4" v-model="new_readymsg_content" autocomplete="off" placeholder="محتوای متن:"></textarea>
+                                    <button type="submit">ذخیره</button>
                                 </form>
                             </div>
 
@@ -188,10 +178,10 @@
                     </div>
                 </form>
 
-                <div class="btn_last_msg" @click="go_to_bottom_of_box">
+                <div class="btn_last_msg d-none" @click="go_to_bottom_of_box">
                     <button @click="go_to_bottom_of_box">
                         <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
-                        <div class="unreadmsg_counter">2</div>
+                        <div class="unreadmsg_counter d-none"></div>
                     </button>
                 </div>
 
@@ -228,6 +218,11 @@
                 msg_input: '',
 
                 receiver_status: '',
+
+                new_readymsg_subject: '',
+                new_readymsg_content: '',
+
+                ready_msgs: [],
 
                 message_list: [],
                 unreads_nosupoorter_pre: [],
@@ -352,7 +347,7 @@
             set_unread_msgs_to_board(GetNosupoorter, GetThissupporter) {
 
                 // get nosupoorter
-                this.unreads_nosupoorter_pre_pre = GetNosupoorter;
+                this.unreads_nosupoorter_pre = GetNosupoorter;
                 let nosupoorter_count = {};
                 let nosupoorter_result = [];
 
@@ -506,28 +501,56 @@
                     // + add message to board
                     else if(!message.receiver_status && message.sender_type == 'client' && mythis.client_id == '' && !message.message_id) {
 
-                        mythis.unreads_thissupporter_pre.push(message);
-                        let thissupporter_count = {};
-                        let thissupporter_result = [];
+                        if(message.client_have_supporter == 'yes') {
 
-                        mythis.unreads_thissupporter_pre.forEach(element => {
-                            thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
-                        });
-                        
-                        for (const key in thissupporter_count) {
-                            for (let i = 0; i < mythis.unreads_thissupporter_pre.length; i++) {
-                                if(key == mythis.unreads_thissupporter_pre[i].owner_id) {
-                                    thissupporter_result.push({
-                                        "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
-                                        "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
-                                        "counter": thissupporter_count[key],
-                                        "status": ""
-                                    })
-                                    break;
+                            mythis.unreads_thissupporter_pre.push(message);
+                            let thissupporter_count = {};
+                            let thissupporter_result = [];
+    
+                            mythis.unreads_thissupporter_pre.forEach(element => {
+                                thissupporter_count[element.owner_id] = (thissupporter_count[element.owner_id] || 0) + 1;
+                            });
+                            
+                            for (const key in thissupporter_count) {
+                                for (let i = 0; i < mythis.unreads_thissupporter_pre.length; i++) {
+                                    if(key == mythis.unreads_thissupporter_pre[i].owner_id) {
+                                        thissupporter_result.push({
+                                            "owner_id": mythis.unreads_thissupporter_pre[i].owner_id,
+                                            "owner_name": mythis.unreads_thissupporter_pre[i].owner_name,
+                                            "counter": thissupporter_count[key],
+                                            "status": ""
+                                        })
+                                        break;
+                                    }
                                 }
                             }
+                            mythis.unreads_thissupporter = thissupporter_result;
                         }
-                        mythis.unreads_thissupporter = thissupporter_result;
+                        else if(message.client_have_supporter == 'no') {
+
+                            mythis.unreads_nosupoorter_pre.push(message);
+                            let nosupoorter_count = {};
+                            let nosupoorter_result = [];
+
+                            mythis.unreads_nosupoorter_pre.forEach(element => {
+                                nosupoorter_count[element.owner_id] = (nosupoorter_count[element.owner_id] || 0) + 1;
+                            });
+
+                            for (const key in nosupoorter_count) {
+                                for (let i = 0; i < mythis.unreads_nosupoorter_pre.length; i++) {
+                                    if(key == mythis.unreads_nosupoorter_pre[i].owner_id) {
+                                        nosupoorter_result.push({
+                                            "owner_id": mythis.unreads_nosupoorter_pre[i].owner_id,
+                                            "owner_name": mythis.unreads_nosupoorter_pre[i].owner_name,
+                                            "counter": nosupoorter_count[key],
+                                            "status": ""
+                                        })
+                                        break;
+                                    }
+                                }
+                            }
+                            mythis.unreads_nosupoorter = nosupoorter_result;
+                        }
 
                         setTimeout(()=> {
                             mythis.go_to_bottom_of_box();
@@ -557,13 +580,15 @@
                 document.querySelector(`.chatapp .wrapper__chatboxes .${client_item}`).classList.add('msg_item_active');
                 document.querySelector('.chatapp .body__inputs').classList.remove('d-none');
                 
+                
                 this.client_id = client_id;
                 this.client_name = client_name;
-
+                
                 let formdata = new FormData();
                 formdata.append('supporter_uid', this.supporter_uid);
                 formdata.append('client_id', client_id);
-
+                formdata.append('msg_type', msg_type);
+                
                 (async () => {
                     await fetch('/django-chat-app/chat/supporter/read-all/', {
                         method: "POST",
@@ -575,8 +600,9 @@
                     .then(response => response.json())
                     .then((response) => {
                         if(response.status == 200) {
-
+                            
                             this.message_list = response.data;
+                            console.log(response);
 
                             if(msg_type == 'thissupporter') {
                                 this.unreads_thissupporter[index_item].counter = 0;
@@ -601,6 +627,7 @@
                                 'message_sender': 'client',
                                 'client_id': mythis.client_id,
                             }));
+
                         }
                     })
                     .catch(err => {
@@ -707,6 +734,9 @@
 
             openclose_addreadymsg() {
                 if(document.querySelector('.addbox_section').classList.contains('d-none')) {
+                    setTimeout(()=>{
+                        document.querySelector('.addbox_section input#subject-chatinput').focus();    
+                    }, 400);
                     document.querySelector('.copybox_section').classList.add('d-none');
                     document.querySelector('.addbox_section').classList.remove('d-none');
                 } else {
@@ -717,6 +747,31 @@
             
             openclose_copyreadymsg() {
                 if(document.querySelector('.copybox_section').classList.contains('d-none')) {
+
+                    if(this.ready_msgs.length == 0) {
+                        let formdata = new FormData();
+                        formdata.append('supporter_uid', this.supporter_uid);
+
+                        (async () => {
+                            await fetch('/django-chat-app/chat/supporter/ready-msg/get/', {
+                                method: "POST",
+                                body: new URLSearchParams(formdata),
+                                headers: {
+                                    "Content-type": "application/x-www-form-urlencoded"
+                                }
+                            })
+                            .then(response => response.json())
+                            .then((response) => {
+                                if(response.status == 200) {
+                                    this.ready_msgs = response.data;
+                                }
+                            })
+                            .catch(err => {
+                                console.log('ERR: ', err);
+                            });
+                        })();
+                    }
+
                     document.querySelector('.addbox_section').classList.add('d-none');
                     document.querySelector('.copybox_section').classList.remove('d-none');
                 }else {
@@ -725,6 +780,79 @@
                 }
             },
 
+            delete_ready_msg(msgID) {
+                let formdata = new FormData();
+                formdata.append('supporter_uid', this.supporter_uid);
+                formdata.append('msgID', msgID);
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/supporter/ready-msg/del/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+                            this.ready_msgs = response.data;
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+            },
+
+            copy_ready_msg(content) {
+                const el = document.createElement('textarea');
+                el.value = content;
+                document.body.appendChild(el);
+                el.select();
+                document.execCommand('copy');
+                document.body.removeChild(el);
+            },
+
+            submit_new_readymsg() {
+
+                if(this.new_readymsg_subject.length < 4)
+                    return;
+
+                if(this.new_readymsg_content.length < 4)
+                    return;
+                
+                let formdata = new FormData();
+                formdata.append('supporter_uid', this.supporter_uid);
+                formdata.append('subject', this.new_readymsg_subject);
+                formdata.append('content', this.new_readymsg_content);
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/supporter/ready-msg/create/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+                            this.ready_msgs = response.data;
+                            this.new_readymsg_subject = '';
+                            this.new_readymsg_content = '';
+                            
+                            setTimeout(()=>{
+                                this.openclose_copyreadymsg();
+                            }, 500);
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
+            },
+            
             close_addcopy_box() {
                 document.querySelector('.addbox_section').classList.add('d-none');
                 document.querySelector('.copybox_section').classList.add('d-none');
