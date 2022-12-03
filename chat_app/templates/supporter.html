@@ -169,6 +169,7 @@
                                             <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
+                                        <div class="msg__info__clock" v-if="edit_supporter_msg && msg_item.sender_type == 'supporter'" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)">ویرایش پیام</div>
                                     </div>
                                 </div>
                                 <div class="reply_one_msg" :class="msg_item.sender_type == 'supporter' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
@@ -234,6 +235,7 @@
                 env_dir: '',
                 env_max_report_number: '',
                 env_show_supporter_name: '',
+                edit_supporter_msg: false,
                 is_set_env: false,
 
                 supporter_uid: '',
@@ -251,6 +253,8 @@
                 ready_msgs: [],
 
                 chat_to_all: [],
+
+                message_status_is_edit: false,
 
                 message_list: [],
                 unreads_nosupoorter_pre: [],
@@ -306,7 +310,7 @@
                     return;
 
                 (async () => {
-                    await fetch('/django-chat-app/chat/setting/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
                         method: "POST",
                         headers: {
                             "Content-type": "application/x-www-form-urlencoded"
@@ -318,7 +322,7 @@
 
                             this.env_dir = response.data.dir;
                             this.env_show_supporter_name = response.data.show_supporter_name;
-                            this.env_max_report_number = response.data.max_report_number;
+                            this.edit_supporter_msg = response.data.edit_supporter_msg;
                             this.is_set_env = true;
 
                             // setting for direction
@@ -331,10 +335,6 @@
                             }
                             
                             if(this.env_show_supporter_name) {
-                                //TODO
-                            }
-
-                            if(this.env_max_report_number) {
                                 //TODO
                             }
                         }
@@ -351,7 +351,7 @@
                 formdata.append('supporter_uid', this.supporter_uid);
                 
                 (async () => {
-                    await fetch('/django-chat-app/chat/supporter/unreads/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/unreads/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {
@@ -616,7 +616,7 @@
                 formdata.append('msg_type', msg_type);
                 
                 (async () => {
-                    await fetch('/django-chat-app/chat/supporter/read-all/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/read-all/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {
@@ -688,6 +688,13 @@
                 if(!this.msg_input)
                     return;
 
+                if(this.message_status_is_edit) { /* just edit message */
+                    //TODO
+
+
+                    return;
+                }
+
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
                     this.socket.send(JSON.stringify({
@@ -752,7 +759,7 @@
                 formdata.append('report_item', this.report_item);
 
                 (async () => {
-                    await fetch('/django-chat-app/chat/supporter/report/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/report/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {
@@ -813,7 +820,7 @@
                         formdata.append('supporter_uid', this.supporter_uid);
 
                         (async () => {
-                            await fetch('/django-chat-app/chat/supporter/ready-msg/get/', {
+                            await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/get/', {
                                 method: "POST",
                                 body: new URLSearchParams(formdata),
                                 headers: {
@@ -840,13 +847,18 @@
                 }
             },
 
+            edit_message(elementId, msgId) {
+                this.message_status_is_edit = true;
+                this.reply_msg(elementId, msgId);
+            },
+
             delete_ready_msg(msgID) {
                 let formdata = new FormData();
                 formdata.append('supporter_uid', this.supporter_uid);
                 formdata.append('msgID', msgID);
 
                 (async () => {
-                    await fetch('/django-chat-app/chat/supporter/ready-msg/del/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/del/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {
@@ -888,7 +900,7 @@
                 formdata.append('content', this.new_readymsg_content);
 
                 (async () => {
-                    await fetch('/django-chat-app/chat/supporter/ready-msg/create/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/create/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {

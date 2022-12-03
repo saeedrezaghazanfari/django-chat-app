@@ -1,4 +1,5 @@
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',   # add for translating
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -89,6 +91,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LANGUAGES = [
+    ('fa', _('Persian')),
+    ('en', _('English')),
+    ('ar', _('Arabic')),
+    ('ru', _('Russia')),
+]
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True
@@ -105,6 +113,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ### DJANGO CHAT APP CONFIGS ### #
 CHATAPP_DIR = 'rtl'              # rtl - ltr - auto
 CHATAPP_SHOW_SUPPORTER_NAME = False
+CHATAPP_EDIT_USER_MESSAGE = True
+CHATAPP_EDIT_SUPPORTER_MESSAGE = True
 CHATAPP_TITLE = 'وبسایت تستی'
 CHATAPP_SUBTITLE = 'لطفا کوشا باشید.'
 CHATAPP_GAME = True

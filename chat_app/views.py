@@ -37,6 +37,8 @@ def check_userid(request):
             setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
             setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
             setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
+            setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
+            setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
 
             client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
 
@@ -116,6 +118,8 @@ def setting_chat(request):
         setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
         setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
         setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
+        setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
+        setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
 
         return JsonResponse({'data': setting_dict, 'status': 200})
 

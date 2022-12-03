@@ -9,7 +9,7 @@
     <title>django-chat-app</title>
 
     <!-- External files2 -->
-    <link rel="stylesheet" href="site_static/django_chat_app/css/custom.css">
+    <link rel="stylesheet" href="/site_static/django_chat_app/css/custom.css">
 
 </head>
 <body>
@@ -18,7 +18,7 @@
 
         <div class="chatapp__btn" @click="open_close_box">
             <div>
-                <img src="site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
+                <img src="/site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
                 <div id="alert_msg_ctx" :class="counter_new_msg > 0 ? '' : 'd-none'"></div>
             </div>
         </div>
@@ -27,14 +27,14 @@
             <div class="msg__header">
                 <div class="msg__wrapper">
                     <div class="header__info">
-                        <img src="site_static/django_chat_app/img/supporter.png" alt="">
+                        <img src="/site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
                             <span></span>
                             <span>[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
                         </div>
                     </div>
                     <div class="header__options">
-                        <button class="close__msgbox" @click="open_close_box"><img src="site_static/django_chat_app/img/close.png" alt="close chat application"></button>
+                        <button class="close__msgbox" @click="open_close_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat application"></button>
                     </div>
                 </div>
             </div>
@@ -86,8 +86,8 @@
                         <div class="btns__wrapper">
 
                             <div id="bg__glass" class="d-none"></div>
-                            <img src="site_static/django_chat_app/img/o.png" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
-                            <img src="site_static/django_chat_app/img/x.png" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="/site_static/django_chat_app/img/o.png" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="/site_static/django_chat_app/img/x.png" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
 
                             <div class="btns__wrapper__btn">
                                 <div class="btn_game m2px_b m2px_l" id="btn11"></div>
@@ -141,7 +141,7 @@
 
                     <div class="btn_last_msg d-none">
                         <button @click="go_to_bottom_of_box">
-                            <img src="site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
+                            <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
                             <div class="unreadmsg_counter"></div>
                         </button>
                     </div>
@@ -154,7 +154,7 @@
                     <div class="forminput_wrapper">
                         <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" placeholder="پیام خود را وارد کنید:">
                         <button class="show_game" type="button" @click="show_game_btn">
-                            <img src="site_static/django_chat_app/img/game.png" alt="let's go to game">
+                            <img src="/site_static/django_chat_app/img/game.png" alt="let's go to game">
                         </button>
 
                         <div class="reply_msg_wrapper d-none">
@@ -167,7 +167,7 @@
                         </div>
 
                         <button type="submit">
-                            <img src="site_static/django_chat_app/img/send.png" alt="send image">
+                            <img src="/site_static/django_chat_app/img/send.png" alt="send image">
                         </button>
                     </div>
                 </form>
@@ -178,8 +178,8 @@
         </div>
     </section>
 
-<!-- <script type="text/javascript" src="site_static/django_chat_app/js/custom.js"></script> -->
-<script type="text/javascript" src="site_static/django_chat_app/js/vue3.js"></script>
+<!-- <script type="text/javascript" src="/site_static/django_chat_app/js/custom.js"></script> -->
+<script type="text/javascript" src="/site_static/django_chat_app/js/vue3.js"></script>
 
 <script>
 
@@ -254,7 +254,7 @@
                     return;
 
                 (async () => {
-                    await fetch('/django-chat-app/chat/setting/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
                         method: "POST",
                         headers: {
                             "Content-type": "application/x-www-form-urlencoded"
@@ -373,7 +373,7 @@
                         formdata.append('user_id', stored_userid);
                         
                         (async () => {
-                            await fetch('/django-chat-app/auth/check/userid/', {
+                            await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/auth/check/userid/', {
                                 method: "POST",
                                 body: new URLSearchParams(formdata),
                                 headers: {
@@ -540,7 +540,7 @@
                 }
 
                 (async () => {
-                    await fetch('/django-chat-app/auth/create/userid/', {
+                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/auth/create/userid/', {
                         method: "POST",
                         body: new URLSearchParams(formdata),
                         headers: {
