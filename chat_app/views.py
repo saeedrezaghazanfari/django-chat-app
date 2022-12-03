@@ -8,7 +8,8 @@ from .models import (
     SupporterModel,
     UserChatModel,
     ChatModel,
-    ReadyChatModel
+    ReadyChatModel,
+    ReportUserModel
 )
 
 

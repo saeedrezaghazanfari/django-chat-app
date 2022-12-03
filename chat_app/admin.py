@@ -5,7 +5,8 @@ from .models import (
     SupporterModel,
     ChatModel,
     UserChatModel,
-    ReadyChatModel
+    ReadyChatModel,
+    ReportUserModel
 )
 
 
@@ -70,7 +71,14 @@ class ReadyChatModel_Admin(admin.ModelAdmin):
     ordering = ['-id']
     
 
+class ReportUserModel_Admin(admin.ModelAdmin):
+    list_display = ['user', 'item', 'created']
+    search_field = ['user', 'item']
+    ordering = ['-id']
+
+
 admin.site.register(SupporterModel, SupporterModel_Admin)
 admin.site.register(ChatModel, ChatModel_Admin)
 admin.site.register(UserChatModel, UserChatModel_Admin)
 admin.site.register(ReadyChatModel, ReadyChatModel_Admin)
+admin.site.register(ReportUserModel, ReportUserModel_Admin)
