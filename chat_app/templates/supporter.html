@@ -90,9 +90,20 @@
                         
                         <div class="wrapper_btns">
                             <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
-                            <button class="btns_base openclose_addreadymsg" v-if="client_id" @click="report_client">Report</button>
+                            <button class="btns_base openclose_addreadymsg" v-if="client_id" @click="show_report_div = !show_report_div">Report</button>
                             <button class="btns_base openclose_addreadymsg" @click="openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
                             
+                            <div style="background-color:antiquewhite; padding: 7px;" v-if="show_report_div">
+                                <select v-model="report_item">
+                                    <option value="badterms">استفاده از کلمات نامناسب</option>
+                                    <option value="others">دلایل دیگر</option>
+                                </select>
+                                <br>
+                                <textarea v-model="report_cause"></textarea>
+                                <br>
+                                <button type="button" @click="send_report">send</button>
+                            </div>
+
                             <div class="copybox_section d-none">
                                 <div class="wrapper_close_btn">
                                     <button class="close_box" @click="close_addcopy_box">&times;</button>
@@ -246,6 +257,10 @@
                 unreads_nosupoorter: [],
                 unreads_thissupporter_pre: [],
                 unreads_thissupporter: [],
+
+                show_report_div: false,
+                report_item: 'badterms',
+                report_cause: '',
             }
         },
 
@@ -728,8 +743,39 @@
                 this.msg_input = '';
             },
 
-            report_client() {
-                //TODO
+            send_report() {
+                
+                let formdata = new FormData();
+                formdata.append('supporter_uid', this.supporter_uid);
+                formdata.append('client_id', this.client_id);
+                formdata.append('report_cause', this.report_cause);
+                formdata.append('report_item', this.report_item);
+
+                (async () => {
+                    await fetch('/django-chat-app/chat/supporter/report/', {
+                        method: "POST",
+                        body: new URLSearchParams(formdata),
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then((response) => {
+                        if(response.status == 200) {
+
+                            if(response.is_blocked) {
+                                window.location.reload()
+                            }
+
+                            this.show_report_div = false;
+                            this.report_item = 'badterms';
+                            this.report_cause = '';
+                        }
+                    })
+                    .catch(err => {
+                        console.log('ERR: ', err);
+                    });
+                })();
             },
             
             close_sidebar() {

@@ -1,3 +1,4 @@
+from distutils.log import log
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -287,6 +288,39 @@ def supporter_read_all(request):
     
     return JsonResponse({'status': 400})
 
+
+# url: /django-chat-app/chat/supporter/report/
+@login_required
+@csrf_exempt
+def report_user(request):
+    if request.method == 'POST':
+        supporter_uid = request.POST.get('supporter_uid')
+        client_id = request.POST.get('client_id')
+        report_cause = request.POST.get('report_cause')
+        report_item = request.POST.get('report_item')
+
+        if supporter_uid and client_id and report_cause and report_item:
+            if UserChatModel.objects.filter(user_chat_uid=client_id).exists():
+                user = UserChatModel.objects.get(user_chat_uid=client_id)
+
+                ReportUserModel.objects.create(
+                    supporter=SupporterModel.objects.get(supporter_uid=supporter_uid),
+                    user=user,
+                    item=report_item,
+                    desc=report_cause
+                )
+
+                user.report_numbers = user.report_numbers + 1
+                user.save()
+
+                if user.report_numbers == settings.CHATAPP_MAX_REPORT_NUMBER:
+                    user.is_blocked = True
+                    user.save()
+                    return JsonResponse({'status': 200, 'is_blocked': True})
+                return JsonResponse({'status': 200, 'is_blocked': False})
+        return JsonResponse({'status': 400}) 
+    return JsonResponse({'status': 400}) 
+                
 
 # url: /django-chat-app/chat/supporter/ready-msg/get/
 @login_required

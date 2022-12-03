@@ -21,28 +21,19 @@ def del_users_more_30d(modeladmin, request, queryset):
 
 @admin.action(description=_('حذف کاربرانی که مسدود شده اند'))
 def del_users_isblocked(modeladmin, request, queryset):
-    if queryset.is_blocked:
-        queryset.delete()
-    else:
-        UserChatModel.objects.filter(
-            is_blocked=True
-        ).delete()
+    UserChatModel.objects.filter(
+        is_blocked=True
+    ).delete()
 
 
 @admin.action(description=_('آزادکردن کاربرانی که مسدود شده اند'))
 def unblock_users(modeladmin, request, queryset):
-    if queryset:
-        queryset.update(
-            is_blocked=False,
-            report_numbers=0
-        )
-    else:
-        UserChatModel.objects.filter(
-            is_blocked=True
-        ).update(
-            is_blocked=False,
-            report_numbers=0
-        )
+    UserChatModel.objects.filter(
+        is_blocked=True
+    ).update(
+        is_blocked=False,
+        report_numbers=0
+    )
 
 
 # write admin models

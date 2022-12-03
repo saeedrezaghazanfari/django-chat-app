@@ -9,6 +9,7 @@ urlpatterns = [
     path('django-chat-app/chat/supporter/ready-msg/get/', views.get_ready_msg),
     path('django-chat-app/chat/supporter/ready-msg/del/', views.delete_ready_msg),
     path('django-chat-app/chat/supporter/ready-msg/create/', views.create_ready_msg),
+    path('django-chat-app/chat/supporter/report/', views.report_user),
 
     path('django-chat-app/auth/check/userid/', views.check_userid),
     path('django-chat-app/auth/create/userid/', views.create_userid),

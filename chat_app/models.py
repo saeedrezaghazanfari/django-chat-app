@@ -99,4 +99,4 @@ class ReportUserModel(models.Model):
         verbose_name_plural = _('گزارش کاربران')
     
     def __str__(self):
-        return self.user
+        return self.user.user_chat_uid
