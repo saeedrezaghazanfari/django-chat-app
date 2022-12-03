@@ -142,7 +142,7 @@
                     <div class="btn_last_msg d-none">
                         <button @click="go_to_bottom_of_box">
                             <img src="site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
-                            <div class="unreadmsg_counter" v-if="counter_new_msg > 0">[[ counter_new_msg ]]</div>
+                            <div class="unreadmsg_counter"></div>
                         </button>
                     </div>
 
@@ -172,7 +172,7 @@
                     </div>
                 </form>
                 <div class="goback_chat_btn d-none" @click="goback_chat_btn">
-                    بازگشت به صفحه‌ی چت
+                    <span>بازگشت به صفحه‌ی چت</span><span v-if="counter_new_msg > 0">NEW</span>
                 </div>
             </div>
         </div>
@@ -201,6 +201,8 @@
                 env_max_report_number: '',
                 env_show_supporter_name: '',
                 is_set_env: false,
+
+                is_open_game: false,
 
                 user_is_logged: false,
                 user_id: '',
@@ -314,18 +316,31 @@
 
             go_to_bottom_of_box() {
                 document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
+
+                if(this.counter_new_msg > 0) {
+                    this.socket.send(JSON.stringify({
+                        'message_id': 'all-msg',
+                        'message_sender': 'supporter',
+                        'client_id': 'supporter',
+                    }));
+                    this.counter_new_msg = 0;
+                }
             },
 
             goback_chat_btn() {
-                document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
+                this.is_open_game = false;
+                // document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
                 document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.remove('d-none');
                 document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.add('d-none');
                 document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.remove('d-none');
                 document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.add('d-none');
+
+                this.go_to_bottom_of_box();
             },
 
             show_game_btn() {
-                document.querySelector('section.chatapp .btn_last_msg').classList.add('d-none');
+                this.is_open_game = true;
+                // document.querySelector('section.chatapp .btn_last_msg').classList.add('d-none');
                 document.querySelector('section.chatapp .msg__body .body__wrapper .all__msg__wrapper').classList.add('d-none');
                 document.querySelector('section.chatapp .msg__body .body__wrapper .tictoctoe__game').classList.remove('d-none');
                 document.querySelector('section.chatapp .chatapp__msg .body__inputs form').classList.add('d-none');
@@ -339,6 +354,10 @@
                     this.is_open_box = true;
                     this.counter_new_msg = 0;
                     this.focus_msg_input();
+
+                    if(!document.querySelector('section.chatapp .tictoctoe__game').classList.contains('d-none'))
+                        this.goback_chat_btn();
+
                     document.querySelector('section.chatapp .chatapp__msg').classList.remove('d-none');
                     setTimeout(() => {
                         document.querySelector('section.chatapp .chatapp__msg').classList.remove('chatapp__hide');
@@ -577,15 +596,17 @@
                     else if (!message.receiver_status && !message.message_id){
                         mythis.message_list.push(message);
 
-                        if(!mythis.is_open_box)
+                        if(!mythis.is_open_box || mythis.is_open_game)
                             mythis.counter_new_msg += 1;
                     }
 
-                    setTimeout(()=> {
-                        mythis.go_to_bottom_of_box();
-                    }, 200);
+                    if(!mythis.is_open_game) {
+                        setTimeout(()=> {
+                            mythis.go_to_bottom_of_box();
+                        }, 200);
+                    }
 
-                    if(mythis.is_open_box){
+                    if(mythis.is_open_box && !mythis.is_open_game){
                         // read all message signal
                         mythis.socket.send(JSON.stringify({
                             'message_id': 'all-msg',
