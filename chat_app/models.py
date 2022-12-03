@@ -1,3 +1,4 @@
+from random import choices
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
@@ -80,3 +81,22 @@ class ReadyChatModel(models.Model):
     
     def __str__(self):
         return self.subject
+
+
+class ReportUserModel(models.Model):
+    """ report users from supporters is here """
+
+    REPORT_ITEMS = (('badterms', _('استفاده از کلمات نامناسب')), ('others', _('دلایل دیگر')))
+    supporter = models.ForeignKey(SupporterModel, on_delete=models.CASCADE, verbose_name=_('پشتیبان'))
+    user = models.ForeignKey(UserChatModel, on_delete=models.CASCADE, verbose_name=_('کاربر'))
+    item = models.CharField(max_length=12, choices=REPORT_ITEMS, verbose_name=_('دلیل گزارش'))
+    desc = models.TextField(verbose_name=_('متن گزارش'))
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = _('گزارش کاربر')
+        verbose_name_plural = _('گزارش کاربران')
+    
+    def __str__(self):
+        return self.user
