@@ -46,7 +46,7 @@
                     <div class="all__msg__wrapper d-none">
 
                         <template v-for="msg_item in message_list" :key="msg_item.id">
-                            <div class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
+                            <div v-if="!msg_item.is_deleted" class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                 <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
                                     <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
                                         <span>[[ msg_item.reply_title == 'client' ? 'شما' : 'پشتیبان' ]]</span>
@@ -61,10 +61,18 @@
                                             <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
+                                        <div v-if="msg_item.is_edited">ویرایش شده</div>
                                     </div>
                                 </div>
                                 <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                     پاسخ دادن
+                                </div>
+                            </div>
+                            <div v-if="msg_item.is_deleted && show_deleted_msg">
+                                <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                    <p class="msg__content">
+                                        این پیام حذف شده است
+                                    </p>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -200,6 +208,9 @@
                 env_auth_fields: '',
                 env_max_report_number: '',
                 env_show_supporter_name: '',
+                edit_user_msg: false,
+                delete_user_msg: false,
+                show_deleted_msg: false,
                 is_set_env: false,
 
                 is_open_game: false,
@@ -271,6 +282,9 @@
                             this.env_game = response.data.game;
                             this.env_auth_fields = response.data.auth_fields;
                             this.env_max_report_number = response.data.max_report_number;
+                            this.edit_user_msg = response.data.edit_user_msg;
+                            this.delete_user_msg = response.data.delete_user_msg;
+                            this.show_deleted_msg = response.data.show_deleted_msg;
                             this.is_set_env = true;
 
                             // setting for direction
@@ -583,6 +597,26 @@
 
                     let message = JSON.parse(e.data);
                     console.log(message);
+
+                    if(message._type_request == 'edit') {  /* just edit message */
+                        mythis.message_list.forEach(element => {
+                            if(element.id == message.reply_id) {
+                                element.text = message.text;
+                                element.is_edited = true;
+                            }
+                        });
+
+                        return;
+                    }
+
+                    if(message._type_request == 'del') {  /* just delete message */
+                        mythis.message_list.forEach(element => {
+                            if(element.id == message.id)
+                                element.is_deleted = true;
+                        });
+
+                        return;
+                    }
 
                     if(message.receiver_status == 'online' || message.receiver_status == 'offline')
                         mythis.receiver_status = message.receiver_status;

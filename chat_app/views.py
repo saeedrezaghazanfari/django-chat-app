@@ -39,6 +39,9 @@ def check_userid(request):
             setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
             setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
             setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
+            setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
+            setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
+            setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
 
             client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
 
@@ -56,6 +59,8 @@ def check_userid(request):
                     'reply_title': item.reply.sender if item.reply else '',
                     'reply_msg': item.reply.msg if item.reply else '',
                     'is_seen': item.is_seen,
+                    'is_edited': item.is_edited,
+                    'is_deleted': item.is_deleted,
                     'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                     'text': item.msg
                 }
@@ -120,7 +125,10 @@ def setting_chat(request):
         setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
         setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
         setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
-
+        setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
+        setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
+        setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
+        
         return JsonResponse({'data': setting_dict, 'status': 200})
 
     return JsonResponse({'status': 400})
@@ -178,6 +186,8 @@ def supporter_unreads(request):
                 'reply_title': item.reply.sender if item.reply else '',
                 'reply_msg': item.reply.msg if item.reply else '',
                 'is_seen': item.is_seen,
+                'is_edited': item.is_edited,
+                'is_deleted': item.is_deleted,
                 'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                 'text': item.msg
             }
@@ -194,6 +204,8 @@ def supporter_unreads(request):
                 'reply_title': item.reply.sender if item.reply else '',
                 'reply_msg': item.reply.msg if item.reply else '',
                 'is_seen': item.is_seen,
+                'is_edited': item.is_edited,
+                'is_deleted': item.is_deleted,
                 'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                 'text': item.msg
             }
@@ -281,6 +293,8 @@ def supporter_read_all(request):
                 'reply_title': item.reply.sender if item.reply else '',
                 'reply_msg': item.reply.msg if item.reply else '',
                 'is_seen': item.is_seen,
+                'is_edited': item.is_edited,
+                'is_deleted': item.is_deleted,
                 'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
                 'text': item.msg
             }

@@ -154,7 +154,7 @@
                     <div class="all__msg__wrapper">
 
                         <template v-for="msg_item in message_list" :key="msg_item.id">
-                            <div class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
+                            <div v-if="!msg_item.is_deleted" class="one_msg_wrapper" @dblclick="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                 <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
                                     <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'supporter' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
                                         <span>[[ msg_item.reply_title == 'supporter' ? 'شما' : 'کاربر' ]]</span>
@@ -169,11 +169,20 @@
                                             <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
-                                        <div class="msg__info__clock" v-if="edit_supporter_msg && msg_item.sender_type == 'supporter'" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)">ویرایش پیام</div>
+                                        <div v-if="msg_item.is_edited">ویرایش شده</div>
+                                        <div class="msg__info__clock" v-if="edit_supporter_msg && msg_item.sender_type == 'supporter' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)">ویرایش پیام</div>
+                                        <div class="msg__info__clock" v-if="delete_supporter_msg && msg_item.sender_type == 'supporter'" @click="delete_message(msg_item.id)">حذف پیام</div>
                                     </div>
                                 </div>
                                 <div class="reply_one_msg" :class="msg_item.sender_type == 'supporter' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
                                     پاسخ دادن
+                                </div>
+                            </div>
+                            <div v-if="msg_item.is_deleted && show_deleted_msg">
+                                <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                    <p class="msg__content">
+                                        این پیام حذف شده است
+                                    </p>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -236,6 +245,8 @@
                 env_max_report_number: '',
                 env_show_supporter_name: '',
                 edit_supporter_msg: false,
+                delete_supporter_msg: false,
+                show_deleted_msg: false,
                 is_set_env: false,
 
                 supporter_uid: '',
@@ -323,6 +334,8 @@
                             this.env_dir = response.data.dir;
                             this.env_show_supporter_name = response.data.show_supporter_name;
                             this.edit_supporter_msg = response.data.edit_supporter_msg;
+                            this.delete_supporter_msg = response.data.delete_supporter_msg;
+                            this.show_deleted_msg = response.data.show_deleted_msg;
                             this.is_set_env = true;
 
                             // setting for direction
@@ -452,6 +465,7 @@
             },
             
             close_replybar() {
+                this.message_status_is_edit = false;
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
@@ -689,8 +703,43 @@
                     return;
 
                 if(this.message_status_is_edit) { /* just edit message */
-                    //TODO
 
+                    let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
+                    let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+                    let mythis = this;
+                    this.socket.send(JSON.stringify({
+                        'client_id': mythis.client_id,
+                        'owner_id': mythis.supporter_uid,
+                        'owner_name': '',
+                        'id': 0,
+                        'sender_type': 'supporter', 
+                        'reply_id': reply_id,
+                        'reply_title': '', 
+                        'reply_msg': content, 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': mythis.msg_input,
+                        '_type_request': 'edit'
+                    }));
+
+                    this.message_list.forEach(element => {
+                        if(element.id == reply_id) {
+                            element.text = mythis.msg_input;
+                            element.is_edited = true;
+                        }
+                    });
+
+                    this.message_status_is_edit = false;
+                    this.msg_input = '';
+
+                    // play send sound
+                    this.play_send_sound();
+
+                    this.close_replybar();
+                    
+                    setTimeout(()=> {
+                        this.go_to_bottom_of_box();
+                    }, 500);
 
                     return;
                 }
@@ -718,7 +767,8 @@
                         this.go_to_bottom_of_box();
                     }, 500);
 
-                } else {
+                } 
+                else {
                     let writer = document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText;
                     let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
@@ -850,6 +900,22 @@
             edit_message(elementId, msgId) {
                 this.message_status_is_edit = true;
                 this.reply_msg(elementId, msgId);
+            },
+
+            delete_message(msgId) {
+
+                let mythis = this;
+                this.socket.send(JSON.stringify({
+                    'client_id': mythis.client_id,
+                    'owner_id': mythis.supporter_uid,
+                    'id': msgId,
+                    '_type_request': 'del'
+                }));    
+
+                this.message_list.forEach(element => {
+                    if(element.id == msgId) 
+                        element.is_deleted = true;
+                });
             },
 
             delete_ready_msg(msgID) {

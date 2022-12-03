@@ -33,6 +33,9 @@ class ChatModel(models.Model):
     sender = models.CharField(max_length=255, choices=CLIENT_SUPPORTER, verbose_name=_('ارسال کننده'))
     msg = models.TextField(verbose_name=_('متن پیام'))
     is_seen = models.BooleanField(default=False, verbose_name=_('آیا این پیام دیده شده است؟'))
+    is_edited = models.BooleanField(default=False, verbose_name=_('آیا این پیام ویرایش شده است؟'))
+    old_msg = models.TextField(blank=True, null=True, verbose_name=_('متن پیام قبل از ویرایش'))
+    is_deleted = models.BooleanField(default=False, verbose_name=_('آیا این پیام حذف شده است؟'))
     created = models.DateTimeField(auto_now_add=True)
     
     class Meta:
