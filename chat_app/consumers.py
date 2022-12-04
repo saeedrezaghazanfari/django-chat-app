@@ -8,7 +8,6 @@ from .models import (
     UserChatModel,
     ChatModel
 )
-# from django.conf import settings
 
 
 # url: /ws/<str:type>/chat/<str:username>/
@@ -69,7 +68,6 @@ class ChatConsumer(WebsocketConsumer):
 
             text_data_json = json.loads(text_data)
             print(text_data_json)
-
 
             # send delete message to client
             if self.type == 'supporter' and text_data_json.get('_type_request') == 'del':

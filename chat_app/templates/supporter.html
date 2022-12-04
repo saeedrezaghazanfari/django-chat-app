@@ -1021,5 +1021,25 @@
     }).mount('#chatapp');
 
 </script>
+
+<!-- <script>
+    document.onclick = hideMenu;
+    document.oncontextmenu = rightClick;
+
+    function hideMenu() {
+        document.getElementById("contextMenu").style.display = "none"
+    }
+
+    function rightClick(e) {
+        e.preventDefault();
+
+        var menu = document.getElementById("contextMenu")
+        menu.style.display = 'block';
+        menu.style.left = (e.layerX) + "px";
+        menu.style.top = (e.layerY) + "px";
+        console.log(e);
+    }
+</script> -->
+
 </body>
 </html>
