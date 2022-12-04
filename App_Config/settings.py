@@ -1,11 +1,14 @@
 from pathlib import Path
+from decouple import config
 from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-r^p0kgfm$szo5=dk1y$x)w@21kc_4y(n7_@%ogged7o27_1or@'
-DEBUG = True
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG')
 ALLOWED_HOSTS = []
+# SECURE_SSL_REDIRECT = False
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -22,6 +25,7 @@ INSTALLED_APPS = [
 
     # Packs
     'channels',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -97,10 +101,10 @@ LANGUAGES = [
     ('ar', _('Arabic')),
     ('ru', _('Russia')),
 ]
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Tehran'
-USE_I18N = True
-USE_TZ = True
+LANGUAGE_CODE = config('LANGUAGE_CODE')
+TIME_ZONE = config('TIME_ZONE')
+USE_I18N = config('USE_I18N')
+USE_TZ = config('USE_TZ')
 
 STATIC_URL = '/site_static/'
 STATIC_ROOT = Path("static_cdn", "static_root")
