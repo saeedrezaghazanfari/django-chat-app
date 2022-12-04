@@ -50,7 +50,7 @@ class ChatModel_Admin(admin.ModelAdmin):
 
     
 class UserChatModel_Admin(admin.ModelAdmin):
-    list_display = ['user_chat_uid', 'created', 'is_blocked']
+    list_display = ['user_chat_uid', 'j_created', 'is_blocked']
     search_field = ['user_chat_uid', 'email', 'phone', 'is_blocked']
     ordering = ['-id']
     actions = [del_users_more_30d, del_users_isblocked, unblock_users]
@@ -63,7 +63,7 @@ class ReadyChatModel_Admin(admin.ModelAdmin):
     
 
 class ReportUserModel_Admin(admin.ModelAdmin):
-    list_display = ['user', 'item', 'created']
+    list_display = ['user', 'item', 'j_created']
     search_field = ['user', 'item']
     ordering = ['-id']
 

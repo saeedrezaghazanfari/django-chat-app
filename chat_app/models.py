@@ -2,6 +2,7 @@ from random import choices
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from Extentions.utils import jalali_convertor
 from .utils import unique_username
 
 
@@ -21,6 +22,10 @@ class SupporterModel(models.Model):
     
     def __str__(self):
         return str(self.supporter_uid)
+
+    def j_created(self):
+        return jalali_convertor(time=self.created, number=True)
+    j_created.short_description = _('تاریخ ثبت رکورد')
 
 
 class ChatModel(models.Model):
@@ -46,6 +51,10 @@ class ChatModel(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def j_created(self):
+        return jalali_convertor(time=self.created, number=True)
+    j_created.short_description = _('تاریخ ثبت رکورد')
+
 
 class UserChatModel(models.Model):
     """ create a flag for user for chat to supporter """
@@ -67,6 +76,10 @@ class UserChatModel(models.Model):
     
     def __str__(self):
         return str(self.user_chat_uid)
+
+    def j_created(self):
+        return jalali_convertor(time=self.created, number=True)
+    j_created.short_description = _('تاریخ ثبت رکورد')
 
 
 class ReadyChatModel(models.Model):
@@ -103,3 +116,7 @@ class ReportUserModel(models.Model):
     
     def __str__(self):
         return self.user.user_chat_uid
+
+    def j_created(self):
+        return jalali_convertor(time=self.created, number=True)
+    j_created.short_description = _('تاریخ ثبت رکورد')
