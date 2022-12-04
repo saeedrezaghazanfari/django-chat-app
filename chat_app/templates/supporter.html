@@ -507,6 +507,26 @@
                     let message = JSON.parse(e.data);
                     console.log(message);
 
+                    if(message._type_request == 'edit') {  /* just edit message */
+                        mythis.message_list.forEach(element => {
+                            if(element.id == message.reply_id) {
+                                element.text = message.text;
+                                element.is_edited = true;
+                            }
+                        });
+
+                        return;
+                    }
+
+                    if(message._type_request == 'del') {  /* just delete message */
+                        mythis.message_list.forEach(element => {
+                            if(element.id == message.id)
+                                element.is_deleted = true;
+                        });
+
+                        return;
+                    }
+
                     if(message.message_id && message.client_id == 'supporter'){
                         mythis.message_list.forEach(element => {
                             element.is_seen = true;
@@ -731,9 +751,6 @@
 
                     this.message_status_is_edit = false;
                     this.msg_input = '';
-
-                    // play send sound
-                    this.play_send_sound();
 
                     this.close_replybar();
                     

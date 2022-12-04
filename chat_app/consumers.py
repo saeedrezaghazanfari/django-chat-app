@@ -74,7 +74,8 @@ class ChatConsumer(WebsocketConsumer):
             # send delete message to client
             if self.type == 'supporter' and text_data_json.get('_type_request') == 'del':
                 chat = ChatModel.objects.get(
-                    id=text_data_json.get('id')
+                    id=text_data_json.get('id'),
+                    sender='supporter'
                 )
                 chat.is_deleted = True
                 chat.save()
@@ -91,12 +92,27 @@ class ChatConsumer(WebsocketConsumer):
             
             # send delete message to supporter
             if self.type == 'client' and text_data_json.get('_type_request') == 'del':
-                ...
+                chat = ChatModel.objects.get(
+                    id=text_data_json.get('id'),
+                    sender='client'
+                )
+                chat.is_deleted = True
+                chat.save()
 
+                async_to_sync(self.channel_layer.group_send)(
+                    'unread_msg_board',
+                    {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
+
+            
             # send edit message to client
             if self.type == 'supporter' and text_data_json.get('_type_request') == 'edit':
                 chat = ChatModel.objects.get(
-                    id=text_data_json.get('reply_id')
+                    id=text_data_json.get('reply_id'),
+                    sender='supporter'
                 )
                 chat.old_msg = chat.msg
                 chat.msg = text_data_json.get('text')
@@ -115,8 +131,24 @@ class ChatConsumer(WebsocketConsumer):
             
             # send edit message to supporter
             if self.type == 'client' and text_data_json.get('_type_request') == 'edit':
-                ...
+                chat = ChatModel.objects.get(
+                    id=text_data_json.get('reply_id'),
+                    sender='client'
+                )
+                chat.old_msg = chat.msg
+                chat.msg = text_data_json.get('text')
+                chat.is_edited = True
+                chat.save()
 
+                async_to_sync(self.channel_layer.group_send)(
+                    'unread_msg_board',
+                    {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
+
+            
             # send status to client
             if self.type == 'supporter' and text_data_json.get('receiver_status') and not text_data_json.get('_type_request'):
                 user_group_name = f"chat_client_{text_data_json['client_id']}" 

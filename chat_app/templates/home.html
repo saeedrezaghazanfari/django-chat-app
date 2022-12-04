@@ -62,6 +62,8 @@
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                         <div v-if="msg_item.is_edited">ویرایش شده</div>
+                                        <div class="msg__info__clock" v-if="edit_user_msg && msg_item.sender_type == 'client' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)">ویرایش پیام</div>
+                                        <div class="msg__info__clock" v-if="delete_user_msg && msg_item.sender_type == 'client'" @click="delete_message(msg_item.id)">حذف پیام</div>
                                     </div>
                                 </div>
                                 <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'" @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">
@@ -69,7 +71,7 @@
                                 </div>
                             </div>
                             <div v-if="msg_item.is_deleted && show_deleted_msg">
-                                <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
                                     <p class="msg__content">
                                         این پیام حذف شده است
                                     </p>
@@ -220,6 +222,8 @@
 
                 is_open_box: false,
                 counter_new_msg: 0,
+
+                message_status_is_edit: false,
 
                 receiver_status: '',
 
@@ -468,6 +472,27 @@
                 }
             },
 
+            edit_message(elementId, msgId) {
+                this.message_status_is_edit = true;
+                this.reply_msg(elementId, msgId);
+            },
+
+            delete_message(msgId) {
+
+                let mythis = this;
+                this.socket.send(JSON.stringify({
+                    'client_id': mythis.user_id,
+                    'owner_id': '',
+                    'id': msgId,
+                    '_type_request': 'del'
+                }));    
+
+                this.message_list.forEach(element => {
+                    if(element.id == msgId) 
+                        element.is_deleted = true;
+                });
+            },
+            
             reply_msg(elementId, msgId) {
                 this.focus_msg_input();
                 let msgbox = document.getElementById(elementId);
@@ -487,6 +512,7 @@
             },
             
             close_replybar() {
+                this.message_status_is_edit = false;
                 document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
                 document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
@@ -660,6 +686,45 @@
 
                 if(!this.msg_input)
                     return;
+
+                if(this.message_status_is_edit) { /* just edit message */
+
+                    let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
+                    let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+                    let mythis = this;
+                    this.socket.send(JSON.stringify({
+                        'client_id': mythis.user_id,
+                        'owner_id': '',
+                        'owner_name': '',
+                        'id': 0,
+                        'sender_type': 'client', 
+                        'reply_id': reply_id,
+                        'reply_title': '', 
+                        'reply_msg': content, 
+                        'is_seen': 0,
+                        'created': '',
+                        'text': mythis.msg_input,
+                        '_type_request': 'edit'
+                    }));
+
+                    this.message_list.forEach(element => {
+                        if(element.id == reply_id) {
+                            element.text = mythis.msg_input;
+                            element.is_edited = true;
+                        }
+                    });
+
+                    this.message_status_is_edit = false;
+                    this.msg_input = '';
+
+                    this.close_replybar();
+                    
+                    setTimeout(()=> {
+                        this.go_to_bottom_of_box();
+                    }, 500);
+
+                    return;
+                }
 
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
