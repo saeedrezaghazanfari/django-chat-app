@@ -50,7 +50,8 @@
                                 <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
                                     <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
                                         <span>[[ msg_item.reply_title == 'client' ? 'شما' : 'پشتیبان' ]]</span>
-                                        <span>[[ msg_item.reply_msg ]]</span>
+                                        <span v-if="!msg_item.reply_is_deleted">[[ msg_item.reply_msg ]]</span>
+                                        <span v-else>این پیام حذف شده است</span>
                                     </p>
                                     <p class="msg__content">
                                         [[ msg_item.text ]]
@@ -490,6 +491,8 @@
                 this.message_list.forEach(element => {
                     if(element.id == msgId) 
                         element.is_deleted = true;
+                    if(element.reply_id == msgId)
+                        element.reply_is_deleted = true;
                 });
             },
             
@@ -639,6 +642,8 @@
                         mythis.message_list.forEach(element => {
                             if(element.id == message.id)
                                 element.is_deleted = true;
+                            if(element.reply_id == message.id)
+                                element.reply_is_deleted = true;
                         });
 
                         return;
