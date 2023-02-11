@@ -236,7 +236,15 @@
         },
 
         created() {
+
             this.set_setting();
+
+            let stored_userid = JSON.parse(localStorage.getItem('chatapp_client_id'));
+            if(stored_userid) {
+                this.user_id = stored_userid;
+                this.start_socket();
+            }
+
         },
 
         methods: {
@@ -337,12 +345,15 @@
                 document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
 
                 if(this.counter_new_msg > 0) {
+
+                    // read all message signal
                     this.socket.send(JSON.stringify({
                         'message_id': 'all-msg',
                         'message_sender': 'supporter',
                         'client_id': 'supporter',
                     }));
                     this.counter_new_msg = 0;
+
                 }
             },
 
@@ -406,7 +417,6 @@
                                     this.message_list = response.data;
                                     this.user_is_logged = true;
                                     this.user_id = stored_userid;
-                                    this.start_socket();
 
                                     document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
                                     document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
