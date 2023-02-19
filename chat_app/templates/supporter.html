@@ -243,8 +243,6 @@
             return {
                 // env variables
                 env_dir: '',
-                env_max_report_number: '',
-                env_show_supporter_name: '',
                 edit_supporter_msg: false,
                 delete_supporter_msg: false,
                 show_deleted_msg: false,
@@ -322,7 +320,7 @@
                     return;
 
                 (async () => {
-                    await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
+                    await fetch('/' +  window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
                         method: "POST",
                         headers: {
                             "Content-type": "application/x-www-form-urlencoded"
@@ -333,11 +331,12 @@
                         if(response.status == 200) {
 
                             this.env_dir = response.data.dir;
-                            this.env_show_supporter_name = response.data.show_supporter_name;
                             this.edit_supporter_msg = response.data.edit_supporter_msg;
                             this.delete_supporter_msg = response.data.delete_supporter_msg;
                             this.show_deleted_msg = response.data.show_deleted_msg;
                             this.is_set_env = true;
+
+                            let language = window.location.pathname[1] + window.location.pathname[2];
 
                             // setting for direction
                             if(this.env_dir == 'ltr') {
@@ -345,11 +344,10 @@
                             } else if(this.env_dir == 'rtl') {
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             } else if(this.env_dir == 'auto') {
-                                //TODO
-                            }
-                            
-                            if(this.env_show_supporter_name) {
-                                //TODO
+                                if(language == 'fa' || language == 'ar')
+                                    document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
+                                else
+                                    document.querySelector('section.chatapp').classList.add('chatapp__ltr')
                             }
                         }
                     })
@@ -519,7 +517,7 @@
                         return;
                     }
 
-                    if(message._type_request == 'del') {  /* just delete message */
+                    else if(message._type_request == 'del') {  /* just delete message */
                         mythis.message_list.forEach(element => {
                             if(element.id == message.id)
                                 element.is_deleted = true;
@@ -530,39 +528,28 @@
                         return;
                     }
 
-                    if(message.message_id && message.client_id == 'supporter'){
+                    else if(message._type_request == 'seen'){
                         mythis.message_list.forEach(element => {
                             element.is_seen = true;
                         });
                     }
 
-                    // + read this message if this page is open
-                    if(message.owner_id == mythis.client_id && !message.message_id){       
-                        // read this msg signal
-                        mythis.socket.send(JSON.stringify({
-                            'message_id': 'all-msg',
-                            'message_sender': 'client',
-                            'client_id': mythis.client_id,
-                        }));
-                    }
-                    // - read this message if this page is open
-
-                    if(message.receiver_status && !message.message_id) {
+                    else if(message._type_request == 'status') {
                         if(mythis.client_id)
-                            mythis.receiver_status = message.receiver_status;
+                            mythis.receiver_status = message.status;
 
                         mythis.unreads_thissupporter.forEach(element => {
                             if(element.owner_id == message.user_id) 
-                                element.status = message.receiver_status;
+                                element.status = message.status;
                         });
                         mythis.unreads_nosupoorter.forEach(element => {
                             if(element.owner_id == message.user_id) 
-                                element.status = message.receiver_status;
+                                element.status = message.status;
                         });
                     }
 
-                    // + add message to board
-                    else if(!message.receiver_status && message.sender_type == 'client' && mythis.client_id == '' && !message.message_id) {
+                    // add message to board
+                    else if(message._type_request == 'send') {
 
                         if(message.client_have_supporter == 'yes') {
 
@@ -619,13 +606,26 @@
                             mythis.go_to_bottom_of_box();
                         }, 400);
                     }
-                    // - add message to board
-                    else if(!message.receiver_status && mythis.client_id && !message.message_id) {
+                    
+                    if(message._type_request == 'send' && mythis.client_id && !message.message_id) {
                         mythis.message_list.push(message);
                         setTimeout(()=> {
                             mythis.go_to_bottom_of_box();
                         }, 400);
                     }
+
+                    // read this message if this page is open
+                    if(message.owner_id == mythis.client_id && !message.message_id){ 
+
+                        // read this msg signal
+                        mythis.socket.send(JSON.stringify({
+                            '_type_request': 'seen',
+                            'message_id': 'all-msg',
+                            'message_sender': 'client',
+                            'client_id': mythis.client_id,
+                        }));
+                    }
+
                 };
 
                 this.socket.onclose = function(e) {
@@ -679,12 +679,15 @@
                             // send online status
                             let mythis = this;
                             this.socket.send(JSON.stringify({
-                                'receiver_status': 'online',
+                                '_type_request': 'status',
+                                'status': 'online',
+                                'user_id': 'supporter',
                                 'client_id': mythis.client_id,
                             }));
 
                             // read all message signal
                             this.socket.send(JSON.stringify({
+                                '_type_request': 'seen',
                                 'message_id': 'all-msg',
                                 'message_sender': 'client',
                                 'client_id': mythis.client_id,
@@ -709,7 +712,9 @@
                 // send offline status
                 let mythis = this;
                 this.socket.send(JSON.stringify({
-                    'receiver_status': 'offline',
+                    '_type_request': 'status',
+                    'status': 'offline',
+                    'user_id': 'supporter',
                     'client_id': mythis.client_id,
                 }));
 
@@ -731,6 +736,7 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'edit',
                         'client_id': mythis.client_id,
                         'owner_id': mythis.supporter_uid,
                         'owner_name': '',
@@ -742,7 +748,6 @@
                         'is_seen': 0,
                         'created': '',
                         'text': mythis.msg_input,
-                        '_type_request': 'edit'
                     }));
 
                     this.message_list.forEach(element => {
@@ -767,6 +772,7 @@
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'send',
                         'client_id': mythis.client_id,
                         'owner_id': mythis.supporter_uid,
                         'owner_name': '',
@@ -794,6 +800,7 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'send',
                         'client_id': mythis.client_id,
                         'owner_id': mythis.supporter_uid,
                         'owner_name': '',
@@ -926,10 +933,10 @@
 
                 let mythis = this;
                 this.socket.send(JSON.stringify({
+                    '_type_request': 'del',
                     'client_id': mythis.client_id,
                     'owner_id': mythis.supporter_uid,
                     'id': msgId,
-                    '_type_request': 'del'
                 }));    
 
                 this.message_list.forEach(element => {

@@ -35,7 +35,6 @@ def check_userid(request):
             setting_dict['game'] = settings.CHATAPP_GAME
             setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
             setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-            setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
             setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
             setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
             setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
@@ -122,7 +121,6 @@ def setting_chat(request):
         setting_dict['game'] = settings.CHATAPP_GAME
         setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
         setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-        setting_dict['show_supporter_name'] = settings.CHATAPP_SHOW_SUPPORTER_NAME
         setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
         setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
         setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE

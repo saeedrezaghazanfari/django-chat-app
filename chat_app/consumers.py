@@ -67,7 +67,7 @@ class ChatConsumer(WebsocketConsumer):
         if text_data:
 
             text_data_json = json.loads(text_data)
-            print(text_data_json)
+            print(self.type.upper(), text_data_json)
 
             # send delete message to client
             if self.type == 'supporter' and text_data_json.get('_type_request') == 'del':
@@ -148,7 +148,7 @@ class ChatConsumer(WebsocketConsumer):
 
             
             # send status to client
-            if self.type == 'supporter' and text_data_json.get('receiver_status') and not text_data_json.get('_type_request'):
+            if self.type == 'supporter' and text_data_json.get('_type_request') == 'status':
                 user_group_name = f"chat_client_{text_data_json['client_id']}" 
                 async_to_sync(self.channel_layer.group_send)(
                     user_group_name,
@@ -160,7 +160,7 @@ class ChatConsumer(WebsocketConsumer):
 
             
             # send status to supporter (unread msgs board)
-            elif self.type == 'client' and text_data_json.get('receiver_status') and not text_data_json.get('_type_request'): 
+            elif self.type == 'client' and text_data_json.get('_type_request') == 'status': 
                 async_to_sync(self.channel_layer.group_send)(
                     'unread_msg_board',
                     {
@@ -171,7 +171,7 @@ class ChatConsumer(WebsocketConsumer):
 
             
             # seen message of client in supporter panel
-            elif self.type == 'supporter' and text_data_json.get('message_id') and not text_data_json.get('_type_request'):
+            elif self.type == 'supporter' and text_data_json.get('_type_request') == 'seen':
 
                 if text_data_json.get('message_sender') == 'client':
 
@@ -195,7 +195,7 @@ class ChatConsumer(WebsocketConsumer):
 
                 
             # seen message of supporter in client
-            elif self.type == 'client' and text_data_json.get('message_id') and not text_data_json.get('_type_request'):
+            elif self.type == 'client' and text_data_json.get('_type_request') == 'seen':
                 if text_data_json.get('message_sender') == 'supporter':
 
                     ChatModel.objects.filter(
@@ -214,7 +214,7 @@ class ChatConsumer(WebsocketConsumer):
 
 
             # send msg from supporter to client
-            elif self.type == 'supporter' and not text_data_json.get('receiver_status') and not text_data_json.get('_type_request'):
+            elif self.type == 'supporter' and text_data_json.get('_type_request') == 'send':
 
                 user_client = UserChatModel.objects.get(
                     user_chat_uid=text_data_json['client_id'], 
@@ -272,7 +272,7 @@ class ChatConsumer(WebsocketConsumer):
 
             
             # send msg from client to supporter
-            elif self.type == 'client' and not text_data_json.get('receiver_status') and not text_data_json.get('_type_request'):
+            elif self.type == 'client' and text_data_json.get('_type_request') == 'send':
 
                 chat_obj = ChatModel(
                     client=self.user,

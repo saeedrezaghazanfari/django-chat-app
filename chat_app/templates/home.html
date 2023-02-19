@@ -209,8 +209,6 @@
                 env_subtitle: '',
                 env_game: '',
                 env_auth_fields: '',
-                env_max_report_number: '',
-                env_show_supporter_name: '',
                 edit_user_msg: false,
                 delete_user_msg: false,
                 show_deleted_msg: false,
@@ -289,24 +287,27 @@
                         if(response.status == 200) {
 
                             this.env_dir = response.data.dir;
-                            this.env_show_supporter_name = response.data.show_supporter_name;
                             this.env_title = response.data.title;
                             this.env_subtitle = response.data.subtitle;
                             this.env_game = response.data.game;
                             this.env_auth_fields = response.data.auth_fields;
-                            this.env_max_report_number = response.data.max_report_number;
                             this.edit_user_msg = response.data.edit_user_msg;
                             this.delete_user_msg = response.data.delete_user_msg;
                             this.show_deleted_msg = response.data.show_deleted_msg;
                             this.is_set_env = true;
 
+                            let language = window.location.pathname[1] + window.location.pathname[2];
+                            
                             // setting for direction
                             if(this.env_dir == 'ltr') {
                                 document.querySelector('section.chatapp').classList.add('chatapp__ltr')
                             } else if(this.env_dir == 'rtl') {
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             } else if(this.env_dir == 'auto') {
-                                //TODO
+                                if(language == 'fa' || language == 'ar')
+                                    document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
+                                else
+                                    document.querySelector('section.chatapp').classList.add('chatapp__ltr')
                             }
 
                             // setting for title and subtitle
@@ -323,14 +324,6 @@
                             else if(this.env_auth_fields == 'phone')
                                 document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
 
-                            if(this.env_show_supporter_name) {
-                                //TODO
-                            }
-
-                            if(this.env_max_report_number) {
-                                //TODO
-                            }
-
                         } else if(response.status == 401) {
                             localStorage.removeItem('chatapp_client_id');
                         }
@@ -343,18 +336,6 @@
 
             go_to_bottom_of_box() {
                 document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
-
-                if(this.counter_new_msg > 0) {
-
-                    // read all message signal
-                    this.socket.send(JSON.stringify({
-                        'message_id': 'all-msg',
-                        'message_sender': 'supporter',
-                        'client_id': 'supporter',
-                    }));
-                    this.counter_new_msg = 0;
-
-                }
             },
 
             goback_chat_btn() {
@@ -366,6 +347,23 @@
                 document.querySelector('section.chatapp .chatapp__msg .body__inputs .goback_chat_btn').classList.add('d-none');
 
                 this.go_to_bottom_of_box();
+
+                if(this.counter_new_msg >= 1){
+
+                    this.counter_new_msg = 0;
+                    
+                    // read all message signal
+                    this.socket.send(JSON.stringify({
+                        '_type_request': 'seen',
+                        'message_id': 'all-msg',
+                        'message_sender': 'supporter',
+                        'client_id': 'supporter',
+                    }));
+                }
+                
+                setTimeout(() => {
+                    document.querySelector('section.chatapp .body__inputs #text-chatinput').focus();
+                }, 600);
             },
 
             show_game_btn() {
@@ -434,21 +432,24 @@
                             });
                         })();
 
-                        // send online status
                         setTimeout(() => {
                             let mythis = this;
+
+                            // send online status
                             this.socket.send(JSON.stringify({
-                                'receiver_status': 'online',
-                                'client_id': 'supporter',
+                                '_type_request': 'status',
+                                'status': 'online',
                                 'user_id': mythis.user_id,
                             }));
 
                             // read all message signal
                             this.socket.send(JSON.stringify({
+                                '_type_request': 'seen',
                                 'message_id': 'all-msg',
                                 'message_sender': 'supporter',
                                 'client_id': 'supporter',
                             }));
+
                         }, 1500);
                     }
                     else {
@@ -471,14 +472,16 @@
                         document.querySelector('section.chatapp .chatapp__msg').classList.add('d-none');
                     }, 120);
 
-                    // send offline status
                     if(this.socket) {
                         let mythis = this;
+
+                        // send offline status
                         this.socket.send(JSON.stringify({
-                            'receiver_status': 'offline',
-                            'client_id': 'supporter',
+                            '_type_request': 'status',
+                            'status': 'offline',
                             'user_id': mythis.user_id,
                         }));
+
                     }
                 }
             },
@@ -492,10 +495,10 @@
 
                 let mythis = this;
                 this.socket.send(JSON.stringify({
+                    '_type_request': 'del',
                     'client_id': mythis.user_id,
                     'owner_id': '',
                     'id': msgId,
-                    '_type_request': 'del'
                 }));    
 
                 this.message_list.forEach(element => {
@@ -648,7 +651,7 @@
                         return;
                     }
 
-                    if(message._type_request == 'del') {  /* just delete message */
+                    else if(message._type_request == 'del') {  /* just delete message */
                         mythis.message_list.forEach(element => {
                             if(element.id == message.id)
                                 element.is_deleted = true;
@@ -659,20 +662,33 @@
                         return;
                     }
 
-                    if(message.receiver_status == 'online' || message.receiver_status == 'offline')
-                        mythis.receiver_status = message.receiver_status;
-                    
-                    if(message.message_id && mythis.is_open_box){
-                        mythis.message_list.forEach(element => {
-                            element.is_seen = true;
-                        });
+                    else if(message._type_request == 'status') {
+                        mythis.receiver_status = message.status;
                     }
 
-                    else if (!message.receiver_status && !message.message_id){
+                    else if (message._type_request == 'send'){
                         mythis.message_list.push(message);
 
                         if(!mythis.is_open_box || mythis.is_open_game)
                             mythis.counter_new_msg += 1;
+
+                        if(mythis.is_open_box && !mythis.is_open_game){
+
+                            // read all message signal
+                            mythis.socket.send(JSON.stringify({
+                                '_type_request': 'seen',
+                                'message_id': 'all-msg',
+                                'message_sender': 'supporter',
+                                'client_id': 'supporter',
+                            }));
+                            mythis.counter_new_msg = 0;
+                        }
+                    }
+
+                    else if(message._type_request == 'seen'){
+                        mythis.message_list.forEach(element => {
+                            element.is_seen = true;
+                        });
                     }
 
                     if(!mythis.is_open_game) {
@@ -681,15 +697,6 @@
                         }, 200);
                     }
 
-                    if(mythis.is_open_box && !mythis.is_open_game){
-                        // read all message signal
-                        mythis.socket.send(JSON.stringify({
-                            'message_id': 'all-msg',
-                            'message_sender': 'supporter',
-                            'client_id': 'supporter',
-                        }));
-                        mythis.counter_new_msg = 0;
-                    }
                 };
 
                 this.socket.onclose = function(e) {
@@ -708,6 +715,7 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'edit',
                         'client_id': mythis.user_id,
                         'owner_id': '',
                         'owner_name': '',
@@ -719,7 +727,6 @@
                         'is_seen': 0,
                         'created': '',
                         'text': mythis.msg_input,
-                        '_type_request': 'edit'
                     }));
 
                     this.message_list.forEach(element => {
@@ -744,6 +751,7 @@
                 if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'send',
                         'owner_id': mythis.user_id,
                         'owner_name': '',
                         'id': 0,
@@ -769,6 +777,7 @@
                     let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                     let mythis = this;
                     this.socket.send(JSON.stringify({
+                        '_type_request': 'send',
                         'owner_id': mythis.user_id,
                         'owner_name': '',
                         'id': 0,
