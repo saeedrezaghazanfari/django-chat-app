@@ -1,4 +1,5 @@
 #!/bin/bash
+# V1.0
 # creator: Peaka
 # this file is for remove all migration files in Django application #
 # this file must be in root dir of django application #
