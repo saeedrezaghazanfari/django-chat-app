@@ -380,10 +380,18 @@ section.chatapp {
             }
         }
 
+        .msgdel__right {
+            float: right !important;
+        }
+        .msgdel__left {
+            float: left !important;
+        }
+
         .msg__body {
             background-color: $white;
             padding: 10px 15px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             height: calc(100vh - 9.3rem - 120px);
             position: relative;
 
@@ -391,9 +399,60 @@ section.chatapp {
 
                 // messages wrapper
                 .all__msg__wrapper {
+
+                    .deleted_msg {
+                        background-color: $secondry !important;
+                        color: white !important;
+                        padding: 3px 4px;
+                        font-size: 13px;
+                        border-radius: 5px;
+                        margin-bottom: 5px;
+                        width: 175px;
+
+                        img {
+                            height: 12px;
+                        }
+                    }
+
                     div.one_msg_wrapper {
                         width: 100%;
                         height: auto;
+                        position: relative;
+
+                        ul.msg-menu-bar {
+                            position: absolute;
+                            top: -13px;
+                            padding: 5px;
+                            background-color: rgb(0,0,0);
+                            // border-radius: 12px;
+                            z-index: 5;
+                            list-style: none;
+                            color: $secondry;
+                            width: 100px;
+                            font-size: 12px;
+                            
+                            li {
+                                cursor: pointer;
+                                padding: 3px 5px;
+
+                                img {
+                                    height: 13px;
+                                    margin-bottom: -4px;
+                                }
+
+                                &:hover {
+                                    color: white;
+                                }
+                            }
+                        }
+                        ul.msg-menu-bar--right {
+                            right: 0 !important;
+                            left: unset !important;
+                        }
+                        ul.msg-menu-bar--left {
+                            left: 0 !important;
+                            right: unset !important;
+                        }
 
                         &:hover .reply_one_msg {
                             opacity: 1;
@@ -442,6 +501,12 @@ section.chatapp {
         
                                 &__clock {
                                     font-size: 9pt;
+                                    margin-top: 2px;
+                                }
+                                &__edited {
+                                    font-size: 9pt;
+                                    padding: 0 7px;
+                                    margin-top: 0px !important;
                                 }
                                 &__status {
                                     img {
@@ -492,17 +557,33 @@ section.chatapp {
                         .reply_one_msg {
                             color: $secondry;
                             font-size: 10pt;
-                            cursor: pointer;
                             opacity: 0;
-                            padding-bottom: 30px;
+                            line-height: 11px;
                             z-index: 1;
 
                             &--right {
-                                transform: translate(-5px, 7px);
+                                // transform: translate(-5px, 7px);
+                                position: absolute;
+                                left: -67px;
+                                top: 12px;
                             }
                             &--left {
                                 text-align: left;
-                                transform: translate(5px, 7px);
+                                position: absolute;
+                                right: -67px;
+                                top: 12px;
+                                // transform: translate(5px, 7px);
+                            }
+
+                            span {
+                                cursor: pointer;
+                                transition: all 0.2s;
+                                margin: 0 !important;
+                                padding: 4px 0;
+
+                                &:hover {
+                                    color: darken($secondry, 20);
+                                }
                             }
                         }
                     }
@@ -539,7 +620,7 @@ section.chatapp {
                         bottom: 44px;
                         border-radius: 7px;
                         right: 0px;
-                        background-color: #ecececdb;
+                        background-color: #ececec;
                         padding: 5px 10px;
                         z-index: 9999;
                         width: 70%;
@@ -575,6 +656,50 @@ section.chatapp {
                             &:hover {
                                 color: black;
                             }
+                        }
+                    }
+
+                    .emoji_wrapper {
+                        position: absolute;
+                        bottom: 44px;
+                        border-radius: 7px;
+                        right: 0px;
+                        background-color: #ececec;
+                        padding: 5px 10px;
+                        z-index: 9999;
+                        width: 70%;
+                        height: 100px;
+                        overflow-y: scroll;
+                        display: flex;
+                        justify-content: space-between;
+                        
+                        div.emoji_box {
+                            order: 1;
+                            display: flex;
+                            flex-direction: row;
+                            flex-wrap: wrap;
+                            
+                            div.emoji_item {
+                                flex: 1;
+                                cursor: pointer;
+                                padding: 3px;
+                                max-width: 25px;
+                            }
+                        }
+                    }
+
+                    button.show_emoji {
+                        outline: none;
+                        background-color: transparent;
+                        border: none;
+                        padding: 6px 2px;
+                        cursor: pointer;
+                        margin: 0 13px;
+
+                        img {
+                            height: 26px;
+                            width: 28px;
+                            margin-bottom: -4px;
                         }
                     }
 
@@ -696,12 +821,25 @@ section.chatapp__ltr {
         left: unset !important;
         right: -34px;
     }
+    .body__inputs form div.forminput_wrapper .emoji_wrapper {
+        left: 0px;
+        right: unset !important;
+    }
 }
 
-/* *** ANIMATIONS *** */
+/* *** MEDIA QUERIES *** */
 @media screen and (max-width: 1000px) {
     .all__msg__wrapper .msg {
         max-width: 300px !important;
+    }
+}
+/* *** ANIMATIONS *** */
+@keyframes spinner {
+    0% { 
+        transform: rotate(0deg)
+    }
+    100% { 
+        transform: rotate(360deg)
     }
 }
 

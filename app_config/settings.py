@@ -116,7 +116,7 @@ MEDIA_ROOT = Path("static_cdn", "media_root")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ### DJANGO CHAT APP CONFIGS ### #
-CHATAPP_DIR = 'rtl'              # rtl - ltr - auto
+CHATAPP_DIR = 'auto'              # rtl - ltr - auto
 
 CHATAPP_EDIT_USER_MESSAGE = True
 CHATAPP_DELETE_USER_MESSAGE = True

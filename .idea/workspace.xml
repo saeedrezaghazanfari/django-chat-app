@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b8d58dd5-6295-480c-9949-5fe8583a5ae8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/django_chat_app/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/assets/django_chat_app/css/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/django_chat_app/css/custom.scss" beforeDir="false" afterPath="$PROJECT_DIR$/assets/django_chat_app/css/custom.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/chat_app/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/chat_app/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manager.sh" beforeDir="false" afterPath="$PROJECT_DIR$/manager.sh" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2M121Fu2doKcn45htPpxDcyb3LS" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/home/peaka/Dev/BackEnd_Project/MsjHospital"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b8d58dd5-6295-480c-9949-5fe8583a5ae8" name="Changes" comment="" />
+      <created>1676920552418</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1676920552418</updated>
+    </task>
+    <servers />
+  </component>
+</project>

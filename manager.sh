@@ -1,5 +1,5 @@
 #!/bin/bash
-# V1.0
+# V2.0
 # creator: Peaka
 # this file is for remove all migration files in Django application #
 # this file must be in root dir of django application #
@@ -33,15 +33,21 @@ gray() {
 
 clear
 echo 
-echo "# 1 => run server"
-echo "# 2 => git add and commit"
-echo "# 3 => install a package"
-echo "# 4 => uninstall a package"
-echo "# 5 => make migrations and migrate db"
-echo "# 6 => remove all migrations files"
-echo "# 7 => remove all pycache files"
-echo "# 8 => about manager.sh"
-echo "# 9 => exit from manager.sh"
+PWD=$(pwd)
+echo "Cureent dir:" $PWD
+echo 
+echo "#  1. Run"
+echo "#  2. Git"
+echo "#  3. Search"
+echo "#  4. Translation"
+echo "#  5. Install a package"
+echo "#  6. Uninstall a package"
+echo "#  7. Migrations & Migrate"
+echo "#  8. Flush DB"
+echo "#  9. Remove Migrations"
+echo "# 10. Remove Pycaches"
+echo "# 11. About"
+echo "# 12. Exit"
 echo
 read -p "Enter your Selection: " FLAG
 echo
@@ -51,6 +57,9 @@ echo
 if [ $FLAG = 1 ]; then
 	
 	clear
+	PWD=$(pwd)
+	echo "Cureent dir:" $PWD
+	echo
 	. venv/bin/activate
 	python3 manage.py runserver 8000
 
@@ -67,8 +76,65 @@ elif [ $FLAG = 2 ]; then
 	git commit -m "$COMMENT"
 
 
-# install a package
+# search in all of project
 elif [ $FLAG = 3 ]; then
+
+	clear
+	echo 
+	echo "# 1 => Search in file contents"
+	echo "# 2 => Search in file names"
+	echo "# 3 => Search in dir names"
+	echo
+	read -p "Enter your Selection: " METHOD
+
+	if [ $METHOD = 1 ]; then
+
+		clear
+		echo "# Search in file Contents"
+		echo
+		read -p "Enter your string: " QUERY
+		echo
+		grep -nr $QUERY . 
+
+	elif [ $METHOD = 2 ]; then
+
+		clear
+		echo "# Search in file Names"
+		echo
+		read -p "Enter your string: " QUERY
+		echo
+		find . -type f -iname "$QUERY"
+
+	elif [ $METHOD = 3 ]; then
+
+		clear
+		echo "# Search in dir Names"
+		echo
+		read -p "Enter your string: " QUERY
+		echo
+		find . -type d -iname "$QUERY"
+
+	else
+		echo "Your input is invalid!"
+	fi
+
+
+# django project translation
+elif [ $FLAG = 4 ]; then
+	#TODO
+	clear
+	read -p "Your selection is 'Project Translation', Are you Sure? [n/Y] " SUREMENT
+
+	if [ $SUREMENT = 'Y' ]; then
+
+		$(find ./chat_*/ -type d -iname "locale")
+
+	else
+		echo "Your input is invalid!"
+	fi
+
+# install a package
+elif [ $FLAG = 5 ]; then
 	
 	clear
 	read -p "Enter Package Name to install: " PACKAGE
@@ -81,7 +147,7 @@ elif [ $FLAG = 3 ]; then
 
 
 # uninstall a package
-elif [ $FLAG = 4 ]; then
+elif [ $FLAG = 6 ]; then
 	
 	clear
 
@@ -95,7 +161,7 @@ elif [ $FLAG = 4 ]; then
 
 
 # makemigrations and migrate db
-elif [ $FLAG = 5 ]; then
+elif [ $FLAG = 7 ]; then
 	
 	clear
 	read -p "Your selection is 'Make Migrations & Migrate', Are you Sure? [n/Y] " SUREMENT
@@ -112,8 +178,27 @@ elif [ $FLAG = 5 ]; then
 	fi
 
 
+# flush db
+elif [ $FLAG = 8 ]; then
+
+	clear
+	read -p "Your selection is 'Flush DB', Are you Sure? [n/Y] " SUREMENT
+
+	if [ $SUREMENT = 'Y' ]; then
+
+		. venv/bin/activate
+		python3 manage.py flush
+
+		echo "at now, You must create superUser with this Command: "
+		echo ". venv/bin/activate; python3 manage.py createsuperuser"
+
+	else
+		echo "Exited!"
+	fi
+
+
 # delete all of 00*.py files of migrations dir
-elif [ $FLAG = 6 ]; then
+elif [ $FLAG = 9 ]; then
 	
 	clear
 	read -p "Your selection is 'Remove Migration Files', Are you Sure? [n/Y] " SUREMENT
@@ -137,7 +222,7 @@ elif [ $FLAG = 6 ]; then
 
 
 # delete all of *.pyc files in this dir
-elif [ $FLAG = 7 ]; then
+elif [ $FLAG = 10 ]; then
 
 	clear
 	read -p "Your selection is 'Remove PyCache Files', Are you Sure? [n/Y] " SUREMENT
@@ -167,7 +252,7 @@ elif [ $FLAG = 7 ]; then
 
 
 # about manager.sh
-elif [ $FLAG = 8 ]; then
+elif [ $FLAG = 11 ]; then
 
 	clear
 	sleep 1
@@ -181,14 +266,18 @@ elif [ $FLAG = 8 ]; then
 	cyan "Use from it and be Fun :)"
 	echo
 	sleep 0.5
-	cyan "Creator: Peaka"
+	cyan "creator: Peaka"
 	sleep 0.5
-	cyan "Github: https://github.com/saeedrezaghazanfari/"
-	cyan "MyId in tel, insta: @SaeedReza_WU"
+	cyan "version: 2.0"
+	sleep 0.5
+	cyan "github: https://github.com/saeedrezaghazanfari/"
+	sleep 0.5
+	cyan "my id in some of social networks: @SaeedReza_WU"
+	sleep 0.5
 	echo
 
 # exit from manager.sh
-elif [ $FLAG = 9 ]; then
+elif [ $FLAG = 12 ]; then
 
 	clear
 	echo "have good time!"

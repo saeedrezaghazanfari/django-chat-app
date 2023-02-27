@@ -129,23 +129,94 @@ section.chatapp {
                         height: 26px !important;
                         width: 26px !important;
                     }
+
+                    .loader_spinner {
+                        height: 11px;
+                        width: 11px;
+                        border-radius: 50%;
+                        border: 3px solid white;
+                        animation: spinner 1s linear infinite;
+                        transition: all 0.3s;    
+                        pointer-events: none;
+                        margin-top: 5px;
+                    }
+                    .loader_spinner--white {
+                        border-top: 3px solid $primary;
+                    }
                 }
             }
+        }
+
+        .msgdel__right {
+            float: right !important;
+        }
+        .msgdel__left {
+            float: left !important;
         }
 
         .msg__body {
             background-color: $white;
             padding: 10px 15px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             height: 320px;
 
             .body__wrapper {
 
                 // messages wrapper
                 .all__msg__wrapper {
+                    .deleted_msg {
+                        background-color: $secondry !important;
+                        color: white !important;
+                        padding: 3px 4px;
+                        font-size: 13px;
+                        border-radius: 5px;
+                        margin-bottom: 5px;
+                        width: 175px;
+
+                        img {
+                            height: 12px;
+                        }
+                    }
                     div.one_msg_wrapper {
                         width: 100%;
                         height: auto;
+                        position: relative;
+
+                        ul.msg-menu-bar {
+                            position: absolute;
+                            top: -13px;
+                            padding: 5px;
+                            background-color: rgb(0,0,0);
+                            // border-radius: 12px;
+                            z-index: 5;
+                            list-style: none;
+                            color: $secondry;
+                            width: 100px;
+                            font-size: 12px;
+                            
+                            li {
+                                cursor: pointer;
+                                padding: 3px 5px;
+
+                                img {
+                                    height: 13px;
+                                    margin-bottom: -4px;
+                                }
+
+                                &:hover {
+                                    color: white;
+                                }
+                            }
+                        }
+                        ul.msg-menu-bar--right {
+                            right: 0 !important;
+                            left: unset !important;
+                        }
+                        ul.msg-menu-bar--left {
+                            left: 0 !important;
+                            right: unset !important;
+                        }
 
                         &:hover .reply_one_msg {
                             opacity: 1;
@@ -194,6 +265,11 @@ section.chatapp {
         
                                 &__clock {
                                     font-size: 9pt;
+                                }
+                                &__edited {
+                                    font-size: 9pt;
+                                    padding: 0 7px;
+                                    margin-top: -3px !important;
                                 }
                                 &__status {
                                     img {
@@ -244,9 +320,8 @@ section.chatapp {
                         .reply_one_msg {
                             color: $secondry;
                             font-size: 10pt;
-                            cursor: pointer;
                             opacity: 0;
-                            padding-bottom: 30px;
+                            line-height: 11px;
                             z-index: 1;
 
                             &--right {
@@ -255,6 +330,17 @@ section.chatapp {
                             &--left {
                                 text-align: left;
                                 transform: translate(5px, 7px);
+                            }
+
+                            span {
+                                cursor: pointer;
+                                transition: all 0.2s;
+                                margin: 0 !important;
+                                padding: 4px 0;
+
+                                &:hover {
+                                    color: darken($secondry, 20);
+                                }
                             }
                         }
                     }
@@ -483,7 +569,7 @@ section.chatapp {
                         bottom: 44px;
                         border-radius: 7px;
                         right: 0px;
-                        background-color: #ecececdb;
+                        background-color: #ececec;
                         padding: 5px 10px;
                         z-index: 9999;
                         width: 70%;
@@ -522,6 +608,35 @@ section.chatapp {
                         }
                     }
 
+                    .emoji_wrapper {
+                        position: absolute;
+                        bottom: 44px;
+                        border-radius: 7px;
+                        right: 0px;
+                        background-color: #ececec;
+                        padding: 5px 10px;
+                        z-index: 9999;
+                        width: 70%;
+                        height: 100px;
+                        overflow-y: scroll;
+                        display: flex;
+                        justify-content: space-between;
+                        
+                        div.emoji_box {
+                            order: 1;
+                            display: flex;
+                            flex-direction: row;
+                            flex-wrap: wrap;
+                            
+                            div.emoji_item {
+                                flex: 1;
+                                cursor: pointer;
+                                padding: 3px;
+                                max-width: 25px;
+                            }
+                        }
+                    }
+
                     button.show_game {
                         outline: none;
                         background-color: transparent;
@@ -535,6 +650,21 @@ section.chatapp {
                             width: 28px;
                         }
                     }
+                    button.show_emoji {
+                        outline: none;
+                        background-color: transparent;
+                        border: none;
+                        margin-right: 3px;
+                        padding: 6px 2px;
+                        cursor: pointer;
+
+                        img {
+                            height: 26px;
+                            width: 28px;
+                            margin-bottom: -4px;
+                        }
+                    }
+                    
                     button[type="submit"] {
                         outline: none;
                         background-color: $primary;
@@ -551,7 +681,7 @@ section.chatapp {
                     }
                 }
             }
-            div.goback_chat_btn {
+            .goback_chat_btn {
                 text-align: center;
                 padding: 4px;
                 cursor: pointer;
@@ -559,6 +689,29 @@ section.chatapp {
 
                 &:hover {
                     color: $primary;
+                }
+
+                .new_msg_shower {
+
+                    background-color: $primary;
+                    color: white;
+                    width: 56px;
+                    font-size: 12px;
+                    border-radius: 5px;
+                    padding: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    float: left;
+                    margin-bottom: 10px;
+
+                    img {
+                        height: 20px;
+                        margin-bottom: -5px;
+                    }
+                    div {
+                        flex: 1;
+                    }
                 }
             }
         }
@@ -626,6 +779,10 @@ section.chatapp__ltr {
             }
         }
     }
+    .body__inputs form div.forminput_wrapper .emoji_wrapper {
+        left: 0px;
+        right: unset !important;
+    }
     .reply_one_msg--right {
         float: right !important;
     }
@@ -635,6 +792,15 @@ section.chatapp__ltr {
 @keyframes blink {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+@keyframes spinner {
+    0% { 
+        transform: rotate(0deg)
+    }
+    100% { 
+        transform: rotate(360deg)
+    }
 }
 
 /* *** Media queries *** */
