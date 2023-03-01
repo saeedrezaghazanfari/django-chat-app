@@ -1,0 +1,177 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-01 11:45+0330\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: admin.py:14
+msgid "حذف کاربران غیرفعال در ۳۰ روز اخیر"
+msgstr "Delete inactive users in the last 30 days"
+
+#: admin.py:22
+msgid "حذف کاربرانی که مسدود شده اند"
+msgstr "Remove blocked users"
+
+#: admin.py:29
+msgid "آزادکردن کاربرانی که مسدود شده اند"
+msgstr "Freeing blocked users"
+
+#: apps.py:8 models.py:48
+msgid "چت کاربر و پشتیبان"
+msgstr "User chat and support"
+
+#: models.py:12
+msgid "آیدی پشتیبان"
+msgstr "backup id"
+
+#: models.py:13 models.py:33 models.py:36 models.py:107
+msgid "کاربر"
+msgstr "user"
+
+#: models.py:14
+msgid "نام نمایشی"
+msgstr "display name"
+
+#: models.py:15
+msgid "فعال / غیرفعال"
+msgstr "Active Passive"
+
+#: models.py:20 models.py:33 models.py:37 models.py:90 models.py:106
+msgid "پشتیبان"
+msgstr "support"
+
+#: models.py:21
+msgid "پشتیبان ها"
+msgstr "Supporters"
+
+#: models.py:28 models.py:56 models.py:82 models.py:122
+msgid "تاریخ ثبت رکورد"
+msgstr "Record date"
+
+#: models.py:35
+msgid "پاسخ"
+msgstr "Response"
+
+#: models.py:38
+msgid "ارسال کننده"
+msgstr "sender"
+
+#: models.py:39
+msgid "متن پیام"
+msgstr "Message text"
+
+#: models.py:40
+msgid "آیا این پیام دیده شده است؟"
+msgstr "Has this message been seen?"
+
+#: models.py:41
+msgid "آیا این پیام ویرایش شده است؟"
+msgstr "Has this message been edited?"
+
+#: models.py:42
+msgid "متن پیام قبل از ویرایش"
+msgstr "Message text before editing"
+
+#: models.py:43
+msgid "آیا این پیام حذف شده است؟"
+msgstr "Has this message been deleted?"
+
+#: models.py:49
+msgid "چت های کاربر و پشتیبان"
+msgstr "User and support chats"
+
+#: models.py:62
+msgid "آیدی چت کاربر"
+msgstr "Chat ID of the user"
+
+#: models.py:63
+msgid "آیا پشتیبان دارد؟"
+msgstr "Does it have backup?"
+
+#: models.py:64
+msgid "نام"
+msgstr "name"
+
+#: models.py:65
+msgid "نام خانوادگی"
+msgstr "last name"
+
+#: models.py:66
+msgid "ایمیل"
+msgstr "email"
+
+#: models.py:67
+msgid "شماره تماس"
+msgstr "Phone number"
+
+#: models.py:68
+msgid "آیا مسدود شده است؟"
+msgstr "Is it blocked?"
+
+#: models.py:69
+msgid "تعداد گزارش ها"
+msgstr "Number of reports"
+
+#: models.py:74
+msgid "اطلاعات کاربر"
+msgstr "User information"
+
+#: models.py:75
+msgid "اطلاعات کاربران"
+msgstr "User information"
+
+#: models.py:88
+msgid "عنوان"
+msgstr "Title"
+
+#: models.py:89
+msgid "محتوا"
+msgstr "content"
+
+#: models.py:91
+msgid "آیا برای تمامی پشتیبان ها نمایش داده شود؟"
+msgstr "Will it be displayed for all backups?"
+
+#: models.py:95
+msgid "پیام آماده ی پشتیبان"
+msgstr "Backup ready message"
+
+#: models.py:96
+msgid "پیام های آماده ی پشتیبان ها"
+msgstr "Ready messages for backups"
+
+#: models.py:105
+msgid "استفاده از کلمات نامناسب"
+msgstr "Using inappropriate words"
+
+#: models.py:105
+msgid "دلایل دیگر"
+msgstr "Other reasons"
+
+#: models.py:108
+msgid "دلیل گزارش"
+msgstr "Reason for report"
+
+#: models.py:109
+msgid "متن گزارش"
+msgstr "The text of the report"
+
+#: models.py:114
+msgid "گزارش کاربر"
+msgstr "User report"
+
+#: models.py:115
+msgid "گزارش کاربران"
+msgstr "User report"

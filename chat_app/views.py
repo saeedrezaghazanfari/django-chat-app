@@ -15,7 +15,7 @@ from .models import (
 
 # url: / 
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'client.html')
 
 
 # url: /django-chat-app/auth/check/userid/

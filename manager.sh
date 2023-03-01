@@ -1,5 +1,5 @@
 #!/bin/bash
-# V2.0
+# V2.1
 # creator: Peaka
 # this file is for remove all migration files in Django application #
 # this file must be in root dir of django application #
@@ -121,13 +121,54 @@ elif [ $FLAG = 3 ]; then
 
 # django project translation
 elif [ $FLAG = 4 ]; then
-	#TODO
+
 	clear
 	read -p "Your selection is 'Project Translation', Are you Sure? [n/Y] " SUREMENT
 
 	if [ $SUREMENT = 'Y' ]; then
 
-		$(find ./chat_*/ -type d -iname "locale")
+		clear
+		echo 
+		echo "tip: our Languages Are: EN AR RU"
+		echo "# 1 => Create Base of files (.po)"
+		echo "# 2 => Compile files, After end of translation (.mo)"
+		echo
+		read -p "Enter your Selection: " METHOD
+
+		if [ $METHOD = 1 ]; then
+
+			. venv/bin/activate
+			
+			for DIR in $(find . -type d -iname "chat_*")
+			do
+				cd $DIR
+				mkdir locale
+				echo
+				django-admin makemessages -l en
+				django-admin makemessages -l ar
+				django-admin makemessages -l ru
+				echo ".po files Generated in " $DIR " Directory." 
+				cd ..
+			done
+
+		elif [ $METHOD = 2 ]; then
+
+			. venv/bin/activate
+
+			for DIR in $(find . -type d -iname "chat_*")
+			do
+				cd $DIR
+				echo
+				django-admin compilemessages -l en
+				django-admin compilemessages -l ar
+				django-admin compilemessages -l ru
+				echo ".mo files Generated in " $DIR " Directory." 
+				cd ..
+			done
+
+		else
+			echo "Your input is invalid!"
+		fi
 
 	else
 		echo "Your input is invalid!"
@@ -268,7 +309,7 @@ elif [ $FLAG = 11 ]; then
 	sleep 0.5
 	cyan "creator: Peaka"
 	sleep 0.5
-	cyan "version: 2.0"
+	cyan "version: 2.1"
 	sleep 0.5
 	cyan "github: https://github.com/saeedrezaghazanfari/"
 	sleep 0.5

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -7,244 +6,190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>صفحه‌ی پشتیبان</title>
+    <title>django-chat-app</title>
 
     <!-- External files2 -->
-    <link rel="stylesheet" href="/site_static/django_chat_app/css/supporter.css">
+    <link rel="stylesheet" href="/site_static/django_chat_app/css/custom.css">
 
 </head>
 <body>
 
     <section class="chatapp" id="chatapp">
 
-        <div class="alert_box" v-if="alert">
-            <p>[[ alert ]]</p>
+        <div class="chatapp__btn" @click="open_close_box">
+            <div>
+                <img src="/site_static/django_chat_app/img/chat-room.png" alt="Django Chat Application!">
+                <div id="alert_msg_ctx" :class="counter_new_msg > 0 ? '' : 'd-none'"></div>
+            </div>
         </div>
-
-        <p class="d-none" id="supporter_uid">{{ supporter_uid }}</p>
-
-        <div class="chatapp__msg">
-
-            <!-- + header -->
+    
+        <div class="chatapp__msg d-none chatapp__hide">
             <div class="msg__header">
                 <div class="msg__wrapper">
-
                     <div class="header__info">
                         <img src="/site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
-                            <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
-                            <span v-if="client_id">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
-                            <span v-else>به پنل پشتیبان خوش آمدید.</span>
+                            <span></span>
+                            <span>[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
                         </div>
                     </div>
-
-                    <div class="header__option">
-                        <div class="wrapper_btns">
-                            <button class="btns_base" v-if="client_id" @click="open_report_box"><img src="/site_static/django_chat_app/img/report.png" alt="report user"></button>
-                            <button class="btns_base" v-if="client_id" @click="openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
-                            <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
-                            
-                            <div class="reportbox_section" v-if="which_toggle_popup == 'report'">
-
-                                <form @submit.prevent="send_report">
-                                    <div class="chatapp_formcontrol" style="margin-bottom: 17px !important;">
-                                        <select v-model="report_item">
-                                            <option value="badterms">استفاده از کلمات نامناسب</option>
-                                            <option value="others">دلایل دیگر</option>
-                                        </select>
-                                    </div>
-    
-                                    <div class="chatapp_formcontrol">
-                                        <label>متن گزارش</label>
-                                        <textarea v-model="report_cause"></textarea>
-                                    </div>
-    
-                                    <div class="chatapp_button">
-                                        <button type="button" @click="send_report">ثبت گزارش</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div class="copybox_section" v-if="which_toggle_popup == 'copybox'">
-
-                                <div class="wrapper_boxes">
-
-                                    <div class="msg_item" v-for="ready_msg in ready_msgs" :key="ready_msg.id">
-                                        <p :title="ready_msg.content">[[ ready_msg.subject ]]</p>
-                                        <div class="wrapper_btns_msgs">
-                                            <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
-                                            <div class="wrapper_2btn_msgs">
-                                                <button @click="msg_input+=ready_msg.content" v-if="client_id"><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
-                                                <button @click="copy_ready_msg(ready_msg.content)"><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-
-
+                    <div class="header__options">
+                        <button class="close__msgbox d-none" id="close__msgbox" @click="open_close_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat application"></button>
+                        <button class="close__msgbox" id="loader_spinner"><div class="loader_spinner loader_spinner--white"></div></button>
                     </div>
-
                 </div>
             </div>
-            <!-- - header -->
 
-            <!-- + tabbar -->
-            <div class="msg__tabbar">
-                <div class="tab_item" :class="tab_id_active == 'menu' ? 'tab_active' : ''" @click="open_tab_data('menu')">صفحه‌ی اصلی</div>
-                <div class="tab_item" :class="tab_id_active == 'yourunreads' ? 'tab_active' : ''" @click="open_tab_data('yourunreads')">پیام‌های ناخوانده‌ی شما</div>
-                <div class="tab_item" :class="tab_id_active == 'unreads' ? 'tab_active' : ''" @click="open_tab_data('unreads')">سایر پیام‌های ناخوانده</div>
-                <div class="tab_item" :class="tab_id_active == 'allpages' ? 'tab_active' : ''" @click="open_tab_data('allpages')">کاربران</div>
-            </div>
-            <!-- - tabbar -->
-
-            <!-- + body -->
             <div class="msg__body">        
                 <div class="body__wrapper">
 
-                    <div v-if="tab_id_active=='menu'" class="tab_menu_links">
-                        
-                        <!-- links -->
-                        <div class="wrapper_buttons">
-                            <p><a @click="menu_active_tab = 'addnewmsg'">نوشتن پیام آماده</a></p>
-                        </div>
-
-                        <!-- outputs -->
-                        <div class="wrapper_output" v-if="menu_active_tab">
-
-                            <form novalidate @submit.prevent="submit_new_readymsg" v-if="menu_active_tab == 'addnewmsg'">
-                                
-                                <div class="chatapp_formcontrol" style="margin-bottom: 17px !important; margin-top: 7px;">
-                                    <label>عنوان متن</label>
-                                    <input type="text" id="subject-chatinput" v-model="new_readymsg_subject" autocomplete="off" autofocus>
-                                </div>
-                                <div class="chatapp_formcontrol">
-                                    <label>محتوای متن</label>
-                                    <textarea id="content-chatinput" rows="4" v-model="new_readymsg_content" autocomplete="off"></textarea>
-                                </div>
-                                <div class="chatapp_button">
-                                    <button type="submit">ذخیره</button>
-                                </div>
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                    <div v-if="tab_id_active=='yourunreads'" :class="tab_data_is_show == false ? 'd-none' : ''">
-                        
-                        <!-- list pages -->
-                        <div class="wrapper__chatboxes">
-                            <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
-                                <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
-                                    <div class="user_date_div">
-                                        <div>[[ msg.owner_name ]]</div>
-                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
-                                    </div>
-                                    <div class="unreadmsg_counter">[[ msg.counter ]]</div>
-                                </div>
-                            </template>
-                        </div>
-
-                    </div>
-
-                    <div v-if="tab_id_active=='unreads'" :class="tab_data_is_show == false ? 'd-none' : ''">
-
-                        <!-- list pages -->
-                        <div class="wrapper__chatboxes">
-                            <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
-                                <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
-                                    <div class="user_date_div">
-                                        <div>[[ msg.owner_name ]]</div>
-                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
-                                    </div>
-                                    <div class="unreadmsg_counter">[[ msg.counter ]]</div>
-                                </div>
-                            </template>
-                        </div>
-
-                    </div>
-                    
-                    <div v-if="tab_id_active=='allpages'" :class="tab_data_is_show == false ? 'd-none' : ''">
-
-                        <!-- list pages -->
-                        <div class="wrapper__chatboxes">
-                            <template v-for="(chat, index) in chat_to_all" :key="chat">
-                                <div class="chat__box" :class="'page3_item_' + index" @click="show_user_chat_page(chat.user_chat_uid, `${chat.first_name} ${chat.last_name}`, `page3_item_${index}`, 'anyone', index)">
-                                    <div class="user_date_div">
-                                        <div>[[ chat.first_name ]] [[ chat.last_name ]]</div>
-                                        <div>[[ chat.user_chat_uid.slice(0,3) ]]****[[ chat.user_chat_uid.slice(7) ]]</div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-
-                    </div>
-
                     <!-- + messages wrapper -->
-                    <div class="all__msg__wrapper" :class="show_msg_container == true ? '' : 'd-none'">
+                    <div class="all__msg__wrapper d-none">
 
-                        <template v-for="msg_item in message_list" :key="msg_item.id">
+                        <template v-if="message_list.length == 0">
+                            <div class="one_msg_wrapper">
+
+                                <div class="msg msg__left">
+                                    <p class="msg__content">
+                                        با عرض سلام، پشتیبان تا لحظاتی دیگر آنلاین خواهد شد. لطفا صبور باشید.
+                                    </p>
+                                    <div class="msg__info">
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template v-else v-for="msg_item in message_list" :key="msg_item.id">
                             <div v-if="!msg_item.is_deleted" class="one_msg_wrapper">
 
-                                <ul :id="`msg-menu-bar-${msg_item.id}`" class="msg-menu-bar d-none" :class="msg_item.sender_type == 'supporter' ? 'msg-menu-bar--left' : 'msg-menu-bar--right'">
+                                <ul :id="`msg-menu-bar-${msg_item.id}`" class="msg-menu-bar d-none" :class="msg_item.sender_type == 'client' ? 'msg-menu-bar--left' : 'msg-menu-bar--right'">
                                     <li @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="/site_static/django_chat_app/img/reply.png" alt=""> پاسخ دادن</li>
                                     <li @click="copy_ready_msg(msg_item.text)"><img src="/site_static/django_chat_app/img/copy.png" alt=""> کپی متن</li>
-                                    <li v-if="edit_user_msg && msg_item.sender_type == 'supporter' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="/site_static/django_chat_app/img/edit.png" alt=""> ویرایش پیام</li>
-                                    <li v-if="delete_user_msg && msg_item.sender_type == 'supporter'" @click="delete_message(msg_item.id)"><img src="/site_static/django_chat_app/img/delete.png" alt=""> حذف پیام</li>
+                                    <li v-if="edit_user_msg && msg_item.sender_type == 'client' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="/site_static/django_chat_app/img/edit.png" alt=""> ویرایش پیام</li>
+                                    <li v-if="delete_user_msg && msg_item.sender_type == 'client'" @click="delete_message(msg_item.id)"><img src="/site_static/django_chat_app/img/delete.png" alt=""> حذف پیام</li>
                                 </ul>
 
-                                <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
-                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'supporter' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
-                                        <span>[[ msg_item.reply_title == 'supporter' ? 'شما' : 'کاربر' ]]</span>
+                                <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
+                                    <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
+                                        <span>[[ msg_item.reply_title == 'client' ? 'شما' : 'پشتیبان' ]]</span>
                                         <span v-if="!msg_item.reply_is_deleted">[[ msg_item.reply_msg ]]</span>
                                         <span v-else>این پیام حذف شده است</span>
                                     </p>
-                                    
                                     <p class="msg__content">
                                         [[ msg_item.text ]]
                                     </p>
                                     <div class="msg__info">
-                                        <div class="msg__info__status" v-if="msg_item.sender_type == 'supporter'">
+                                        <div class="msg__info__status" v-if="msg_item.sender_type == 'client'">
                                             <img v-if="msg_item.is_seen" src="/site_static/django_chat_app/img/double-check.png" alt="double check status">
                                             <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                         <div class="msg__info__edited" v-if="msg_item.is_edited">ویرایش شده</div>
                                     </div>
-                                    <div class="reply_one_msg" :class="msg_item.sender_type == 'supporter' ? 'reply_one_msg--right' : 'reply_one_msg--left'">
-                                        <span @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">پاسخ دادن</span>
-                                        <br><br>
-                                        <span class="toggle_mneubar" @click="show_menu_bar(`msg-menu-bar-${msg_item.id}`)">بیشتر</span>
-                                    </div>
+                                </div>
+                                <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'">
+                                    <span @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">پاسخ دادن</span>
+                                    <br><br>
+                                    <span class="toggle_mneubar" @click="show_menu_bar(`msg-menu-bar-${msg_item.id}`)">بیشتر</span>
                                 </div>
                             </div>
                             <div v-if="msg_item.is_deleted && show_deleted_msg">
-                                <div class="msg__content deleted_msg"  :class="msg_item.sender_type == 'supporter' ? 'msgdel__right' : 'msgdel__left'">
+                                <div class="msg__content deleted_msg"  :class="msg_item.sender_type == 'client' ? 'msgdel__right' : 'msgdel__left'">
                                     <img src="/site_static/django_chat_app/img/delete.png" alt=""> این پیام حذف شده است.
                                 </div>
                             </div>
                             <div class="clearfix"></div>
                         </template>
-
+    
                     </div>
                     <!-- - messages wrapper -->
 
+                    <!-- + tictoctoe game -->
+                    <div class="tictoctoe__game d-none">
+                        
+                        <button id="restart__game">شروع دوباره</button>
+                        <div id="score__game">
+                            <div><span>شما:</span><span>0</span></div>
+                            <div><span>کامپیوتر:</span><span>0</span></div>
+                        </div>
+                        <p id="game_alert_msg" class="d-none"></p>
+                                        
+                        <div class="btns__wrapper">
+
+                            <div id="bg__glass" class="d-none"></div>
+                            <img src="/site_static/django_chat_app/img/o.png" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
+                            <img src="/site_static/django_chat_app/img/x.png" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
+
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_b m2px_l" id="btn11"></div>
+                                <div class="btn_game m2px_b m2px_l" id="btn12"></div>
+                                <div class="btn_game m2px_b" id="btn13"></div>
+                            </div>
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_b m2px_l" id="btn21"></div>
+                                <div class="btn_game m2px_b m2px_l" id="btn22"></div>
+                                <div class="btn_game m2px_b" id="btn23"></div>
+                            </div>
+                            <div class="btns__wrapper__btn">
+                                <div class="btn_game m2px_l" id="btn31"></div>
+                                <div class="btn_game m2px_l" id="btn32"></div>
+                                <div class="btn_game" id="btn33"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- - tictoctoe game -->
+
+                    <!-- + login form -->
+                    <div class="chatapp__form d-none">
+                        <div class="chatform__header">
+                            <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
+                        </div>
+
+                        <form novalidate @submit.prevent="chatapp_submitform">
+                            <div class="chatapp_formcontrol">
+                                <input type="text" id="chatapp__fname" autocomplete="off">
+                                <label for="chatapp__fname">نام</label>
+                            </div>
+                            <div class="chatapp_formcontrol">
+                                <input type="text" id="chatapp__lname" autocomplete="off">
+                                <label for="chatapp__lname">نام خانوادگی</label>
+                            </div>
+                            <div class="chatapp_formcontrol chatapp_control_email d-none">
+                                <input type="email" id="chatapp__email" autocomplete="off">
+                                <label for="chatapp__email">ایمیل</label>
+                            </div>
+                            <div class="chatapp_formcontrol chatapp_control_phone mbnone__chat-app d-none">
+                                <input type="number" id="chatapp__phone" autocomplete="off">
+                                <label for="chatapp__phone">شماره تماس</label>
+                            </div>
+
+                            <div class="chatapp_button">
+                                <button id="chatapp_submitform" type="submit">ارسال</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- - login form -->
+
+                    <div class="btn_last_msg d-none">
+                        <button @click="go_to_bottom_of_box">
+                            <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
+                            <div class="unreadmsg_counter"></div>
+                        </button>
+                    </div>
+
                 </div>
             </div>
-            <!-- - body -->
 
-            <!-- + send msg -->
-            <div class="body__inputs d-none">
-                <form novalidate @submit.prevent="sned_msg_socket">
+            <div class="body__inputs">
+                <form novalidate class="d-none" @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
-
+                        
                         <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" placeholder="پیام خود را وارد کنید:">
                         <button class="show_emoji" type="button" @click="show_emojibar">
                             <img src="/site_static/django_chat_app/img/emoji.png" alt="toggle emojis">
+                        </button>
+                        <button class="show_game" type="button" @click="show_game_btn">
+                            <img src="/site_static/django_chat_app/img/game.png" alt="let's go to game">
                         </button>
 
                         <div class="reply_msg_wrapper d-none">
@@ -352,28 +297,29 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="submit_msg_client">
+                        <button type="submit">
                             <img src="/site_static/django_chat_app/img/send.png" alt="send image">
                         </button>
                     </div>
                 </form>
+                <div class="goback_chat_btn d-none" @click="goback_chat_btn">
 
-                <div class="btn_last_msg d-none" @click="go_to_bottom_of_box">
-                    <button @click="go_to_bottom_of_box">
-                        <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
-                        <div class="unreadmsg_counter d-none"></div>
-                    </button>
+                    <div>بازگشت به صفحه‌ی چت</div>
+
+                    <div v-if="counter_new_msg > 0">
+                        <div class="new_msg_shower">
+                            <div><img src="/site_static/django_chat_app/img/chat-room.png" alt=""></div>
+                            <div>[[ counter_new_msg ]]</div>
+                        </div>
+                    </div>
+
                 </div>
-
             </div>
-            <!-- - send msg -->
-
         </div>
-
     </section>
 
     <script type="text/javascript" src="/site_static/django_chat_app/js/vue3.js"></script>
-    <script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script>
+    <script type="text/javascript" src="/site_static/django_chat_app/js/client.js"></script>
 
 </body>
 </html>
