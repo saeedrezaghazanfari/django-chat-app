@@ -16,104 +16,61 @@
 <body>
 
     <section class="chatapp" id="chatapp">
-        
+
+        <div class="alert_box" v-if="alert">
+            <p>[[ alert ]]</p>
+        </div>
+
         <p class="d-none" id="supporter_uid">{{ supporter_uid }}</p>
 
-        <section class="open_navbar">
-            <button @click="open_sidebar">بازکردن منو</button>
-        </section>
-
-        <nav class="nav">
-            <div class="wrapper_nav">
-
-                <div class="nav__header">
-                    <h4>پیام های کاربران</h4>
-                    <button @click="close_sidebar">&times;</button>
-                </div>
-
-                <div class="wrapper__chatboxes">
-    
-                    <br>
-                    <h4>پیام های ناخوانده ی شما</h4>
-
-                    <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
-                        <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
-                            <div class="user_date_div">
-                                <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
-                            </div>
-                            <div class="unreadmsg_counter">[[ msg.counter ]]</div>
-                        </div>
-                    </template>
-                    
-                    <br>
-                    <h4>سایر پیام های ناخوانده</h4>
-
-                    <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
-                        <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
-                            <div class="user_date_div">
-                                <div>[[ msg.owner_name ]]</div>
-                                <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
-                            </div>
-                            <div class="unreadmsg_counter">[[ msg.counter ]]</div>
-                        </div>
-                    </template>
-
-                    <br>
-                    <h4>سایر کاربران</h4>
-
-                    <template v-for="(chat, index) in chat_to_all" :key="chat">
-                        <div class="chat__box" :class="'page3_item_' + index" @click="show_user_chat_page(chat.user_chat_uid, `${chat.first_name} ${chat.last_name}`, `page3_item_${index}`, 'anyone', index)">
-                            <div class="user_date_div">
-                                <div>[[ chat.first_name ]] [[ chat.last_name ]]</div>
-                                <div>[[ chat.user_chat_uid.slice(0,3) ]]****[[ chat.user_chat_uid.slice(7) ]]</div>
-                            </div>
-                        </div>
-                    </template>
-
-                </div>
-            </div>
-        </nav>
-
         <div class="chatapp__msg">
+
+            <!-- + header -->
             <div class="msg__header">
                 <div class="msg__wrapper">
+
                     <div class="header__info">
                         <img src="/site_static/django_chat_app/img/supporter.png" alt="">
                         <div>
                             <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
-                            <span v-else>برای پاسخگویی لطفا یکی از آیتم های داخل سایدبار را انتخاب کنید</span>
                             <span v-if="client_id">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
+                            <span v-else>به پنل پشتیبان خوش آمدید.</span>
                         </div>
                     </div>
+
                     <div class="header__option">
-                        
                         <div class="wrapper_btns">
+                            <button class="btns_base" v-if="client_id" @click="open_report_box"><img src="/site_static/django_chat_app/img/report.png" alt="report user"></button>
+                            <button class="btns_base" v-if="client_id" @click="openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
                             <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
-                            <button class="btns_base openclose_addreadymsg" v-if="client_id" @click="show_report_div = !show_report_div">Report</button>
-                            <button class="btns_base openclose_addreadymsg" @click="openclose_addreadymsg"><img src="/site_static/django_chat_app/img/plus.png" alt="add msg box"></button>
                             
-                            <div style="background-color:antiquewhite; padding: 7px;" v-if="show_report_div">
-                                <select v-model="report_item">
-                                    <option value="badterms">استفاده از کلمات نامناسب</option>
-                                    <option value="others">دلایل دیگر</option>
-                                </select>
-                                <br>
-                                <textarea v-model="report_cause"></textarea>
-                                <br>
-                                <button type="button" @click="send_report">send</button>
+                            <div class="reportbox_section" v-if="which_toggle_popup == 'report'">
+
+                                <form @submit.prevent="send_report">
+                                    <div class="chatapp_formcontrol" style="margin-bottom: 17px !important;">
+                                        <select v-model="report_item">
+                                            <option value="badterms">استفاده از کلمات نامناسب</option>
+                                            <option value="others">دلایل دیگر</option>
+                                        </select>
+                                    </div>
+    
+                                    <div class="chatapp_formcontrol">
+                                        <label>متن گزارش</label>
+                                        <textarea v-model="report_cause"></textarea>
+                                    </div>
+    
+                                    <div class="chatapp_button">
+                                        <button type="button" @click="send_report">ثبت گزارش</button>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div class="copybox_section d-none">
-                                <div class="wrapper_close_btn">
-                                    <button class="close_box" @click="close_addcopy_box">&times;</button>
-                                    <button class="goto_add_box" @click="open_add_box">+</button>
-                                </div>
+                            <div class="copybox_section" v-if="which_toggle_popup == 'copybox'">
 
                                 <div class="wrapper_boxes">
 
                                     <div class="msg_item" v-for="ready_msg in ready_msgs" :key="ready_msg.id">
-                                        <p :title="ready_msg.subject">[[ ready_msg.content ]]</p>
+                                        <p :title="ready_msg.content">[[ ready_msg.subject ]]</p>
                                         <div class="wrapper_btns_msgs">
                                             <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
                                             <div class="wrapper_2btn_msgs">
@@ -126,32 +83,109 @@
                                 </div>
                             </div>
 
-                            <div class="addbox_section d-none">
-                                <div class="wrapper_close_btn">
-                                    <button class="close_box" @click="close_addcopy_box">&times;</button>
-                                </div>
-                                <form novalidate @submit.prevent="submit_new_readymsg">
-                                    <input type="text" id="subject-chatinput" v-model="new_readymsg_subject" autocomplete="off" autofocus placeholder="عنوان متن:">
-                                    <textarea id="content-chatinput" rows="4" v-model="new_readymsg_content" autocomplete="off" placeholder="محتوای متن:"></textarea>
-                                    <button type="submit">ذخیره</button>
-                                </form>
-                            </div>
-
                         </div>
 
-                        <div class="wrapper_btns">
-                            <button class="btns_base openclose_copyreadymsg" @click="openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
-                        </div>
 
                     </div>
+
                 </div>
             </div>
+            <!-- - header -->
 
+            <!-- + tabbar -->
+            <div class="msg__tabbar">
+                <div class="tab_item" :class="tab_id_active == 'menu' ? 'tab_active' : ''" @click="open_tab_data('menu')">صفحه‌ی اصلی</div>
+                <div class="tab_item" :class="tab_id_active == 'yourunreads' ? 'tab_active' : ''" @click="open_tab_data('yourunreads')">پیام‌های ناخوانده‌ی شما</div>
+                <div class="tab_item" :class="tab_id_active == 'unreads' ? 'tab_active' : ''" @click="open_tab_data('unreads')">سایر پیام‌های ناخوانده</div>
+                <div class="tab_item" :class="tab_id_active == 'allpages' ? 'tab_active' : ''" @click="open_tab_data('allpages')">کاربران</div>
+            </div>
+            <!-- - tabbar -->
+
+            <!-- + body -->
             <div class="msg__body">        
                 <div class="body__wrapper">
 
+                    <div v-if="tab_id_active=='menu'" class="tab_menu_links">
+                        
+                        <!-- links -->
+                        <div class="wrapper_buttons">
+                            <p><a @click="menu_active_tab = 'addnewmsg'">نوشتن پیام آماده</a></p>
+                        </div>
+
+                        <!-- outputs -->
+                        <div class="wrapper_output" v-if="menu_active_tab">
+
+                            <form novalidate @submit.prevent="submit_new_readymsg" v-if="menu_active_tab == 'addnewmsg'">
+                                
+                                <div class="chatapp_formcontrol" style="margin-bottom: 17px !important; margin-top: 7px;">
+                                    <label>عنوان متن</label>
+                                    <input type="text" id="subject-chatinput" v-model="new_readymsg_subject" autocomplete="off" autofocus>
+                                </div>
+                                <div class="chatapp_formcontrol">
+                                    <label>محتوای متن</label>
+                                    <textarea id="content-chatinput" rows="4" v-model="new_readymsg_content" autocomplete="off"></textarea>
+                                </div>
+                                <div class="chatapp_button">
+                                    <button type="submit">ذخیره</button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <div v-if="tab_id_active=='yourunreads'" :class="tab_data_is_show == false ? 'd-none' : ''">
+                        
+                        <!-- list pages -->
+                        <div class="wrapper__chatboxes">
+                            <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
+                                <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
+                                    <div class="user_date_div">
+                                        <div>[[ msg.owner_name ]]</div>
+                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
+                                    </div>
+                                    <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+
+                    <div v-if="tab_id_active=='unreads'" :class="tab_data_is_show == false ? 'd-none' : ''">
+
+                        <!-- list pages -->
+                        <div class="wrapper__chatboxes">
+                            <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
+                                <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
+                                    <div class="user_date_div">
+                                        <div>[[ msg.owner_name ]]</div>
+                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7) ]] [[ msg.status == 'online' ? ' - آنلاین' : ' - اخیرا' ]]</div>
+                                    </div>
+                                    <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+                    
+                    <div v-if="tab_id_active=='allpages'" :class="tab_data_is_show == false ? 'd-none' : ''">
+
+                        <!-- list pages -->
+                        <div class="wrapper__chatboxes">
+                            <template v-for="(chat, index) in chat_to_all" :key="chat">
+                                <div class="chat__box" :class="'page3_item_' + index" @click="show_user_chat_page(chat.user_chat_uid, `${chat.first_name} ${chat.last_name}`, `page3_item_${index}`, 'anyone', index)">
+                                    <div class="user_date_div">
+                                        <div>[[ chat.first_name ]] [[ chat.last_name ]]</div>
+                                        <div>[[ chat.user_chat_uid.slice(0,3) ]]****[[ chat.user_chat_uid.slice(7) ]]</div>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                    </div>
+
                     <!-- + messages wrapper -->
-                    <div class="all__msg__wrapper">
+                    <div class="all__msg__wrapper" :class="show_msg_container == true ? '' : 'd-none'">
 
                         <template v-for="msg_item in message_list" :key="msg_item.id">
                             <div v-if="!msg_item.is_deleted" class="one_msg_wrapper">
@@ -201,7 +235,9 @@
 
                 </div>
             </div>
+            <!-- - body -->
 
+            <!-- + send msg -->
             <div class="body__inputs d-none">
                 <form novalidate @submit.prevent="sned_msg_socket">
                     <div class="forminput_wrapper">
@@ -330,6 +366,8 @@
                 </div>
 
             </div>
+            <!-- - send msg -->
+
         </div>
 
     </section>
@@ -380,6 +418,11 @@
 
                 chat_to_all: [],
 
+                tab_id_active: 'yourunreads',
+                tab_data_is_show: true,
+                show_msg_container: false,
+                menu_active_tab: '',
+
                 message_status_is_edit: false,
 
                 message_list: [],
@@ -388,9 +431,11 @@
                 unreads_thissupporter_pre: [],
                 unreads_thissupporter: [],
 
-                show_report_div: false,
+                which_toggle_popup: '',
                 report_item: 'badterms',
                 report_cause: '',
+
+                alert: '',
             }
         },
 
@@ -402,7 +447,6 @@
             this.supporter_uid = document.getElementById('supporter_uid').innerText;
             this.get_board_msgs();
             this.start_socket();
-            this.open_sidebar();
         },
 
         methods: {
@@ -419,6 +463,21 @@
             //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
             //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
             // },
+
+            open_tab_data(context) {
+                this.tab_id_active = context;
+                this.show_msg_container = false;
+                this.tab_data_is_show = true;
+
+                this.reset_close_chat_box()
+            },
+
+            open_report_box() {
+                if(this.which_toggle_popup == 'report')
+                    this.which_toggle_popup = '';
+                else 
+                    this.which_toggle_popup = 'report';
+            },
 
             add_emoji_toinput(emoji) {
                 this.msg_input += emoji;
@@ -628,7 +687,7 @@
 
                     setTimeout(() => {
                         target.style.backgroundColor = initial_bgcolor;
-                    }, 500);
+                    }, 3000);
 
                     // scroll to message
                     target.scrollIntoView({ behavior: "smooth", block: "end"});
@@ -774,15 +833,17 @@
             },
             
             show_user_chat_page(client_id, client_name, client_item, msg_type, index_item) {
+
+                this.tab_data_is_show = false;
+                this.show_msg_container = true;
+
                 this.focus_msg_input();
                 document.querySelectorAll('.chatapp .wrapper__chatboxes .chat__box').forEach(element => {
                     if(element.classList.contains('msg_item_active'))
                         element.classList.remove('msg_item_active');
                 });
-                this.close_sidebar();
                 document.querySelector(`.chatapp .wrapper__chatboxes .${client_item}`).classList.add('msg_item_active');
                 document.querySelector('.chatapp .body__inputs').classList.remove('d-none');
-                
                 
                 this.client_id = client_id;
                 this.client_name = client_name;
@@ -846,7 +907,6 @@
                     if(element.classList.contains('msg_item_active'))
                         element.classList.remove('msg_item_active');
                 });
-                this.close_sidebar();
                 document.querySelector('.chatapp .body__inputs').classList.add('d-none');
                 
                 // send offline status
@@ -863,6 +923,7 @@
                 this.client_name = '';
                 this.msg_input = '';
                 this.message_list = [];
+                this.which_toggle_popup = '';
             },
             
             sned_msg_socket(e) {
@@ -994,7 +1055,6 @@
                                 window.location.reload()
                             }
 
-                            this.show_report_div = false;
                             this.report_item = 'badterms';
                             this.report_cause = '';
                         }
@@ -1005,35 +1065,8 @@
                 })();
             },
             
-            close_sidebar() {
-                document.querySelector('.nav').style.transform = 'translateX(500px)';
-                setTimeout(()=>{
-                    document.querySelector('.nav').style.display = 'none';
-                }, 200);
-            },
-
-            open_sidebar() {
-                document.querySelector('.nav').style.display = 'block';
-                setTimeout(()=>{
-                    document.querySelector('.nav').style.transform = 'translateX(0px)';
-                }, 1);
-            },
-
-            openclose_addreadymsg() {
-                if(document.querySelector('.addbox_section').classList.contains('d-none')) {
-                    setTimeout(()=>{
-                        document.querySelector('.addbox_section input#subject-chatinput').focus();    
-                    }, 400);
-                    document.querySelector('.copybox_section').classList.add('d-none');
-                    document.querySelector('.addbox_section').classList.remove('d-none');
-                } else {
-                    document.querySelector('.copybox_section').classList.add('d-none');
-                    document.querySelector('.addbox_section').classList.add('d-none');
-                }
-            },
-            
             openclose_copyreadymsg() {
-                if(document.querySelector('.copybox_section').classList.contains('d-none')) {
+                if(this.which_toggle_popup != 'copybox') {
 
                     if(this.ready_msgs.length == 0) {
                         let formdata = new FormData();
@@ -1059,11 +1092,9 @@
                         })();
                     }
 
-                    document.querySelector('.addbox_section').classList.add('d-none');
-                    document.querySelector('.copybox_section').classList.remove('d-none');
+                    this.which_toggle_popup = 'copybox';
                 }else {
-                    document.querySelector('.addbox_section').classList.add('d-none');
-                    document.querySelector('.copybox_section').classList.add('d-none');
+                    this.which_toggle_popup = '';
                 }
             },
 
@@ -1151,27 +1182,19 @@
                             this.ready_msgs = response.data;
                             this.new_readymsg_subject = '';
                             this.new_readymsg_content = '';
-                            
-                            setTimeout(()=>{
-                                this.openclose_copyreadymsg();
-                            }, 500);
+                            this.alert = 'پیام شما با موفقیت ذخیره شد. شما میتوانید هنگام چت با کاربران از این پیام استفاده کنید.'
                         }
+
+                        setTimeout(() => {
+                            this.alert = '';
+                        }, 3000);
                     })
                     .catch(err => {
                         console.log('ERR: ', err);
                     });
                 })();
             },
-            
-            close_addcopy_box() {
-                document.querySelector('.addbox_section').classList.add('d-none');
-                document.querySelector('.copybox_section').classList.add('d-none');
-            },
 
-            open_add_box() {
-                document.querySelector('.copybox_section').classList.add('d-none');
-                document.querySelector('.addbox_section').classList.remove('d-none');
-            }
         }
     }).mount('#chatapp');
 

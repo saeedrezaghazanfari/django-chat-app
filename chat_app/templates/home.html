@@ -46,7 +46,20 @@
                     <!-- + messages wrapper -->
                     <div class="all__msg__wrapper d-none">
 
-                        <template v-for="msg_item in message_list" :key="msg_item.id">
+                        <template v-if="message_list.length == 0">
+                            <div class="one_msg_wrapper">
+
+                                <div class="msg msg__left">
+                                    <p class="msg__content">
+                                        با عرض سلام، پشتیبان تا لحظاتی دیگر آنلاین خواهد شد. لطفا صبور باشید.
+                                    </p>
+                                    <div class="msg__info">
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <template v-else v-for="msg_item in message_list" :key="msg_item.id">
                             <div v-if="!msg_item.is_deleted" class="one_msg_wrapper">
 
                                 <ul :id="`msg-menu-bar-${msg_item.id}`" class="msg-menu-bar d-none" :class="msg_item.sender_type == 'client' ? 'msg-menu-bar--left' : 'msg-menu-bar--right'">
@@ -714,7 +727,7 @@
 
                     setTimeout(() => {
                         target.style.backgroundColor = initial_bgcolor;
-                    }, 500);
+                    }, 3000);
 
                     // scroll to message
                     target.scrollIntoView({ behavior: "smooth", block: "end"});
