@@ -3,6 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from chatapp.views import supporter_homepage
 from . import views
 
 
@@ -12,7 +13,8 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
 
-    # APPLICATIONS
+    # CHATAPP
+    path('django-chat-app/chat/supporter/', supporter_homepage),
     path('', include('chatapp.urls')),
 
     # PACKAGES
