@@ -67,7 +67,7 @@ class ChatConsumer(WebsocketConsumer):
         if text_data:
 
             text_data_json = json.loads(text_data)
-            print(self.type.upper(), text_data_json)
+            # print(self.type.upper(), text_data_json)
 
             # send delete message to client
             if self.type == 'supporter' and text_data_json.get('_type_request') == 'del':

@@ -101,7 +101,8 @@ Vue.createApp({
         },
 
         play_send_sound() {
-            new Audio('/site_static/django_chat_app/media/send.mp3').play();
+            let sound_sendmsg = document.getElementById('sound_sendmsg');
+            new Audio(sound_sendmsg.innerText).play();
         },
 
         focus_msg_input() {
@@ -489,7 +490,7 @@ Vue.createApp({
             this.socket.onmessage = function(e) {
 
                 let message = JSON.parse(e.data);
-                console.log(message);
+                // console.log(message);
 
                 if(message._type_request == 'edit') {  /* just edit message */
                     mythis.message_list.forEach(element => {

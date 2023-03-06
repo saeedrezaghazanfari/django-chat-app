@@ -1,3 +1,6 @@
+[![PyPi Version](https://img.shields.io/pypi/v/django-chat-app.svg)](https://pypi.python.org/pypi/django-chatapp)
+[![GitHub stars](https://img.shields.io/github/stars/saeedrezaghazanfari/django-chatapp.svg?style=social)](https://github.com/saeedrezaghazanfari/django-chat-app)
+
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
 ![Vue.js](https://img.shields.io/badge/vuejs-%2335495e.svg?style=for-the-badge&logo=vuedotjs&logoColor=%234FC08D)
@@ -5,12 +8,24 @@
 
 
 # Django Chat App
+a Free chat application in your website :) if you need a chat application in your django project, you can use from this package.
 
-if you need to a chat application in your django project, you can use from this package.
-this package powered by channels and vuejs technologies.
 
 ### Prerequisites
-your project must use asgi engine. you can use from channels package.
+your project must use ASGI engine. you can use from `channels` and `daphne`.
+
+
+### Some Properties
+1. supporter panel
+2. play game in client side
+3. report the user
+4. write ready messages in supporter panel
+5. customize chat setting like: edit & delete messages and show deleted message
+6. emoji bar
+7. reply message
+8. rtl and ltr template
+9. show status like online or offline
+10. double check for send and seen message
 
 
 ### Quick start

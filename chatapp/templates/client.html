@@ -4,6 +4,8 @@
 
 <section class="chatapp" id="chatapp">
 
+    <span id="sound_sendmsg" class="d-none">{% static 'django_chat_app/media/send.mp3' %}</span>
+
     <div class="chatapp__btn" @click="open_close_box">
         <div>
             <img src="{% static 'django_chat_app/img/chat-room.png' %}" alt="Django Chat Application!">
