@@ -50,34 +50,34 @@ path('', include('chatapp.urls')),
 
 ### Custom Setting
 
-- set direction of template
+#### set direction of template
 CHATAPP_DIR = 'auto'    # other value: rtl - ltr - auto
 
-- editable message via client
+#### editable message via client
 CHATAPP_EDIT_USER_MESSAGE = True
 
-- deleteable message via client
+#### deleteable message via client
 CHATAPP_DELETE_USER_MESSAGE = True
 
-- editable message via supporter
+#### editable message via supporter
 CHATAPP_EDIT_SUPPORTER_MESSAGE = True
 
-- deleteable message via supporter
+#### deleteable message via supporter
 CHATAPP_DELETE_SUPPORTER_MESSAGE = True
 
-- show or not show 'this message is deleted'
+#### show or not show 'this message is deleted'
 CHATAPP_SHOW_DELETED_MESSAGE = True
 
-- enable game for client
+#### enable game for client
 CHATAPP_GAME = True
 
-- fields for login is firstname, lastname and (phone or email)
+#### fields for login is firstname, lastname and (phone or email)
 CHATAPP_AUTHFIELDS = 'email'     # phone - email
 
-- title and subtitle of chat box header 
+#### title and subtitle of chat box header 
 CHATAPP_TITLE = 'وبسایت تستی'
 CHATAPP_SUBTITLE = 'لطفا کوشا باشید.'
 
-- maximoum report for users
+#### maximoum report for users
 CHATAPP_MAX_REPORT_NUMBER = 2
 
