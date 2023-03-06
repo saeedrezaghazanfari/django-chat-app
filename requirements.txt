@@ -8,7 +8,6 @@ constantly==15.1.0
 cryptography==38.0.1
 daphne==4.0.0
 Django==4.1.2
-django-cleanup==6.0.0
 hyperlink==21.0.0
 idna==3.4
 incremental==22.10.0
@@ -17,7 +16,6 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.21
 pyOpenSSL==22.1.0
-python-decouple==3.6
 service-identity==21.1.0
 six==1.16.0
 sqlparse==0.4.3

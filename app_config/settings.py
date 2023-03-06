@@ -1,13 +1,11 @@
 from pathlib import Path
-from decouple import config
 from django.utils.translation import gettext_lazy as _
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG')
+SECRET_KEY = 'django-insecure-r^p0kgfm$szo5=dk1y$x)w@21kc_4y(n7_@%ogged7o27_1or@'
+DEBUG = True
 ALLOWED_HOSTS = []
-# SECURE_SSL_REDIRECT = False
 
 
 # Application definition
@@ -20,13 +18,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Apps
-    'extentions',
-    'chat_app.apps.ChatAppConfig',
-
-    # Packs
+    'chatapp',
     'channels',
-    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -102,10 +95,10 @@ LANGUAGES = [
     ('ar', _('Arabic')),
     ('ru', _('Russia')),
 ]
-LANGUAGE_CODE = config('LANGUAGE_CODE')
-TIME_ZONE = config('TIME_ZONE')
-USE_I18N = config('USE_I18N')
-USE_TZ = config('USE_TZ')
+LANGUAGE_CODE = 'fa'
+TIME_ZONE = 'Asia/Tehran'
+USE_I18N = True
+USE_TZ = True
 
 STATIC_URL = '/site_static/'
 STATIC_ROOT = Path("static_cdn", "static_root")
@@ -114,6 +107,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = Path("static_cdn", "media_root")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 # ### DJANGO CHAT APP CONFIGS ### #
 CHATAPP_DIR = 'auto'              # rtl - ltr - auto

@@ -4,7 +4,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
 # apps
-from chat_app.routing import ws_urlpatterns
+from chatapp.routing import ws_urlpatterns
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app_config.settings')

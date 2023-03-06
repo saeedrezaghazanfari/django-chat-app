@@ -260,8 +260,8 @@ Vue.createApp({
                         .then((response) => {
                             if(response.status == 200) {
 
-                                document.getElementById('close__msgbox').classList.remove('d-none');
-                                document.getElementById('loader_spinner').classList.add('d-none');
+                                // document.getElementById('close__msgbox').classList.remove('d-none');
+                                // document.getElementById('loader_spinner').classList.add('d-none');
                                 
                                 this.message_list = response.data;
                                 this.user_is_logged = true;

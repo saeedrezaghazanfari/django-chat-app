@@ -1,4 +1,4 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -10,7 +10,7 @@
     <title>صفحه‌ی پشتیبان</title>
 
     <!-- External files2 -->
-    <link rel="stylesheet" href="/site_static/django_chat_app/css/supporter.css">
+    <link rel="stylesheet" href="{% static 'django_chat_app/css/supporter.css' %}">
 
 </head>
 <body>
@@ -30,7 +30,7 @@
                 <div class="msg__wrapper">
 
                     <div class="header__info">
-                        <img src="/site_static/django_chat_app/img/supporter.png" alt="">
+                        <img src="{% static 'django_chat_app/img/supporter.png' %}" alt="">
                         <div>
                             <span v-if="client_id" :title="client_id.slice(0,5) + '***' + client_id.slice(31)">[[ client_name ]]</span>
                             <span v-if="client_id">[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
@@ -40,9 +40,9 @@
 
                     <div class="header__option">
                         <div class="wrapper_btns">
-                            <button class="btns_base" v-if="client_id" @click="open_report_box"><img src="/site_static/django_chat_app/img/report.png" alt="report user"></button>
-                            <button class="btns_base" v-if="client_id" @click="openclose_copyreadymsg"><img src="/site_static/django_chat_app/img/copy.png" alt="copy msg box"></button>
-                            <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="/site_static/django_chat_app/img/close.png" alt="close chat box"></button>
+                            <button class="btns_base" v-if="client_id" @click="open_report_box"><img src="{% static 'django_chat_app/img/report.png' %}" alt="report user"></button>
+                            <button class="btns_base" v-if="client_id" @click="openclose_copyreadymsg"><img src="{% static 'django_chat_app/img/copy.png' %}" alt="copy msg box"></button>
+                            <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="{% static 'django_chat_app/img/close.png' %}" alt="close chat box"></button>
                             
                             <div class="reportbox_section" v-if="which_toggle_popup == 'report'">
 
@@ -72,10 +72,10 @@
                                     <div class="msg_item" v-for="ready_msg in ready_msgs" :key="ready_msg.id">
                                         <p :title="ready_msg.content">[[ ready_msg.subject ]]</p>
                                         <div class="wrapper_btns_msgs">
-                                            <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="/site_static/django_chat_app/img/delete.png" alt="delete ready msg item"></button>
+                                            <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="{% static 'django_chat_app/img/delete.png' %}" alt="delete ready msg item"></button>
                                             <div class="wrapper_2btn_msgs">
-                                                <button @click="msg_input+=ready_msg.content" v-if="client_id"><img src="/site_static/django_chat_app/img/plus.png" alt="add to input"></button>
-                                                <button @click="copy_ready_msg(ready_msg.content)"><img src="/site_static/django_chat_app/img/copy.png" alt="copy to clipboard"></button>
+                                                <button @click="msg_input+=ready_msg.content" v-if="client_id"><img src="{% static 'django_chat_app/img/plus.png' %}" alt="add to input"></button>
+                                                <button @click="copy_ready_msg(ready_msg.content)"><img src="{% static 'django_chat_app/img/copy.png' %}" alt="copy to clipboard"></button>
                                             </div>
                                         </div>
                                     </div>
@@ -191,10 +191,10 @@
                             <div v-if="!msg_item.is_deleted" class="one_msg_wrapper">
 
                                 <ul :id="`msg-menu-bar-${msg_item.id}`" class="msg-menu-bar d-none" :class="msg_item.sender_type == 'supporter' ? 'msg-menu-bar--left' : 'msg-menu-bar--right'">
-                                    <li @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="/site_static/django_chat_app/img/reply.png" alt=""> پاسخ دادن</li>
-                                    <li @click="copy_ready_msg(msg_item.text)"><img src="/site_static/django_chat_app/img/copy.png" alt=""> کپی متن</li>
-                                    <li v-if="edit_user_msg && msg_item.sender_type == 'supporter' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="/site_static/django_chat_app/img/edit.png" alt=""> ویرایش پیام</li>
-                                    <li v-if="delete_user_msg && msg_item.sender_type == 'supporter'" @click="delete_message(msg_item.id)"><img src="/site_static/django_chat_app/img/delete.png" alt=""> حذف پیام</li>
+                                    <li @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chat_app/img/reply.png' %}" alt=""> پاسخ دادن</li>
+                                    <li @click="copy_ready_msg(msg_item.text)"><img src="{% static 'django_chat_app/img/copy.png' %}" alt=""> کپی متن</li>
+                                    <li v-if="edit_user_msg && msg_item.sender_type == 'supporter' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chat_app/img/edit.png' %}" alt=""> ویرایش پیام</li>
+                                    <li v-if="delete_user_msg && msg_item.sender_type == 'supporter'" @click="delete_message(msg_item.id)"><img src="{% static 'django_chat_app/img/delete.png' %}" alt=""> حذف پیام</li>
                                 </ul>
 
                                 <div class="msg" :class="msg_item.sender_type == 'supporter' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
@@ -209,8 +209,8 @@
                                     </p>
                                     <div class="msg__info">
                                         <div class="msg__info__status" v-if="msg_item.sender_type == 'supporter'">
-                                            <img v-if="msg_item.is_seen" src="/site_static/django_chat_app/img/double-check.png" alt="double check status">
-                                            <img v-else src="/site_static/django_chat_app/img/single-check.png" alt="single check status">
+                                            <img v-if="msg_item.is_seen" src="{% static 'django_chat_app/img/double-check.png' %}" alt="double check status">
+                                            <img v-else src="{% static 'django_chat_app/img/single-check.png' %}" alt="single check status">
                                         </div>
                                         <div class="msg__info__clock">[[ msg_item.created ]]</div>
                                         <div class="msg__info__edited" v-if="msg_item.is_edited">ویرایش شده</div>
@@ -224,7 +224,7 @@
                             </div>
                             <div v-if="msg_item.is_deleted && show_deleted_msg">
                                 <div class="msg__content deleted_msg"  :class="msg_item.sender_type == 'supporter' ? 'msgdel__right' : 'msgdel__left'">
-                                    <img src="/site_static/django_chat_app/img/delete.png" alt=""> این پیام حذف شده است.
+                                    <img src="{% static 'django_chat_app/img/delete.png' %}" alt=""> این پیام حذف شده است.
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -244,7 +244,7 @@
 
                         <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" placeholder="پیام خود را وارد کنید:">
                         <button class="show_emoji" type="button" @click="show_emojibar">
-                            <img src="/site_static/django_chat_app/img/emoji.png" alt="toggle emojis">
+                            <img src="{% static 'django_chat_app/img/emoji.png' %}" alt="toggle emojis">
                         </button>
 
                         <div class="reply_msg_wrapper d-none">
@@ -353,14 +353,14 @@
                         </div>
 
                         <button type="submit" class="submit_msg_client">
-                            <img src="/site_static/django_chat_app/img/send.png" alt="send image">
+                            <img src="{% static 'django_chat_app/img/send.png' %}" alt="send image">
                         </button>
                     </div>
                 </form>
 
                 <div class="btn_last_msg d-none" @click="go_to_bottom_of_box">
                     <button @click="go_to_bottom_of_box">
-                        <img src="/site_static/django_chat_app/img/gotodown.png" alt="go to last msg img">
+                        <img src="{% static 'django_chat_app/img/gotodown.png' %}" alt="go to last msg img">
                         <div class="unreadmsg_counter d-none"></div>
                     </button>
                 </div>
@@ -372,8 +372,8 @@
 
     </section>
 
-    <script type="text/javascript" src="/site_static/django_chat_app/js/vue3.js"></script>
-    <script type="text/javascript" src="/site_static/django_chat_app/js/supporter.js"></script>
+    <script type="text/javascript" src="{% static 'django_chat_app/js/vue3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_chat_app/js/supporter.js' %}"></script>
 
 </body>
 </html>

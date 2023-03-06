@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home),
+    path('', views.home), #TODO delete this view
     path('django-chat-app/chat/supporter/', views.supporter_homepage),
     path('django-chat-app/chat/supporter/unreads/', views.supporter_unreads),
     path('django-chat-app/chat/supporter/read-all/', views.supporter_read_all),

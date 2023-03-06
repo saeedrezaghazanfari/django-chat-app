@@ -11,14 +11,9 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    
-    # Custom Views
-    path('404', views.page_not_found_view),
-    path('403', views.page_forbidden_view),
-    path('500', views.page_server_error_view),
 
     # APPLICATIONS
-    path('', include('chat_app.urls')),
+    path('', include('chatapp.urls')),
 
     # PACKAGES
     path('change/language/', views.activate_language, name='activate_lang'),
@@ -29,6 +24,3 @@ if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler404 = "app_config.views.page_not_found_view"
-handler403 = "app_config.views.page_forbidden_view"
-handler500 = "app_config.views.page_server_error_view"

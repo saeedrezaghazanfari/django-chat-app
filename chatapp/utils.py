@@ -91,7 +91,7 @@ def profile_image_path(instance, filename):
 # =============== end static path
 
 
-def get_blog_code():
+def unique_username():
     time = timezone.now()
     intmonth = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 

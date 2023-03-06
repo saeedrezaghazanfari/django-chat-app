@@ -139,7 +139,7 @@ elif [ $FLAG = 4 ]; then
 
 			. venv/bin/activate
 			
-			for DIR in $(find . -type d -iname "chat_*")
+			for DIR in $(find . -type d -iname "chatapp")
 			do
 				cd $DIR
 				mkdir locale
@@ -155,7 +155,7 @@ elif [ $FLAG = 4 ]; then
 
 			. venv/bin/activate
 
-			for DIR in $(find . -type d -iname "chat_*")
+			for DIR in $(find . -type d -iname "chatapp")
 			do
 				cd $DIR
 				echo
@@ -246,7 +246,7 @@ elif [ $FLAG = 9 ]; then
 
 	if [ $SUREMENT = 'Y' ]; then
 
-		for FILE in $(find ./chat_*/migrations/ -type f -iname "00*.py")
+		for FILE in $(find ./chatapp/migrations/ -type f -iname "00*.py")
 		do
 			rm $FILE
 			echo "File '" $FILE "' is removed!"
@@ -270,13 +270,13 @@ elif [ $FLAG = 10 ]; then
 
 	if [ $SUREMENT = 'Y' ]; then
 
-		for FILE in $(find ./chat_*/__pycache__/)
+		for FILE in $(find ./chatapp/__pycache__/)
 		do
 			rm -rf $FILE
 			echo "Dir '" $FILE "' is removed!"
 		done
 
-		for FILE in $(find ./chat_*/*/__pycache__/)
+		for FILE in $(find ./chatapp/*/__pycache__/)
 		do
 			rm -rf $FILE
 			echo "Dir '" $FILE "' is removed!"
