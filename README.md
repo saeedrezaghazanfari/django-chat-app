@@ -1,3 +1,5 @@
+[![PyPi Version](https://img.shields.io/pypi/v/django-chatapp.svg)](https://pypi.org/project/django-chatapp/1.0/)
+[![GitHub stars](https://img.shields.io/github/stars/saeedrezaghazanfari/django-chat-app.svg?style=social)](https://github.com/saeedrezaghazanfari/django-chat-app)
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
@@ -8,8 +10,8 @@
 # Django Chat App
 a Free chat application in your website :) if you need a chat application in your django project, you can use from this package.
 
-client chat view, [click here](https://drive.google.com/file/d/1t5w1MRq0szLyvy7Oldvfyro9j0Vv8cyo/view).
-supporter panel view, [click here](https://drive.google.com/file/d/1vU22UBRi-9p3LjJODSIs_-Z8T69IOui_/view?google_abuse=GOOGLE_ABUSE_EXEMPTION%3DID%3Dbfca89d383f1b9ef:TM%3D1678646902:C%3Dr:IP%3D51.15.78.180-:S%3DtRs9GfSddEdmk7ENE56mZ_o%3B+path%3D/%3B+domain%3Dgoogle.com%3B+expires%3DSun,+12-Mar-2023+21:48:22+GMT).
+[client chat view](https://drive.google.com/file/d/1t5w1MRq0szLyvy7Oldvfyro9j0Vv8cyo/view) and
+[supporter panel view](https://drive.google.com/file/d/1vU22UBRi-9p3LjJODSIs_-Z8T69IOui_/view?google_abuse=GOOGLE_ABUSE_EXEMPTION%3DID%3Dbfca89d383f1b9ef:TM%3D1678646902:C%3Dr:IP%3D51.15.78.180-:S%3DtRs9GfSddEdmk7ENE56mZ_o%3B+path%3D/%3B+domain%3Dgoogle.com%3B+expires%3DSun,+12-Mar-2023+21:48:22+GMT).
 
 
 ### Some Properties
@@ -150,4 +152,5 @@ CHATAPP_SUBTITLE = 'لطفا کوشا باشید.'
 ```
 CHATAPP_MAX_REPORT_NUMBER = 2
 ```
+
 
