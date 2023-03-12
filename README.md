@@ -1,4 +1,4 @@
-[![PyPi Version](https://img.shields.io/pypi/v/django-chatapp.svg)](https://pypi.org/project/django-chatapp/1.0/)
+[![PyPi Version](https://img.shields.io/pypi/v/django-chatapp.svg)](https://pypi.org/project/django-chatapp/1.1/)
 [![GitHub stars](https://img.shields.io/github/stars/saeedrezaghazanfari/django-chat-app.svg?style=social)](https://github.com/saeedrezaghazanfari/django-chat-app)
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
