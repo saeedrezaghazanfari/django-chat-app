@@ -14,7 +14,7 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
 
     # CHATAPP
-    path('django-chat-app/chat/supporter/', supporter_homepage),
+    path('django-chatapp/chat/supporter/', supporter_homepage),
     path('', include('chatapp.urls')),
 
     # PACKAGES

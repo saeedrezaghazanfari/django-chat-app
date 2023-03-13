@@ -73,6 +73,15 @@ Vue.createApp({
         //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
         //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
         // },
+        
+        get_prefix_lang_url(){
+            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
+
+            if(langs.includes(first_second_lang))
+                return first_second_lang.slice(0,3);
+            return '';
+        },
 
         add_emoji_toinput(emoji) {
             this.msg_input += emoji;
@@ -117,7 +126,7 @@ Vue.createApp({
                 return;
 
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/setting/', {
                     method: "POST",
                     headers: {
                         "Content-type": "application/x-www-form-urlencoded"
@@ -137,7 +146,7 @@ Vue.createApp({
                         this.show_deleted_msg = response.data.show_deleted_msg;
                         this.is_set_env = true;
 
-                        let language = window.location.pathname[1] + window.location.pathname[2];
+                        let language = this.get_prefix_lang_url();
                         
                         // setting for direction
                         if(this.env_dir == 'ltr') {
@@ -145,7 +154,7 @@ Vue.createApp({
                         } else if(this.env_dir == 'rtl') {
                             document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                         } else if(this.env_dir == 'auto') {
-                            if(language == 'fa' || language == 'ar')
+                            if(language == '/fa' || language == '/ar')
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             else
                                 document.querySelector('section.chatapp').classList.add('chatapp__ltr')
@@ -250,7 +259,7 @@ Vue.createApp({
                     formdata.append('user_id', stored_userid);
                     
                     (async () => {
-                        await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/auth/check/userid/', {
+                        await fetch(this.get_prefix_lang_url() + '/django-chatapp/auth/check/userid/', {
                             method: "POST",
                             body: new URLSearchParams(formdata),
                             headers: {
@@ -448,7 +457,7 @@ Vue.createApp({
             }
 
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/auth/create/userid/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/auth/create/userid/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {

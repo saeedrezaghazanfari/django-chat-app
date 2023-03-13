@@ -18,7 +18,7 @@ def home(request):
     return render(request, 'test.html')
 
 
-# url: /django-chat-app/auth/check/userid/
+# url: /django-chatapp/auth/check/userid/
 @csrf_exempt
 def check_userid(request):
     if request.method == 'POST':
@@ -29,17 +29,61 @@ def check_userid(request):
         if userid and UserChatModel.objects.filter(user_chat_uid=userid, is_blocked=False).exists():
 
             setting_dict = {}
-            setting_dict['dir'] = settings.CHATAPP_DIR
-            setting_dict['title'] = settings.CHATAPP_TITLE
-            setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
-            setting_dict['game'] = settings.CHATAPP_GAME
-            setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
-            setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-            setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
-            setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
-            setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
-            setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
-            setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
+            
+            try:
+                setting_dict['dir'] = settings.CHATAPP_DIR
+            except:
+                setting_dict['dir'] = 'rtl'
+            
+            try:
+                setting_dict['title'] = settings.CHATAPP_TITLE
+            except:
+                setting_dict['title'] = 'وبسایت تستی'
+            
+            try:
+                setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
+            except:
+                setting_dict['subtitle'] = 'لطفا کوشا باشید.'
+            
+            try:
+                setting_dict['game'] = settings.CHATAPP_GAME
+            except:
+                setting_dict['game'] = True
+            
+            try:
+                setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
+            except:
+                setting_dict['auth_fields'] = 'email'
+            
+            try:
+                setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
+            except:
+                setting_dict['max_report_number'] = 2
+            
+            try:
+                setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
+            except:
+                setting_dict['edit_user_msg'] = True
+            
+            try:
+                setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
+            except:
+                setting_dict['edit_supporter_msg'] = True
+            
+            try:
+                setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
+            except:
+                setting_dict['delete_user_msg'] = True
+            
+            try:
+                setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
+            except:
+                setting_dict['delete_supporter_msg'] = True
+            
+            try:
+                setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
+            except:
+                setting_dict['show_deleted_msg'] = True
 
             client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
 
@@ -79,7 +123,7 @@ def check_userid(request):
     return JsonResponse({'status': 400})
 
 
-# url: /django-chat-app/auth/create/userid/
+# url: /django-chatapp/auth/create/userid/
 @csrf_exempt
 def create_userid(request):
     if request.method == 'POST':
@@ -109,30 +153,75 @@ def create_userid(request):
     return JsonResponse({'status': 400})
 
 
-# url: /django-chat-app/chat/setting/
+# url: /django-chatapp/chat/setting/
 @csrf_exempt
 def setting_chat(request):
     if request.method == 'POST':
 
         setting_dict = {}
-        setting_dict['dir'] = settings.CHATAPP_DIR
-        setting_dict['title'] = settings.CHATAPP_TITLE
-        setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
-        setting_dict['game'] = settings.CHATAPP_GAME
-        setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
-        setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-        setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
-        setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
-        setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
-        setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
-        setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
+
+        try:
+            setting_dict['dir'] = settings.CHATAPP_DIR
+        except:
+            setting_dict['dir'] = 'rtl'
+
+        try:
+            setting_dict['title'] = settings.CHATAPP_TITLE
+        except:
+            setting_dict['title'] = 'وبسایت تستی'
         
+        try:
+            setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
+        except:
+            setting_dict['subtitle'] = 'لطفا کوشا باشید.'
+        
+        try:
+            setting_dict['game'] = settings.CHATAPP_GAME
+        except:
+            setting_dict['game'] = True
+        
+        try:
+            setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
+        except:
+            setting_dict['auth_fields'] = 'email'
+        
+        try:
+            setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
+        except:
+            setting_dict['max_report_number'] = 2
+        
+        try:
+            setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
+        except:
+            setting_dict['edit_user_msg'] = True
+        
+        try:
+            setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
+        except:
+            setting_dict['edit_supporter_msg'] = True
+        
+        try:
+            setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
+        except:
+            setting_dict['delete_user_msg'] = True
+        
+        try:
+            setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
+        except:
+            setting_dict['delete_supporter_msg'] = True
+        
+        try:
+            setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
+        except:
+            setting_dict['show_deleted_msg'] = True
+
+
         return JsonResponse({'data': setting_dict, 'status': 200})
 
     return JsonResponse({'status': 400})
 
 
-# url: /django-chat-app/chat/supporter/
+# url: /django-chatapp/chat/supporter/
 @login_required
 def supporter_homepage(request):
 
@@ -146,7 +235,7 @@ def supporter_homepage(request):
     return HttpResponse('You are not a supporter!')
     
 
-# url: /django-chat-app/chat/supporter/unreads/
+# url: /django-chatapp/chat/supporter/unreads/
 @login_required
 @csrf_exempt
 def supporter_unreads(request):
@@ -228,7 +317,7 @@ def supporter_unreads(request):
     return JsonResponse({'status': 400})
 
 
-# url: /django-chat-app/chat/supporter/read-all/
+# url: /django-chatapp/chat/supporter/read-all/
 @login_required
 @csrf_exempt
 def supporter_read_all(request):
@@ -308,7 +397,7 @@ def supporter_read_all(request):
     return JsonResponse({'status': 400})
 
 
-# url: /django-chat-app/chat/supporter/report/
+# url: /django-chatapp/chat/supporter/report/
 @login_required
 @csrf_exempt
 def report_user(request):
@@ -341,7 +430,7 @@ def report_user(request):
     return JsonResponse({'status': 400}) 
                 
 
-# url: /django-chat-app/chat/supporter/ready-msg/get/
+# url: /django-chatapp/chat/supporter/ready-msg/get/
 @login_required
 @csrf_exempt
 def get_ready_msg(request):
@@ -360,7 +449,7 @@ def get_ready_msg(request):
     return JsonResponse({'status': 400}) 
 
             
-# url: /django-chat-app/chat/supporter/ready-msg/del/
+# url: /django-chatapp/chat/supporter/ready-msg/del/
 @login_required
 @csrf_exempt
 def delete_ready_msg(request):
@@ -384,7 +473,7 @@ def delete_ready_msg(request):
     return JsonResponse({'status': 400}) 
 
 
-# url: /django-chat-app/chat/supporter/ready-msg/create/
+# url: /django-chatapp/chat/supporter/ready-msg/create/
 @login_required
 @csrf_exempt
 def create_ready_msg(request):

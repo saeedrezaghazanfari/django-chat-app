@@ -86,6 +86,16 @@ Vue.createApp({
         //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
         // },
 
+        get_prefix_lang_url(){
+            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
+
+            if(langs.includes(first_second_lang))
+                return first_second_lang.slice(0,3);
+            return '';
+        },
+
+
         open_tab_data(context) {
             this.tab_id_active = context;
             this.show_msg_container = false;
@@ -142,7 +152,7 @@ Vue.createApp({
                 return;
 
             (async () => {
-                await fetch('/' +  window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/setting/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/setting/', {
                     method: "POST",
                     headers: {
                         "Content-type": "application/x-www-form-urlencoded"
@@ -158,7 +168,7 @@ Vue.createApp({
                         this.show_deleted_msg = response.data.show_deleted_msg;
                         this.is_set_env = true;
 
-                        let language = window.location.pathname[1] + window.location.pathname[2];
+                        let language = this.get_prefix_lang_url();
 
                         // setting for direction
                         if(this.env_dir == 'ltr') {
@@ -166,7 +176,7 @@ Vue.createApp({
                         } else if(this.env_dir == 'rtl') {
                             document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                         } else if(this.env_dir == 'auto') {
-                            if(language == 'fa' || language == 'ar')
+                            if(language == '/fa' || language == '/ar')
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             else
                                 document.querySelector('section.chatapp').classList.add('chatapp__ltr')
@@ -185,7 +195,7 @@ Vue.createApp({
             formdata.append('supporter_uid', this.supporter_uid);
             
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/unreads/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/unreads/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {
@@ -477,7 +487,7 @@ Vue.createApp({
             formdata.append('msg_type', msg_type);
             
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/read-all/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/read-all/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {
@@ -665,7 +675,7 @@ Vue.createApp({
             formdata.append('report_item', this.report_item);
 
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/report/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/report/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {
@@ -698,7 +708,7 @@ Vue.createApp({
                     formdata.append('supporter_uid', this.supporter_uid);
 
                     (async () => {
-                        await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/get/', {
+                        await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/ready-msg/get/', {
                             method: "POST",
                             body: new URLSearchParams(formdata),
                             headers: {
@@ -752,7 +762,7 @@ Vue.createApp({
             formdata.append('msgID', msgID);
 
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/del/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/ready-msg/del/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {
@@ -794,7 +804,7 @@ Vue.createApp({
             formdata.append('content', this.new_readymsg_content);
 
             (async () => {
-                await fetch('/' + window.location.pathname[1] + window.location.pathname[2] + '/django-chat-app/chat/supporter/ready-msg/create/', {
+                await fetch(this.get_prefix_lang_url() + '/django-chatapp/chat/supporter/ready-msg/create/', {
                     method: "POST",
                     body: new URLSearchParams(formdata),
                     headers: {
