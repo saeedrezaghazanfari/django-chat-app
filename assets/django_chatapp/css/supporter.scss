@@ -471,6 +471,8 @@ section.chatapp {
                         background-color: #f2f2f2;
         
                         .user_date_div {
+                            direction: ltr !important;
+
                             div:nth-child(1) {
                                 font-size: 12pt;
                                 transition: all 0.3s;
@@ -616,7 +618,7 @@ section.chatapp {
                                 &__edited {
                                     font-size: 9pt;
                                     padding: 0 7px;
-                                    margin-top: 0px !important;
+                                    margin-top: 0px;
                                 }
                                 &__status {
                                     img {
@@ -792,7 +794,8 @@ section.chatapp {
                             div.emoji_item {
                                 flex: 1;
                                 cursor: pointer;
-                                padding: 3px;
+                                font-size: 18px;
+                                padding: 4px;
                                 max-width: 25px;
                             }
                         }
@@ -938,6 +941,9 @@ section.chatapp__ltr {
     .reportbox_section {
         right: -2px;
         left: unset !important;
+    }
+    .body__wrapper .msg div.msg__info__edited {
+        margin-top: 3px !important;
     }
 }
 

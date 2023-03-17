@@ -1,9 +1,10 @@
+from django.db.models import Q
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from django.utils import timezone
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .utils import get_hour_min, get_settings
 from .models import (
     SupporterModel,
     UserChatModel,
@@ -15,83 +16,55 @@ from .models import (
 
 # url: / 
 def home(request):
+    #TODO delete this view
+    """ for test client section """
     return render(request, 'test.html')
+
+
+def ready_message_list(supporter) -> list:
+    """ get list of ready message of a supporter """
+
+    lookup = Q(supporter=supporter) | Q(is_public=True)
+    ready_chats = ReadyChatModel.objects.filter(lookup).all()
+
+    msgs_list = list(ready_chats.values(
+        'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
+    ))
+    return msgs_list
 
 
 # url: /django-chatapp/auth/check/userid/
 @csrf_exempt
 def check_userid(request):
+    """ 
+    - send chat settings
+    - check userID and send messages to her chat app 
+    - seen messages of supporter via this user 
+    """
+
     if request.method == 'POST':
 
         userid = request.POST.get('user_id')
         
         # send 10 msg from db to client
-        if userid and UserChatModel.objects.filter(user_chat_uid=userid, is_blocked=False).exists():
+        if userid and UserChatModel.objects.filter(
+            user_chat_uid=userid, 
+            is_blocked=False
+        ).exists():
+            
+            try:
+                msg_counter = settings.CHATAPP_MESSAGES_COUNT
+            except:
+                msg_counter = 30
 
-            setting_dict = {}
-            
-            try:
-                setting_dict['dir'] = settings.CHATAPP_DIR
-            except:
-                setting_dict['dir'] = 'rtl'
-            
-            try:
-                setting_dict['title'] = settings.CHATAPP_TITLE
-            except:
-                setting_dict['title'] = 'وبسایت تستی'
-            
-            try:
-                setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
-            except:
-                setting_dict['subtitle'] = 'لطفا کوشا باشید.'
-            
-            try:
-                setting_dict['game'] = settings.CHATAPP_GAME
-            except:
-                setting_dict['game'] = True
-            
-            try:
-                setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
-            except:
-                setting_dict['auth_fields'] = 'email'
-            
-            try:
-                setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-            except:
-                setting_dict['max_report_number'] = 2
-            
-            try:
-                setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
-            except:
-                setting_dict['edit_user_msg'] = True
-            
-            try:
-                setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
-            except:
-                setting_dict['edit_supporter_msg'] = True
-            
-            try:
-                setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
-            except:
-                setting_dict['delete_user_msg'] = True
-            
-            try:
-                setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
-            except:
-                setting_dict['delete_supporter_msg'] = True
-            
-            try:
-                setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
-            except:
-                setting_dict['show_deleted_msg'] = True
-
-            client = UserChatModel.objects.get(user_chat_uid=userid, is_blocked=False)
-
-            chats = ChatModel.objects.filter(client=client).all()[:15]
+            client = UserChatModel.objects.get(
+                user_chat_uid=userid, 
+                is_blocked=False
+            )
+            chats = ChatModel.objects.filter(client=client).all()[:msg_counter]
             chats_arr = []
 
             for item in chats:
-
                 obj = {
                     'id': item.id,
                     'owner_id': item.supporter.supporter_uid if item.sender == 'supporter' else item.client.user_chat_uid,
@@ -104,7 +77,7 @@ def check_userid(request):
                     'is_seen': item.is_seen,
                     'is_edited': item.is_edited,
                     'is_deleted': item.is_deleted,
-                    'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                    'created': get_hour_min(item.created),
                     'text': item.msg
                 }
                 chats_arr.append(obj)
@@ -118,7 +91,12 @@ def check_userid(request):
 
             chats_arr.reverse()
 
-            return JsonResponse({'data': chats_arr, 'setting': setting_dict, 'status': 200})
+            return JsonResponse({
+                'data': chats_arr, 
+                'setting': get_settings(), 
+                'status': 200
+            })
+        
         return JsonResponse({'status': 401})
     return JsonResponse({'status': 400})
 
@@ -126,12 +104,14 @@ def check_userid(request):
 # url: /django-chatapp/auth/create/userid/
 @csrf_exempt
 def create_userid(request):
-    if request.method == 'POST':
+    """ create a user with fname, lname, email or phone. this is client login from! """
 
+    if request.method == 'POST':
         fname = request.POST.get('fname')
         lname = request.POST.get('lname')
-        email = ''
-        phone = ''
+        email = str()
+        phone = str()
+
         if request.POST.get('email'):
             email = request.POST.get('email')
         elif request.POST.get('phone'):
@@ -149,103 +129,64 @@ def create_userid(request):
 
         user_chat_model.save()
 
-        return JsonResponse({'data': user_chat_model.user_chat_uid, 'status': 200})
+        return JsonResponse({
+            'data': user_chat_model.user_chat_uid, 
+            'status': 200
+        })
+    
     return JsonResponse({'status': 400})
 
 
 # url: /django-chatapp/chat/setting/
 @csrf_exempt
 def setting_chat(request):
+    """ send chat settings """
+
     if request.method == 'POST':
-
-        setting_dict = {}
-
-        try:
-            setting_dict['dir'] = settings.CHATAPP_DIR
-        except:
-            setting_dict['dir'] = 'rtl'
-
-        try:
-            setting_dict['title'] = settings.CHATAPP_TITLE
-        except:
-            setting_dict['title'] = 'وبسایت تستی'
-        
-        try:
-            setting_dict['subtitle'] = settings.CHATAPP_SUBTITLE
-        except:
-            setting_dict['subtitle'] = 'لطفا کوشا باشید.'
-        
-        try:
-            setting_dict['game'] = settings.CHATAPP_GAME
-        except:
-            setting_dict['game'] = True
-        
-        try:
-            setting_dict['auth_fields'] = settings.CHATAPP_AUTHFIELDS
-        except:
-            setting_dict['auth_fields'] = 'email'
-        
-        try:
-            setting_dict['max_report_number'] = settings.CHATAPP_MAX_REPORT_NUMBER
-        except:
-            setting_dict['max_report_number'] = 2
-        
-        try:
-            setting_dict['edit_user_msg'] = settings.CHATAPP_EDIT_USER_MESSAGE
-        except:
-            setting_dict['edit_user_msg'] = True
-        
-        try:
-            setting_dict['edit_supporter_msg'] = settings.CHATAPP_EDIT_SUPPORTER_MESSAGE
-        except:
-            setting_dict['edit_supporter_msg'] = True
-        
-        try:
-            setting_dict['delete_user_msg'] = settings.CHATAPP_DELETE_USER_MESSAGE
-        except:
-            setting_dict['delete_user_msg'] = True
-        
-        try:
-            setting_dict['delete_supporter_msg'] = settings.CHATAPP_DELETE_SUPPORTER_MESSAGE
-        except:
-            setting_dict['delete_supporter_msg'] = True
-        
-        try:
-            setting_dict['show_deleted_msg'] = settings.CHATAPP_SHOW_DELETED_MESSAGE
-        except:
-            setting_dict['show_deleted_msg'] = True
-
-
-        return JsonResponse({'data': setting_dict, 'status': 200})
-
+        return JsonResponse({
+            'data': get_settings(), 
+            'status': 200
+        })
+    
     return JsonResponse({'status': 400})
 
 
 # url: /django-chatapp/chat/supporter/
 @login_required
 def supporter_homepage(request):
+    """ check supporter in db and show panel """
 
-    if SupporterModel.objects.filter(user__username=request.user.username, is_active=True).exists():
-        
-        supporter_uid = SupporterModel.objects.get(user=request.user, is_active=True)
-
+    try:
+        supporter_uid = SupporterModel.objects.get(
+            user=request.user, 
+            is_active=True
+        )
         return render(request, 'supporter.html', {
             'supporter_uid': supporter_uid.supporter_uid
         })
-    return HttpResponse('You are not a supporter!')
-    
+    except:
+        return HttpResponse('<h3>You are not a supporter!</h3>')
+
 
 # url: /django-chatapp/chat/supporter/unreads/
 @login_required
 @csrf_exempt
 def supporter_unreads(request):
+    """ 
+    send unread messages for this supporter
+    send unread messages that do not have supporter
+    send all clients 
+    """
     
     if request.method == 'POST':
 
         supporter_uid = request.POST.get('supporter_uid')
         
-        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
-            return HttpResponse('You are not a supporter!')
+        if not supporter_uid or not SupporterModel.objects.filter(
+            supporter_uid=supporter_uid, 
+            is_active=True
+        ).exists():
+            return HttpResponse('<h3>You are not a supporter!</h3>')
         
         chats__nosupporter = ChatModel.objects.filter(
             sender='client',
@@ -276,7 +217,7 @@ def supporter_unreads(request):
                 'is_seen': item.is_seen,
                 'is_edited': item.is_edited,
                 'is_deleted': item.is_deleted,
-                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'created': get_hour_min(item.created),
                 'text': item.msg
             }
             unreads_nosupoorter.append(obj)
@@ -295,14 +236,14 @@ def supporter_unreads(request):
                 'is_seen': item.is_seen,
                 'is_edited': item.is_edited,
                 'is_deleted': item.is_deleted,
-                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'created': get_hour_min(item.created),
                 'text': item.msg
             }
             unreads_thissupporter.append(obj)
 
         chat_to_all = list(
             UserChatModel.objects.filter(
-                is_blocked=False #TODO add filter: return users who actived just in 30 days ago
+                is_blocked=False
             ).values(
                 'user_chat_uid', 'first_name', 'last_name'
             )
@@ -314,6 +255,7 @@ def supporter_unreads(request):
             'chat_to_all': chat_to_all,
             'status': 200
         })
+
     return JsonResponse({'status': 400})
 
 
@@ -321,14 +263,23 @@ def supporter_unreads(request):
 @login_required
 @csrf_exempt
 def supporter_read_all(request):
+    """ 
+    send chats between client and supporter
+    set supporter for client
+    seen messages of client for this supporter
+    """
+
     if request.method == 'POST':
 
         supporter_uid = request.POST.get('supporter_uid')
         client_id= request.POST.get('client_id')
         msg_type= request.POST.get('msg_type')
         
-        if not client_id or not msg_type or not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
-            return HttpResponse('You are not a supporter!')
+        if not client_id or not msg_type or not SupporterModel.objects.filter(
+            supporter_uid=supporter_uid, 
+            is_active=True
+        ).exists():
+            return HttpResponse('<h3>You are not a supporter!</h3>')
         
         supporter = SupporterModel.objects.get(user=request.user, is_active=True)
         client = UserChatModel.objects.get(user_chat_uid=client_id, is_blocked=False)
@@ -341,12 +292,13 @@ def supporter_read_all(request):
                 is_seen=False,
                 supporter=supporter,
                 client=client
-            ).update(is_seen=True)
-    
+            ).update(
+                is_seen=True
+            )
     
         elif msg_type == 'nosupoorter':
 
-            # add supporter to client
+            # add supporter for this client
             UserChatModel.objects.filter(
                 user_chat_uid=client_id,
                 have_supporter=None
@@ -365,10 +317,15 @@ def supporter_read_all(request):
                 is_seen=True
             )
 
+        try:
+            msg_counter = settings.CHATAPP_MESSAGES_COUNT
+        except:
+            msg_counter = 30
+
         chats = ChatModel.objects.filter(
             supporter=supporter,
             client=client
-        ).all()[:15]
+        ).all()[:msg_counter]
         chats_arr = []
 
         for item in chats:
@@ -385,14 +342,17 @@ def supporter_read_all(request):
                 'is_seen': item.is_seen,
                 'is_edited': item.is_edited,
                 'is_deleted': item.is_deleted,
-                'created': f'{timezone.localtime(item.created).hour}:{timezone.localtime(item.created).minute}',
+                'created': get_hour_min(item.created),
                 'text': item.msg
             }
             chats_arr.append(obj)
         
         chats_arr.reverse()
 
-        return JsonResponse({'data': chats_arr, 'status': 200})
+        return JsonResponse({
+            'data': chats_arr, 
+            'status': 200
+        })
     
     return JsonResponse({'status': 400})
 
@@ -401,31 +361,45 @@ def supporter_read_all(request):
 @login_required
 @csrf_exempt
 def report_user(request):
+    """ report a client via supporter """
+
     if request.method == 'POST':
+
         supporter_uid = request.POST.get('supporter_uid')
         client_id = request.POST.get('client_id')
         report_cause = request.POST.get('report_cause')
         report_item = request.POST.get('report_item')
-
+    
         if supporter_uid and client_id and report_cause and report_item:
-            if UserChatModel.objects.filter(user_chat_uid=client_id).exists():
-                user = UserChatModel.objects.get(user_chat_uid=client_id)
 
-                ReportUserModel.objects.create(
-                    supporter=SupporterModel.objects.get(supporter_uid=supporter_uid),
-                    user=user,
-                    item=report_item,
-                    desc=report_cause
-                )
+            user = get_object_or_404(UserChatModel, user_chat_uid=client_id)
+            supporter = get_object_or_404(SupporterModel, supporter_uid=supporter_uid, is_active=True)
 
-                user.report_numbers = user.report_numbers + 1
+            ReportUserModel.objects.create(
+                supporter=supporter,
+                user=user,
+                item=report_item,
+                desc=report_cause
+            )
+
+            user.report_numbers = user.report_numbers + 1
+            user.save()
+
+            try:
+                max_report_num = settings.CHATAPP_MAX_REPORT_NUMBER
+            except:
+                max_report_num = 2
+
+            if user.report_numbers == int(max_report_num):
+                user.is_blocked = True
                 user.save()
-
-                if user.report_numbers == settings.CHATAPP_MAX_REPORT_NUMBER:
-                    user.is_blocked = True
-                    user.save()
-                    return JsonResponse({'status': 200, 'is_blocked': True})
-                return JsonResponse({'status': 200, 'is_blocked': False})
+                return JsonResponse({
+                    'status': 200, 
+                    'is_blocked': True
+                })
+            
+            return JsonResponse({'status': 200, 'is_blocked': False})
+        
         return JsonResponse({'status': 400}) 
     return JsonResponse({'status': 400}) 
                 
@@ -434,18 +408,20 @@ def report_user(request):
 @login_required
 @csrf_exempt
 def get_ready_msg(request):
+    """ send list of ready message to supporter panel """
+
     if request.method == 'POST':
-
-        supporter_uid = request.POST.get('supporter_uid')
         
-        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
-            return HttpResponse('You are not a supporter!')
+        try:
+            supporter_uid = request.POST.get('supporter_uid')
+            supporter = SupporterModel.objects.get(supporter_uid=supporter_uid, is_active=True)
+        except:
+            return HttpResponse('<h3>You are not a supporter!</h3>')
 
-        ready_chats = ReadyChatModel.objects.all()
-        ready_chats_obj = list(ready_chats.values(
-            'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
-        ))
-        return JsonResponse({'data': ready_chats_obj, 'status': 200})
+        return JsonResponse({
+            'data': ready_message_list(supporter=supporter), 
+            'status': 200
+        })
     return JsonResponse({'status': 400}) 
 
             
@@ -453,23 +429,29 @@ def get_ready_msg(request):
 @login_required
 @csrf_exempt
 def delete_ready_msg(request):
+    """ 
+    delete ready message of supporter and 
+    send list of ready message to supporter panel 
+    """
+
     if request.method == 'POST':
 
-        supporter_uid = request.POST.get('supporter_uid')
-        
-        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
-            return HttpResponse('You are not a supporter!')
+        try:
+            supporter_uid = request.POST.get('supporter_uid')
+            supporter = SupporterModel.objects.get(supporter_uid=supporter_uid, is_active=True)
+        except:
+            return HttpResponse('<h3>You are not a supporter!</h3>')
 
-        # delete msg
+        # delete ready message of supporter
         ReadyChatModel.objects.get(
-            id=request.POST.get('msgID')
+            id=request.POST.get('msgID'),
+            supporter=supporter
         ).delete()
 
-        ready_chats = ReadyChatModel.objects.all()
-        ready_chats_obj = list(ready_chats.values(
-            'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
-        ))
-        return JsonResponse({'data': ready_chats_obj, 'status': 200})
+        return JsonResponse({
+            'data': ready_message_list(supporter=supporter), 
+            'status': 200
+        })
     return JsonResponse({'status': 400}) 
 
 
@@ -477,19 +459,30 @@ def delete_ready_msg(request):
 @login_required
 @csrf_exempt
 def create_ready_msg(request):
+    """ 
+    create a ready message via supporter and 
+    send list of ready message to supporter panel 
+    """
+
     if request.method == 'POST':
 
-        supporter_uid = request.POST.get('supporter_uid')
-        
-        if not SupporterModel.objects.filter(supporter_uid=supporter_uid, is_active=True).exists():
-            return HttpResponse('You are not a supporter!')
+        try:
+            subject = request.POST.get('subject')
+            content = request.POST.get('content')
+            supporter_uid = request.POST.get('supporter_uid')
+            supporter = SupporterModel.objects.get(supporter_uid=supporter_uid, is_active=True)
+        except:
+            return HttpResponse('<h3>You are not a supporter!</h3>')
 
-        new_msg = ReadyChatModel.objects.create(
-            subject=request.POST.get('subject'),
-            content=request.POST.get('content'),
-            supporter=SupporterModel.objects.get(supporter_uid=supporter_uid)
+        ReadyChatModel.objects.create(
+            subject=subject,
+            content=content,
+            supporter=supporter
         )
-        all_msg = ReadyChatModel.objects.all().values('id', 'subject', 'content', 'supporter__supporter_uid', 'is_public')
 
-        return JsonResponse({'data': list(all_msg), 'status': 200})
+        return JsonResponse({
+            'data': ready_message_list(supporter=supporter), 
+            'status': 200
+        })
     return JsonResponse({'status': 400}) 
+

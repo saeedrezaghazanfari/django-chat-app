@@ -1,14 +1,15 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'django_chat_app/css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'django_chatapp/css/custom.css' %}">
 
 <section class="chatapp" id="chatapp">
 
-    <span id="sound_sendmsg" class="d-none">{% static 'django_chat_app/media/send.mp3' %}</span>
+    <span id="sound_sendmsg" class="d-none">{% static 'django_chatapp/song/send.mp3' %}</span>
+    <span id="chat_locale" class="d-none"></span>
 
     <div class="chatapp__btn" @click="open_close_box">
         <div>
-            <img src="{% static 'django_chat_app/img/chat-room.png' %}" alt="Django Chat Application!">
+            <img src="{% static 'django_chatapp/img/chat-room.png' %}" alt="Django Chat Application!">
             <div id="alert_msg_ctx" :class="counter_new_msg > 0 ? '' : 'd-none'"></div>
         </div>
     </div>
@@ -17,14 +18,14 @@
         <div class="msg__header">
             <div class="msg__wrapper">
                 <div class="header__info">
-                    <img src="{% static 'django_chat_app/img/supporter.png' %}" alt="">
+                    <img src="{% static 'django_chatapp/img/supporter.png' %}" alt="supporter image">
                     <div>
                         <span></span>
-                        <span>[[ receiver_status == 'online' ? 'آنلاین' : 'آخرین بازدید به تازگی' ]]</span>
+                        <span>[[ receiver_status == 'online' ? $t('online') : $t('last seen recently') ]]</span>
                     </div>
                 </div>
                 <div class="header__options">
-                    <button class="close__msgbox" id="close__msgbox" @click="open_close_box"><img src="{% static 'django_chat_app/img/close.png' %}" alt="close chat application"></button>
+                    <button class="close__msgbox" id="close__msgbox" @click="open_close_box"><img src="{% static 'django_chatapp/img/close.png' %}" alt="close chat application"></button>
                     <button class="close__msgbox d-none" id="loader_spinner"><div class="loader_spinner loader_spinner--white"></div></button>
                 </div>
             </div>
@@ -41,7 +42,7 @@
 
                             <div class="msg msg__left">
                                 <p class="msg__content">
-                                    با عرض سلام، پشتیبان تا لحظاتی دیگر آنلاین خواهد شد. لطفا صبور باشید.
+                                    [[ $t('Hello, the supporter will be online in a few moments. please await.') ]]
                                 </p>
                                 <div class="msg__info">
                                 </div>
@@ -53,39 +54,39 @@
                         <div v-if="!msg_item.is_deleted" class="one_msg_wrapper">
 
                             <ul :id="`msg-menu-bar-${msg_item.id}`" class="msg-menu-bar d-none" :class="msg_item.sender_type == 'client' ? 'msg-menu-bar--left' : 'msg-menu-bar--right'">
-                                <li @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chat_app/img/reply.png' %}" alt=""> پاسخ دادن</li>
-                                <li @click="copy_ready_msg(msg_item.text)"><img src="{% static 'django_chat_app/img/copy.png' %}" alt=""> کپی متن</li>
-                                <li v-if="edit_user_msg && msg_item.sender_type == 'client' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chat_app/img/edit.png' %}" alt=""> ویرایش پیام</li>
-                                <li v-if="delete_user_msg && msg_item.sender_type == 'client'" @click="delete_message(msg_item.id)"><img src="{% static 'django_chat_app/img/delete.png' %}" alt=""> حذف پیام</li>
+                                <li @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chatapp/img/reply.png' %}" alt="reply"> [[ $t('Reply') ]]</li>
+                                <li @click="copy_ready_msg(msg_item.text)"><img src="{% static 'django_chatapp/img/copy.png' %}" alt="copy"> [[ $t('Copy') ]]</li>
+                                <li v-if="edit_user_msg && msg_item.sender_type == 'client' && !msg_item.is_edited" @click="edit_message(`chatapp_msg_${msg_item.id}`, msg_item.id)"><img src="{% static 'django_chatapp/img/edit.png' %}" alt="edit"> [[ $t('Edit') ]]</li>
+                                <li v-if="delete_user_msg && msg_item.sender_type == 'client'" @click="delete_message(msg_item.id)"><img src="{% static 'django_chatapp/img/delete.png' %}" alt="remove"> [[ $t('Remove') ]]</li>
                             </ul>
 
                             <div class="msg" :class="msg_item.sender_type == 'client' ? 'msg__right' : 'msg__left'" :id="'chatapp_msg_' + msg_item.id">
                                 <p v-if="msg_item.reply_title" class="msg__replied" :class="msg_item.sender_type == 'client' ? 'msg__replied--right' : 'msg__replied--left'" @click="msg_replied(`chatapp_msg_${msg_item.reply_id}`)">
-                                    <span>[[ msg_item.reply_title == 'client' ? 'شما' : 'پشتیبان' ]]</span>
+                                    <span>[[ msg_item.reply_title == 'client' ? $('You') : $t('Supporter') ]]</span>
                                     <span v-if="!msg_item.reply_is_deleted">[[ msg_item.reply_msg ]]</span>
-                                    <span v-else>این پیام حذف شده است</span>
+                                    <span v-else>[[ $t('This message has been deleted.') ]]</span>
                                 </p>
                                 <p class="msg__content">
                                     [[ msg_item.text ]]
                                 </p>
                                 <div class="msg__info">
                                     <div class="msg__info__status" v-if="msg_item.sender_type == 'client'">
-                                        <img v-if="msg_item.is_seen" src="{% static 'django_chat_app/img/double-check.png' %}" alt="double check status">
-                                        <img v-else src="{% static 'django_chat_app/img/single-check.png' %}" alt="single check status">
+                                        <img v-if="msg_item.is_seen" src="{% static 'django_chatapp/img/double-check.png' %}" alt="double check status">
+                                        <img v-else src="{% static 'django_chatapp/img/single-check.png' %}" alt="single check status">
                                     </div>
                                     <div class="msg__info__clock">[[ msg_item.created ]]</div>
-                                    <div class="msg__info__edited" v-if="msg_item.is_edited">ویرایش شده</div>
+                                    <div class="msg__info__edited" v-if="msg_item.is_edited">[[ $t('edited') ]]</div>
                                 </div>
                             </div>
                             <div class="reply_one_msg" :class="msg_item.sender_type == 'client' ? 'reply_one_msg--right' : 'reply_one_msg--left'">
-                                <span @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">پاسخ دادن</span>
+                                <span @click="reply_msg(`chatapp_msg_${msg_item.id}`, msg_item.id)">[[ $t('reply') ]]</span>
                                 <br><br>
-                                <span class="toggle_mneubar" @click="show_menu_bar(`msg-menu-bar-${msg_item.id}`)">بیشتر</span>
+                                <span class="toggle_mneubar" @click="show_menu_bar(`msg-menu-bar-${msg_item.id}`)">[[ $t('more') ]]</span>
                             </div>
                         </div>
                         <div v-if="msg_item.is_deleted && show_deleted_msg">
                             <div class="msg__content deleted_msg"  :class="msg_item.sender_type == 'client' ? 'msgdel__right' : 'msgdel__left'">
-                                <img src="{% static 'django_chat_app/img/delete.png' %}" alt=""> این پیام حذف شده است.
+                                <img src="{% static 'django_chatapp/img/delete.png' %}" alt="delete"> [[ $t('This message has been deleted.') ]]
                             </div>
                         </div>
                         <div class="clearfix"></div>
@@ -97,18 +98,18 @@
                 <!-- + tictoctoe game -->
                 <div class="tictoctoe__game d-none">
                     
-                    <button id="restart__game">شروع دوباره</button>
+                    <button id="restart__game">[[ $t('Play again') ]]</button>
                     <div id="score__game">
-                        <div><span>شما:</span><span>0</span></div>
-                        <div><span>کامپیوتر:</span><span>0</span></div>
+                        <div><span>[[ $t('You') ]]:</span><span>0</span></div>
+                        <div><span>[[ $t('Computer') ]]:</span><span>0</span></div>
                     </div>
                     <p id="game_alert_msg" class="d-none"></p>
                                     
                     <div class="btns__wrapper">
 
                         <div id="bg__glass" class="d-none"></div>
-                        <img src="{% static 'django_chat_app/img/o.png' %}" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
-                        <img src="{% static 'django_chat_app/img/x.png' %}" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
+                        <img src="{% static 'django_chatapp/img/o.png' %}" id="oimage_game" class="d-none" alt="this image is dnone because js handle image src">
+                        <img src="{% static 'django_chatapp/img/x.png' %}" id="ximage_game" class="d-none" alt="this image is dnone because js handle image src">
 
                         <div class="btns__wrapper__btn">
                             <div class="btn_game m2px_b m2px_l" id="btn11"></div>
@@ -132,29 +133,29 @@
                 <!-- + login form -->
                 <div class="chatapp__form d-none">
                     <div class="chatform__header">
-                        <p>جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.</p>
+                        <p>[[ $t('For better support and guidance, please enter your details correctly.') ]]</p>
                     </div>
 
                     <form novalidate @submit.prevent="chatapp_submitform">
                         <div class="chatapp_formcontrol">
                             <input type="text" id="chatapp__fname" autocomplete="off">
-                            <label for="chatapp__fname">نام</label>
+                            <label for="chatapp__fname">[[ $t('First Name') ]]</label>
                         </div>
                         <div class="chatapp_formcontrol">
                             <input type="text" id="chatapp__lname" autocomplete="off">
-                            <label for="chatapp__lname">نام خانوادگی</label>
+                            <label for="chatapp__lname">[[ $t('Last Name') ]]</label>
                         </div>
                         <div class="chatapp_formcontrol chatapp_control_email d-none">
                             <input type="email" id="chatapp__email" autocomplete="off">
-                            <label for="chatapp__email">ایمیل</label>
+                            <label for="chatapp__email">[[ $t('E-mail') ]]</label>
                         </div>
                         <div class="chatapp_formcontrol chatapp_control_phone mbnone__chat-app d-none">
                             <input type="number" id="chatapp__phone" autocomplete="off">
-                            <label for="chatapp__phone">شماره تماس</label>
+                            <label for="chatapp__phone">[[ $t('Phone') ]]</label>
                         </div>
 
                         <div class="chatapp_button">
-                            <button id="chatapp_submitform" type="submit">ارسال</button>
+                            <button id="chatapp_submitform" type="submit">[[ $t('Send') ]]</button>
                         </div>
                     </form>
                 </div>
@@ -162,7 +163,7 @@
 
                 <div class="btn_last_msg d-none">
                     <button @click="go_to_bottom_of_box">
-                        <img src="{% static 'django_chat_app/img/gotodown.png' %}" alt="go to last msg img">
+                        <img src="{% static 'django_chatapp/img/gotodown.png' %}" alt="go to last msg img">
                         <div class="unreadmsg_counter"></div>
                     </button>
                 </div>
@@ -174,12 +175,12 @@
             <form novalidate class="d-none" @submit.prevent="sned_msg_socket">
                 <div class="forminput_wrapper">
                     
-                    <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" placeholder="پیام خود را وارد کنید:">
+                    <input type="text" v-model="msg_input" id="text-chatinput" autocomplete="off" :placeholder="$t('Enter your message:')">
                     <button class="show_emoji" type="button" @click="show_emojibar">
-                        <img src="{% static 'django_chat_app/img/emoji.png' %}" alt="toggle emojis">
+                        <img src="{% static 'django_chatapp/img/emoji.png' %}" alt="toggle emojis">
                     </button>
                     <button class="show_game" type="button" @click="show_game_btn">
-                        <img src="{% static 'django_chat_app/img/game.png' %}" alt="let's go to game">
+                        <img src="{% static 'django_chatapp/img/game.png' %}" alt="let's go to game">
                     </button>
 
                     <div class="reply_msg_wrapper d-none">
@@ -199,11 +200,7 @@
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F603;')">&#x1F603;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F604;')">&#x1F604;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F605;')">&#x1F605;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F606;')">&#x1F606;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F607;')">&#x1F607;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F608;')">&#x1F608;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F609;')">&#x1F609;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F60A;')">&#x1F60A;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F60B;')">&#x1F60B;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F60C;')">&#x1F60C;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F60D;')">&#x1F60D;</div>
@@ -213,40 +210,24 @@
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F611;')">&#x1F611;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F612;')">&#x1F612;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F613;')">&#x1F613;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F614;')">&#x1F614;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F615;')">&#x1F615;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F616;')">&#x1F616;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F617;')">&#x1F617;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F618;')">&#x1F618;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F619;')">&#x1F619;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F61A;')">&#x1F61A;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F61B;')">&#x1F61B;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F61C;')">&#x1F61C;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F61D;')">&#x1F61D;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F61E;')">&#x1F61E;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F61F;')">&#x1F61F;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F620;')">&#x1F620;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F621;')">&#x1F621;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F622;')">&#x1F622;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F623;')">&#x1F623;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F624;')">&#x1F624;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F625;')">&#x1F625;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F626;')">&#x1F626;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F627;')">&#x1F627;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F628;')">&#x1F628;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F629;')">&#x1F629;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F62A;')">&#x1F62A;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F62B;')">&#x1F62B;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F62C;')">&#x1F62C;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F62D;')">&#x1F62D;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F62E;')">&#x1F62E;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F62F;')">&#x1F62F;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F630;')">&#x1F630;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F631;')">&#x1F631;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F632;')">&#x1F632;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F633;')">&#x1F633;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F634;')">&#x1F634;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F635;')">&#x1F635;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F636;')">&#x1F636;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F637;')">&#x1F637;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F641;')">&#x1F641;</div>
@@ -260,45 +241,29 @@
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F914;')">&#x1F914;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F915;')">&#x1F915;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F917;')">&#x1F917;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F918;')">&#x1F918;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F919;')">&#x1F919;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F91A;')">&#x1F91A;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F91B;')">&#x1F91B;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F91C;')">&#x1F91C;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F91D;')">&#x1F91D;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F91E;')">&#x1F91E;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F91F;')">&#x1F91F;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F920;')">&#x1F920;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F921;')">&#x1F921;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F922;')">&#x1F922;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F923;')">&#x1F923;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F924;')">&#x1F924;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F925;')">&#x1F925;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F926;')">&#x1F926;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F927;')">&#x1F927;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F928;')">&#x1F928;</div>
                             <div class="emoji_item" @click="add_emoji_toinput('&#x1F929;')">&#x1F929;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92A;')">&#x1F92A;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92B;')">&#x1F92B;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92C;')">&#x1F92C;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92D;')">&#x1F92D;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92E;')">&#x1F92E;</div>
-                            <div class="emoji_item" @click="add_emoji_toinput('&#x1F92F;')">&#x1F92F;</div>
                         </div>
                     </div>
 
                     <button type="submit">
-                        <img src="{% static 'django_chat_app/img/send.png' %}" alt="send image">
+                        <img src="{% static 'django_chatapp/img/send.png' %}" alt="send image">
                     </button>
                 </div>
             </form>
             <div class="goback_chat_btn d-none" @click="goback_chat_btn">
 
-                <div>بازگشت به صفحه‌ی چت</div>
+                <div>[[ $t('Return to Chat') ]]</div>
 
                 <div v-if="counter_new_msg > 0">
                     <div class="new_msg_shower">
-                        <div><img src="{% static 'django_chat_app/img/chat-room' %}.png" alt=""></div>
+                        <div><img src="{% static 'django_chatapp/img/chat-room' %}.png" alt="chat room image"></div>
                         <div>[[ counter_new_msg ]]</div>
                     </div>
                 </div>
@@ -308,6 +273,6 @@
     </div>
 </section>
 
-
-<script type="text/javascript" src="{% static 'django_chat_app/js/vue3.js' %}"></script>
-<script type="text/javascript" src="{% static 'django_chat_app/js/client.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_chatapp/js/vue3.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_chatapp/js/vue-i18n.js' %}"></script>
+<script type="text/javascript" src="{% static 'django_chatapp/js/client.js' %}"></script>

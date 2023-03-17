@@ -69,6 +69,7 @@ section.chatapp {
         bottom: 87px;
         box-shadow: $boxshadow;
         transition: all 0.5s ease;
+        background-color: white;
 
         .msg__header {
             background-color: $primary;
@@ -96,6 +97,7 @@ section.chatapp {
                         color: $white;
                         margin: 0 10px;
                         position: relative;
+                        min-width: 140px;
     
                         span:nth-child(1) {
                             font-size: 20px;
@@ -269,7 +271,7 @@ section.chatapp {
                                 &__edited {
                                     font-size: 9pt;
                                     padding: 0 7px;
-                                    margin-top: -3px !important;
+                                    margin-top: -3px;
                                 }
                                 &__status {
                                     img {
@@ -546,6 +548,8 @@ section.chatapp {
         .body__inputs {
             padding: 8px 10px;
             padding-top: 4px !important;
+            background-color: white;
+            border-radius: 0 0 10px 10px;
 
             form {
                 div.forminput_wrapper {
@@ -631,7 +635,8 @@ section.chatapp {
                             div.emoji_item {
                                 flex: 1;
                                 cursor: pointer;
-                                padding: 3px;
+                                font-size: 18px;
+                                padding: 4px;
                                 max-width: 25px;
                             }
                         }
@@ -785,6 +790,9 @@ section.chatapp__ltr {
     }
     .reply_one_msg--right {
         float: right !important;
+    }
+    .body__wrapper .msg div.msg__info__edited {
+        margin-top: unset !important;
     }
 }
 

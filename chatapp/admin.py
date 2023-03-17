@@ -39,32 +39,30 @@ def unblock_users(modeladmin, request, queryset):
 # write admin models
 class SupporterModel_Admin(admin.ModelAdmin):
     list_display = ['user', 'supporter_uid', 'full_name', 'is_active']
-    search_field = ['supporter_uid', 'fullname']
+    search_field = ['supporter_uid']
     ordering = ['-id']
 
     
 class ChatModel_Admin(admin.ModelAdmin):
     list_display = ['id', 'client', 'supporter', 'sender', 'is_seen']
-    search_field = ['supporter']
     ordering = ['-id']
 
     
 class UserChatModel_Admin(admin.ModelAdmin):
-    list_display = ['user_chat_uid', 'j_created', 'is_blocked']
-    search_field = ['user_chat_uid', 'email', 'phone', 'is_blocked']
+    list_display = ['user_chat_uid', 'created', 'is_blocked']
+    search_field = ['user_chat_uid']
     ordering = ['-id']
     actions = [del_users_more_30d, del_users_isblocked, unblock_users]
 
     
 class ReadyChatModel_Admin(admin.ModelAdmin):
     list_display = ['subject', 'supporter', 'is_public']
-    search_field = ['subject', 'supporter', 'is_public']
+    search_field = ['subject']
     ordering = ['-id']
     
 
 class ReportUserModel_Admin(admin.ModelAdmin):
-    list_display = ['user', 'item', 'j_created']
-    search_field = ['user', 'item']
+    list_display = ['user', 'item', 'created']
     ordering = ['-id']
 
 

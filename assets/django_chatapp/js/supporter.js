@@ -1,4 +1,6 @@
 
+/* DJANGO CHAT APP - supporter.js */
+
 document.getElementById('chatapp').addEventListener('click', (ev)=> {
     if(!ev.target.closest('span.toggle_mneubar')){
         document.querySelectorAll('.chatapp ul.msg-menu-bar').forEach(element => {
@@ -8,17 +10,140 @@ document.getElementById('chatapp').addEventListener('click', (ev)=> {
     }
 });
 
-/* DJANGO CHAT APP package */
-/* v1.0.0 */
+const translated_messages = {
+    fa: {
+        "WelCome to Supporter Panel": "به پنل پشتیبان خوش آمدید",
+        "Home": "خانه",
+        'edited': 'ویرایش شده',
+        "Your unread Messages": "پیام‌های ناخوانده‌ی شما",
+        "Other unread Messages": "سایر پیام‌های خوانده نشده",
+        "All Users": "همه‌ی کاربران",
+        "Enter your message:": "پیام خود را وارد کنید:",
+        "Register a Ready Message": "ثبت پیام آماده",
+        "Subject": "عنوان",
+        "Content": "محتوا",
+        "Save": "ثبت",
+        "last seen recently": "آخرین بازدید اخیرا",
+        "Reply": "پاسخ دادن",
+        "Copy": "کپی کردن",
+        "reply": "پاسخ دادن",
+        "more": "بیشتر",
+        "Edit": "ویرایش کردن",
+        "Remove": "حذف کردن",
+        "Send": "ارسال",
+        "Report Content": "محتوای گذارش",
+        "Using inappropriate words": "استفاده از کلمات نامناسب",
+        "Others": "دلایل دیگر",
+        "online": "آنلاین",
+        "You": "شما",
+        "Client": "کاربر",
+        "This message has been deleted.": "این پیام حذف شده است.",
+        "Your message has been saved successfully. You can use this message when chatting with users.": "پیام شما با موفقیت ذخیره شد. شما میتوانید هنگام چت با کاربران از این پیام استفاده کنید."
+    }   ,
+    en: {
+        "WelCome to Supporter Panel": "WelCome to Supporter Panel",
+        "Home": "Home",
+        'edited': 'edited',
+        "Your unread Messages": "Your unread Messages",
+        "Other unread Messages": "Other unread Messages",
+        "All Users": "All Users",
+        "Enter your message:": "Enter your message:",
+        "Register a Ready Message": "Register a Ready Message",
+        "Subject": "Subject",
+        "Content": "Content",
+        "Save": "Save",
+        "last seen recently": "last seen recently",
+        "Reply": "Reply",
+        "Copy": "Copy",
+        "reply": "reply",
+        "more": "more",
+        "Edit": "Edit",
+        "Remove": "Remove",
+        "Send": "Send",
+        "Report Content": "Report Content",
+        "Using inappropriate words": "Using inappropriate words",
+        "Others": "Others",
+        "online": "online",
+        "You": "You",
+        "Client": "Client",
+        "This message has been deleted.": "This message has been deleted.",
+        "Your message has been saved successfully. You can use this message when chatting with users.": "Your message has been saved successfully. You can use this message when chatting with users."
+    },
+    ar: {
+        "WelCome to Supporter Panel": "مرحبا بكم في لوحة الداعمين",
+        "Home": "بيت",
+        'edited': 'تم تحريره',
+        "Your unread Messages": "رسائلك غير المقروءة",
+        "Other unread Messages": "رسائل أخرى غير مقروءة",
+        "All Users": "جميع المستخدمين",
+        "Enter your message:": "أدخل رسالتك:",
+        "Register a Ready Message": "سجل رسالة جاهزة",
+        "Subject": "موضوع",
+        "Content": "محتوى",
+        "Save": "يحفظ",
+        "last seen recently": "شوهد آخر مرة مؤخرا",
+        "Reply": "رد",
+        "Copy": "ينسخ",
+        "reply": "رد",
+        "more": "أكثر",
+        "Edit": "يحرر",
+        "Remove": "يزيل",
+        "Send": "يرسل",
+        "Report Content": "محتوى التقرير",
+        "Using inappropriate words": "استخدام كلمات غير لائقة",
+        "Others": "آحرون",
+        "online": "متصل",
+        "You": "أنت",
+        "Client": "عميل",
+        "This message has been deleted.": "تم حذف هذه الرسالة.",
+        "Your message has been saved successfully. You can use this message when chatting with users.": "تم حفظ رسالتك بنجاح. يمكنك استخدام هذه الرسالة عند الدردشة مع المستخدمين."
+    },
+    ru: {
+        "WelCome to Supporter Panel": "Добро пожаловать в панель поддержки",
+        "Home": "Дом",
+        'edited': 'отредактировано',
+        "Your unread Messages": "Ваши непрочитанные сообщения",
+        "Other unread Messages": "Другие непрочитанные сообщения",
+        "All Users": "Все пользователи",
+        "Enter your message:": "Введите ваше сообщение:",
+        "Register a Ready Message": "Зарегистрируйте готовое сообщение",
+        "Subject": "Предмет",
+        "Content": "Содержание",
+        "Save": "Сохранять",
+        "last seen recently": "последний раз видели недавно",
+        "Reply": "Отвечать",
+        "Copy": "Копировать",
+        "reply": "отвечать",
+        "more": "более",
+        "Edit": "Редактировать",
+        "Remove": "Удалять",
+        "Send": "Отправлять",
+        "Report Content": "Содержание отчета",
+        "Using inappropriate words": "Использование неподходящих слов",
+        "Others": "Другие",
+        "online": "В сети",
+        "You": "Ты",
+        "Client": "Клиент",
+        "This message has been deleted.": "Это сообщение было удалено.",
+        "Your message has been saved successfully. You can use this message when chatting with users.": "Ваше сообщение было успешно сохранено. Вы можете использовать это сообщение при общении с пользователями."
+    }
+}
 
-Vue.createApp({
+const i18n = VueI18n.createI18n({
+    messages: translated_messages,
+});
+
+const vue_app = Vue.createApp({
     
     delimiters: [`[[`, `]]`],
+
+    i18n: i18n,
     
     data() {
         return {
             // env variables
             env_dir: '',
+            env_lang: '',
             edit_user_msg: false,
             delete_user_msg: false,
             show_deleted_msg: false,
@@ -62,6 +187,7 @@ Vue.createApp({
     },
 
     created() {
+        this.$i18n.locale = this.get_locale();
         this.set_setting();
     },
 
@@ -73,19 +199,6 @@ Vue.createApp({
 
     methods: {
         
-        // encrypt(salt, text) {
-        //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        //     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
-        //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-        //     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
-        // },
-
-        // decrypt(salt, encoded) {
-        //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-        //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
-        // },
-
         get_prefix_lang_url(){
             let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
             let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
@@ -95,6 +208,14 @@ Vue.createApp({
             return '';
         },
 
+        get_locale(){
+            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
+
+            if(langs.includes(first_second_lang))
+                return first_second_lang.slice(1,3);
+            return 'en';
+        },
 
         open_tab_data(context) {
             this.tab_id_active = context;
@@ -163,6 +284,7 @@ Vue.createApp({
                     if(response.status == 200) {
 
                         this.env_dir = response.data.dir;
+                        this.env_lang = response.data.language;
                         this.edit_user_msg = response.data.edit_supporter_msg;
                         this.delete_user_msg = response.data.delete_supporter_msg;
                         this.show_deleted_msg = response.data.show_deleted_msg;
@@ -180,6 +302,15 @@ Vue.createApp({
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             else
                                 document.querySelector('section.chatapp').classList.add('chatapp__ltr')
+                        }
+
+                        // setting for language
+                        let languages_list = ['en', 'fa', 'ar', 'ru'];
+                        if(languages_list.includes(this.env_lang)){
+                            this.$i18n.locale = this.env_lang;
+                        }
+                        else if(this.env_lang == 'auto') {
+                            this.$i18n.locale = this.get_locale();
                         }
                     }
                 })
@@ -285,9 +416,9 @@ Vue.createApp({
             let reply_content = document.querySelector(`#${elementId} .msg__content`).innerText;
 
             if(msgbox.classList.contains('msg__right'))
-                reply_writer = 'شما';
+                reply_writer = this.$t('You');
             else
-                reply_writer = 'کاربر';
+                reply_writer = this.$t('Client');
 
             document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
             document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
@@ -817,7 +948,7 @@ Vue.createApp({
                         this.ready_msgs = response.data;
                         this.new_readymsg_subject = '';
                         this.new_readymsg_content = '';
-                        this.alert = 'پیام شما با موفقیت ذخیره شد. شما میتوانید هنگام چت با کاربران از این پیام استفاده کنید.'
+                        this.alert = this.$t('Your message has been saved successfully. You can use this message when chatting with users.');
                     }
 
                     setTimeout(() => {
@@ -831,4 +962,7 @@ Vue.createApp({
         },
 
     }
-}).mount('#chatapp');
+});
+
+vue_app.use(i18n);
+vue_app.mount('#chatapp');

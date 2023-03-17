@@ -1,8 +1,7 @@
-from random import choices
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-from .utils import jalali_convertor, unique_username
+from .utils import unique_username
 
 
 class SupporterModel(models.Model):
@@ -22,13 +21,10 @@ class SupporterModel(models.Model):
     def __str__(self):
         return str(self.supporter_uid)
 
-    def j_created(self):
-        return jalali_convertor(time=self.created, number=True)
-    j_created.short_description = _('تاریخ ثبت رکورد')
-
 
 class ChatModel(models.Model):
     """ this is a message data between client and supporter """
+    
     CLIENT_SUPPORTER = (('supporter', _('پشتیبان')), ('client', _('کاربر')))
 
     reply = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, verbose_name=_('پاسخ'))
@@ -49,10 +45,6 @@ class ChatModel(models.Model):
     
     def __str__(self):
         return str(self.id)
-
-    def j_created(self):
-        return jalali_convertor(time=self.created, number=True)
-    j_created.short_description = _('تاریخ ثبت رکورد')
 
 
 class UserChatModel(models.Model):
@@ -75,10 +67,6 @@ class UserChatModel(models.Model):
     
     def __str__(self):
         return str(self.user_chat_uid)
-
-    def j_created(self):
-        return jalali_convertor(time=self.created, number=True)
-    j_created.short_description = _('تاریخ ثبت رکورد')
 
 
 class ReadyChatModel(models.Model):
@@ -115,7 +103,4 @@ class ReportUserModel(models.Model):
     
     def __str__(self):
         return self.user.user_chat_uid
-
-    def j_created(self):
-        return jalali_convertor(time=self.created, number=True)
-    j_created.short_description = _('تاریخ ثبت رکورد')
+    

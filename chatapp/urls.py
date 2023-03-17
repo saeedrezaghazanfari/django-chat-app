@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.home), #TODO delete this view
+    
     path('django-chatapp/chat/supporter/', views.supporter_homepage),
     path('django-chatapp/chat/supporter/unreads/', views.supporter_unreads),
     path('django-chatapp/chat/supporter/read-all/', views.supporter_read_all),

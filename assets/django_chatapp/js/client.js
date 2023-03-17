@@ -1,6 +1,5 @@
 
-/* DJANGO CHAT APP package */
-/* v1.0.0 */
+/* DJANGO CHAT APP - client.js */
 
 document.getElementById('chatapp').addEventListener('click', (ev)=> {
     if(!ev.target.closest('span.toggle_mneubar')){
@@ -11,14 +10,125 @@ document.getElementById('chatapp').addEventListener('click', (ev)=> {
     }
 });
 
-Vue.createApp({
+const translated_messages = {
+    fa: {
+        'online': 'آنلاین',
+        'last seen recently': 'آخرین بازدید اخیرا',
+        'You': 'شما',
+        'edited': 'ویرایش شده',
+        'Supporter': 'پشتیبان',
+        'This message has been deleted.': 'این پیام حذف شده است.',
+        'Play again': 'بازی مجدد',
+        'Computer': 'کامپیوتر',
+        'For better support and guidance, please enter your details correctly.': 'جهت پشتیبانی و راهنمایی بهتر، لطفا مشخصات خود را بصورت صحیح وارد نمایید.',
+        'First Name': 'نام',
+        'Last Name': 'نام‌خانوادگی',
+        'E-mail': 'ایمیل',
+        'Phone': 'شماره تماس',
+        'Send': 'ارسال',
+        'Enter your message:': 'پیام خود را وارد کنید:',
+        'Return to Chat': 'بازگشت به چت',
+        'Hello, the supporter will be online in a few moments. please await.': 'با عرض سلام، پشتیبان تا لحظاتی دیگر آنلاین خواهد شد. لطفا صبور باشید.',
+        'Reply': 'پاسخ دادن',
+        'Copy': 'کپی کردن',
+        'Edit': 'ویرایش کردن',
+        'Remove': 'حذف کردن',
+        'reply': 'پاسخ دادن',
+        'more': 'بیشتر',
+    },
+    en: {
+        'online': 'online',
+        'last seen recently': 'last seen recently',
+        'You': 'You',
+        'edited': 'edited',
+        'Supporter': 'Supporter',
+        'This message has been deleted.': 'This message has been deleted.',
+        'Play again': 'Play again',
+        'Computer': 'Computer',
+        'For better support and guidance, please enter your details correctly.': 'For better support and guidance, please enter your details correctly.',
+        'First Name': 'First Name',
+        'Last Name': 'Last Name',
+        'E-mail': 'E-mail',
+        'Phone': 'Phone',
+        'Send': 'Send',
+        'Enter your message:': 'Enter your message:',
+        'Return to Chat': 'Return to Chat',
+        'Hello, the supporter will be online in a few moments. please await.': 'Hello, the supporter will be online in a few moments. please await.',
+        'Reply': 'Reply',
+        'Copy': 'Copy',
+        'Edit': 'Edit',
+        'Remove': 'Remove',
+        'reply': 'reply',
+        'more': 'more',
+    },
+    ar: {
+        'online': 'متصل',
+        'last seen recently': 'شوهد آخر مرة مؤخرا',
+        'You': 'أنت',
+        'edited': 'تم تحريره',
+        'Supporter': 'مؤيد، مشجع، داعم',
+        'This message has been deleted.': 'تم حذف هذه الرسالة.',
+        'Play again': 'العب مرة أخرى',
+        'Computer': 'حاسوب',
+        'For better support and guidance, please enter your details correctly.': 'للحصول على دعم وتوجيه أفضل ، يرجى إدخال التفاصيل الخاصة بك بشكل صحيح.',
+        'First Name': 'الاسم الأول',
+        'Last Name': 'اسم العائلة',
+        'E-mail': 'بريد إلكتروني',
+        'Phone': 'هاتف',
+        'Send': 'يرسل',
+        'Enter your message:': 'أدخل رسالتك:',
+        'Return to Chat': 'العودة إلى الدردشة',
+        'Hello, the supporter will be online in a few moments. please await.': 'مرحبًا ، سيكون الداعم متصلاً بالإنترنت في غضون لحظات قليلة. من فضلك انتظر.',
+        'Reply': 'رد',
+        'Copy': 'ينسخ',
+        'Edit': 'يحرر',
+        'Remove': 'يزيل',
+        "reply": "رد",
+        "more": "أكثر",
+    },
+    ru: {
+        'online': 'В сети',
+        'last seen recently': 'последний раз видели недавно',
+        'You': 'Ты',
+        'edited': 'отредактировано',
+        'Supporter': 'Сторонник',
+        'This message has been deleted.': 'Это сообщение было удалено.',
+        'Play again': 'Играть снова',
+        'Computer': 'Компьютер',
+        'For better support and guidance, please enter your details correctly.': 'Для лучшей поддержки и руководства, пожалуйста, введите свои данные правильно.',
+        'First Name': 'Имя',
+        'Last Name': 'Фамилия',
+        'E-mail': 'Электронная почта',
+        'Phone': 'Телефон',
+        'Send': 'Отправлять',
+        'Enter your message:': 'Введите ваше сообщение:',
+        'Return to Chat': 'Вернуться в чат',
+        'Hello, the supporter will be online in a few moments. please await.': 'Здравствуйте, сторонник будет в сети через несколько минут. Пожалуйста, подождите.',
+        'Reply': 'Отвечать',
+        'Copy': 'Копировать',
+        'Edit': 'Редактировать',
+        'Remove': 'Удалять',
+        "reply": "отвечать",
+        "more": "более",
+    }
+}
+
+const i18n = VueI18n.createI18n({
+    messages: translated_messages,
+});
+
+const vue_app = Vue.createApp({
     
     delimiters: [`[[`, `]]`],
+
+    i18n: i18n,
     
     data() {
         return {
+
             // env variables
             env_dir: '',
+            env_lang: '',
             env_title: '',
             env_subtitle: '',
             env_game: '',
@@ -49,6 +159,11 @@ Vue.createApp({
 
     created() {
 
+        this.$i18n.locale = this.get_locale();
+        setTimeout(() => {
+            document.getElementById('chat_locale').innerHTML = this.$i18n.locale;
+        }, 50);
+
         this.set_setting();
 
         let stored_userid = JSON.parse(localStorage.getItem('chatapp_client_id'));
@@ -56,23 +171,9 @@ Vue.createApp({
             this.user_id = stored_userid;
             this.start_socket();
         }
-
     },
 
     methods: {
-        
-        // encrypt(salt, text) {
-        //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        //     const byteHex = (n) => ("0" + Number(n).toString(16)).substr(-2);
-        //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-        //     return text.split("").map(textToChars).map(applySaltToChar).map(byteHex).join("");
-        // },
-
-        // decrypt(salt, encoded) {
-        //     const textToChars = (text) => text.split("").map((c) => c.charCodeAt(0));
-        //     const applySaltToChar = (code) => textToChars(salt).reduce((a, b) => a ^ b, code);
-        //     return encoded.match(/.{1,2}/g).map((hex) => parseInt(hex, 16)).map(applySaltToChar).map((charCode) => String.fromCharCode(charCode)).join("");
-        // },
         
         get_prefix_lang_url(){
             let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
@@ -81,6 +182,15 @@ Vue.createApp({
             if(langs.includes(first_second_lang))
                 return first_second_lang.slice(0,3);
             return '';
+        },
+
+        get_locale(){
+            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
+
+            if(langs.includes(first_second_lang))
+                return first_second_lang.slice(1,3);
+            return 'en';
         },
 
         add_emoji_toinput(emoji) {
@@ -137,6 +247,7 @@ Vue.createApp({
                     if(response.status == 200) {
 
                         this.env_dir = response.data.dir;
+                        this.env_lang = response.data.language;
                         this.env_title = response.data.title;
                         this.env_subtitle = response.data.subtitle;
                         this.env_game = response.data.game;
@@ -158,6 +269,15 @@ Vue.createApp({
                                 document.querySelector('section.chatapp').classList.remove('chatapp__ltr')
                             else
                                 document.querySelector('section.chatapp').classList.add('chatapp__ltr')
+                        }
+
+                        // setting for language
+                        let languages_list = ['en', 'fa', 'ar', 'ru'];
+                        if(languages_list.includes(this.env_lang)){
+                            this.$i18n.locale = this.env_lang;
+                        }
+                        else if(this.env_lang == 'auto') {
+                            this.$i18n.locale = this.get_locale();
                         }
 
                         // setting for title and subtitle
@@ -378,9 +498,9 @@ Vue.createApp({
             let reply_content = document.querySelector(`#${elementId} .msg__content`).innerText;
 
             if(msgbox.classList.contains('msg__right'))
-                reply_writer = 'شما';
+                reply_writer = this.$t('You');
             else
-                reply_writer = 'پشتیبان';
+                reply_writer = this.$t('Supporter');
 
             document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
             document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
@@ -667,7 +787,10 @@ Vue.createApp({
             this.msg_input = '';
         }
     }
-}).mount('#chatapp');
+});
+
+vue_app.use(i18n);
+vue_app.mount('#chatapp');
 
 
 /* Tic-Toc-Toe Game */
@@ -801,6 +924,49 @@ else if(human_computer == 'X'){
 }
 }
 
+set_message_game = (index) => {
+
+    let lang = document.getElementById('chat_locale').innerHTML;
+
+    if(lang == 'fa'){
+        let msg_arr = [
+            'شما برنده شدید!', 
+            'کامپیوتر برنده شد!',
+            'شما',
+            'کامپیوتر',
+        ]
+        return msg_arr[index];
+    }
+    else if(lang == 'en'){
+        let msg_arr = [
+            'You are Winner!',
+            'Computer is Winner!',
+            'You',
+            'Computer',
+        ]
+        return msg_arr[index];
+    }
+    else if(lang == 'ar'){
+        let msg_arr = [
+            'فزت!',
+            'فاز الكمبيوتر!',
+            'أنت',
+            'حاسوب',
+        ]
+        return msg_arr[index];
+    }
+    else if(lang == 'ru'){
+        let msg_arr = [
+            'ты победил!',
+            'Компьютер победил!',
+            'Ты',
+            'Компьютер',
+        ]
+        return msg_arr[index];
+    }
+}
+
+
 human_win = (btn1, btn2, btn3) => {
 
 bg__glass.classList.remove('d-none');
@@ -817,11 +983,11 @@ setTimeout(() => {
 human_score += 1;
 if(human_score == number_game_win) {
     alertDiv.classList.remove('d-none');
-    alertDiv.innerHTML = 'شما برنده شدید!';
+    alertDiv.innerHTML = set_message_game(0);
     alertDiv.classList.add('game_alert_msg_win');
     final = true;
 }
-document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
+document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
 
 endGame = true;
 }
@@ -842,11 +1008,11 @@ setTimeout(() => {
 computer_score += 1;
 if(computer_score == number_game_win) {   
     alertDiv.classList.remove('d-none');
-    alertDiv.innerHTML = 'کامپیوتر برنده شد!';
+    alertDiv.innerHTML = set_message_game(1);
     alertDiv.classList.add('game_alert_msg_lose');
     final = true;
 }
-document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
+document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
 
 endGame = true;
 
@@ -1012,26 +1178,26 @@ else if(selected.length == 9) {
 
 // clear buttons, hide alertbox [scores is not resets!]
 reset_game = () => {
-selected = [];
-row1 = ['', '', ''];
-row2 = ['', '', ''];
-row3 = ['', '', ''];
-endGame = false;
-final = false;
-bg__glass.classList.add('d-none');
-all_btn.forEach(element => {
-    set_image_in_btn(element, 'null');
-});
-alertDiv.classList.remove('game_alert_msg_lose');
-alertDiv.classList.remove('game_alert_msg_win');
-alertDiv.classList.add('d-none');
+    selected = [];
+    row1 = ['', '', ''];
+    row2 = ['', '', ''];
+    row3 = ['', '', ''];
+    endGame = false;
+    final = false;
+    bg__glass.classList.add('d-none');
+    all_btn.forEach(element => {
+        set_image_in_btn(element, 'null');
+    });
+    alertDiv.classList.remove('game_alert_msg_lose');
+    alertDiv.classList.remove('game_alert_msg_win');
+    alertDiv.classList.add('d-none');
 }
 
 // restart all of game, reset scores
 document.getElementById('restart__game').addEventListener('click', ()=> {
-human_score = 0;
-computer_score = 0;
-document.getElementById('score__game').innerHTML = `<div><span>شما:</span><span>${human_score}</span></div><div><span>کامپیوتر:</span><span>${computer_score}</span></div>`;
-reset_game();
+    human_score = 0;
+    computer_score = 0;
+    document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
+    reset_game();
 });
 
