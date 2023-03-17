@@ -13,7 +13,7 @@ manager.sh
 *.py[cod]
 *$py.class
 
-# Environments
+### Environments ###
 .env
 .venv
 env/
