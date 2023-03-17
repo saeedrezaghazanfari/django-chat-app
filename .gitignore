@@ -3,6 +3,8 @@
 *.pot
 *.pyc
 __pycache__/
+app_config/
+assets/
 db.sqlite3
 db.sqlite3-journal
 media
@@ -20,25 +22,9 @@ ENV/
 env.bak/
 venv.bak/
 
-# Distribution / packaging
-# .Python
-# build/
-# develop-eggs/
-# dist/
-# downloads/
-# eggs/
-# .eggs/
-# lib/
-# lib64/
-# parts/
-# sdist/
-# var/
-# wheels/
-# share/python-wheels/
-# *.egg-info/
-# .installed.cfg
-# *.egg
-# MANIFEST
-# static_cdn/
-# media_root/
-# static_root/
+build/
+django_chatapp.egg-info/
+develop-eggs/
+dist/
+*.egg-info/
+*.egg
