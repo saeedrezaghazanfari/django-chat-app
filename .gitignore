@@ -8,7 +8,6 @@ assets/
 db.sqlite3
 db.sqlite3-journal
 media
-MORE.md
 manager.sh
 *.py[cod]
 *$py.class
