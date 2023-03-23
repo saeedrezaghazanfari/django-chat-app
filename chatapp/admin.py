@@ -49,7 +49,7 @@ class ChatModel_Admin(admin.ModelAdmin):
 
     
 class UserChatModel_Admin(admin.ModelAdmin):
-    list_display = ['user_chat_uid', 'created', 'is_blocked']
+    list_display = ['user_chat_uid', 'have_supporter', 'created', 'is_blocked']
     search_field = ['user_chat_uid']
     ordering = ['-id']
     actions = [del_users_more_30d, del_users_isblocked, unblock_users]

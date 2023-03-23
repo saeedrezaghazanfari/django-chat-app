@@ -108,6 +108,7 @@ section.chatapp {
                             cursor: pointer;
                             background-color: transparent;
                             margin: 5px;
+                            color: white;
 
                             img {
                                 height: 20px;
@@ -345,6 +346,14 @@ section.chatapp {
                 background-color: #f2f2f2;
                 border-left: 1px solid #ccc;
                 cursor: pointer;
+
+                span {
+                    padding: 1px 10px;
+                    background-color: $primary;
+                    border-radius: 50%;
+                    font-size: 7pt;
+                    color: $white;
+                }
             }
             .tab_item.tab_active {
                 background-color: #e3e3e3;
@@ -361,9 +370,10 @@ section.chatapp {
         .msg__body {
             background-color: $white;
             padding: 10px 15px;
+            padding-top: 20px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            height: calc(100vh - 9.3rem - 120px);
+            height: calc(100vh - 9.3rem - 160px);
             position: relative;
 
             .body__wrapper {
@@ -371,16 +381,11 @@ section.chatapp {
                 .tab_menu_links {
 
                     .wrapper_buttons {
-                    
-                        p {
-                            line-height: 1rem;
+                        margin: auto;
+                        max-width: 70%;
 
-                            &:hover {
-                                a {
-                                    color: black;
-                                    cursor: pointer;
-                                }
-                            }
+                        p {
+                            line-height: 6px;
 
                             a {
                                 color: $secondry;
@@ -393,7 +398,7 @@ section.chatapp {
                         padding: 10px;
                         border-radius: 6px;
                         box-shadow: 0 0 13px 3px rgba(0,0,0,.1);
-                        max-width: 80%;
+                        max-width: 70%;
                         border-radius: 7px;
 
                         form {
@@ -425,7 +430,8 @@ section.chatapp {
                                 }
                                 textarea {
                                     height: 90px;
-                                    width: 300px;
+                                    max-width: 92%;
+                                    min-width: 70%;
                                 }
                                 label {
                                     position: absolute;
@@ -460,6 +466,13 @@ section.chatapp {
                 }
 
                 .wrapper__chatboxes {
+
+                    .border_red {
+                        border-right: 1px solid red;
+                    }
+                    .border_green {
+                        border-right: 1px solid #00e100;
+                    }
                 
                     .chat__box {
                         cursor: pointer;
@@ -467,8 +480,19 @@ section.chatapp {
                         justify-content: space-between;
                         align-items: center;
                         padding: 10px;
+                        max-width: 70%;
+                        margin-left: auto;
+                        margin-right: auto;
                         margin-bottom: 10px;
-                        background-color: #f2f2f2;
+                        background-color: white;
+                        box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.1);
+                        transition: all .3s ease;
+
+                        .no__data {
+                            color: #bfbfbf;
+                            font-size: 15px;
+                            padding: 6px;
+                        }
         
                         .user_date_div {
                             direction: ltr !important;
@@ -476,29 +500,27 @@ section.chatapp {
                             div:nth-child(1) {
                                 font-size: 12pt;
                                 transition: all 0.3s;
+                                text-align: end;
                             }
                             div:nth-child(2) {
                                 font-size: 9pt;
                                 color: #d1d1d1;
-                                text-align: center;
+                                text-align: end;
                             }
                         }
                         .unreadmsg_counter {
-                            padding: 5px 10px;
+                            padding: 5px 16px;
                             background-color: $primary;
                             border-radius: 50%;
                             color: white;
                             height: 100%;
                             font-size: 9pt;
                             transition: all 0.3s;
+                            margin-left: 10px;
                         }
     
                         &:hover {
-                            border-right: 1px solid $primary;
-
-                            .user_date_div div:nth-child(1) {
-                                padding-right: 5px;
-                            }
+                            transform: translateY(-1px);
                         }
                     }
                     .msg_item_active {
@@ -807,7 +829,7 @@ section.chatapp {
                         border: none;
                         padding: 6px 2px;
                         cursor: pointer;
-                        margin: 0 13px;
+                        margin: 0 13px !important;
 
                         img {
                             height: 26px;
@@ -945,12 +967,51 @@ section.chatapp__ltr {
     .body__wrapper .msg div.msg__info__edited {
         margin-top: 3px !important;
     }
+    .wrapper_output form .chatapp_formcontrol label {
+        right: unset !important;
+        left: 10px;
+    }
+    .reportbox_section form .chatapp_formcontrol label {
+        right: unset !important;
+        left: 10px;
+    }
+    .border_red {
+        border-right: unset !important;
+        border-left: 1px solid red; 
+    }
+    .border_green {
+        border-right: unset !important;
+        border-left: 1px solid #00e100; 
+    }
+    .chat__box .user_date_div div:nth-child(1), .chat__box .user_date_div div:nth-child(2) {
+        text-align: start !important;
+    }
 }
 
 /* *** MEDIA QUERIES *** */
 @media screen and (max-width: 1000px) {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    .msg__header {
+        border-radius: 0 !important;
+    }
+    .msg__wrapper {
+        border-radius: 0 !important;
+    }
     .all__msg__wrapper .msg {
         max-width: 300px !important;
+    }
+    .chatapp__msg {
+        max-width: unset !important;
+        margin: unset !important;
+        border-radius: unset !important;
+        box-shadow: unset !important;
+        height: 100vh !important;
+    }
+    .msg__body {
+        height: calc(100vh - 9.3rem - 70px) !important;
     }
 }
 /* *** ANIMATIONS *** */

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-01 11:45+0330\n"
+"POT-Creation-Date: 2023-03-20 14:22+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,9 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
 #: admin.py:14
 msgid "حذف کاربران غیرفعال در ۳۰ روز اخیر"
 msgstr "Удалить неактивных пользователей за последние 30 дней"
@@ -31,150 +32,150 @@ msgstr "Удалить заблокированных пользователей
 msgid "آزادکردن کاربرانی که مسدود شده اند"
 msgstr "Освобождение заблокированных пользователей"
 
-#: apps.py:8 models.py:48
+#: apps.py:8 models.py:43
 msgid "چت کاربر و پشتیبان"
 msgstr "Пользовательский чат и поддержка"
 
-#: models.py:12
+#: models.py:10
 msgid "آیدی پشتیبان"
 msgstr "резервный идентификатор"
 
-#: models.py:13 models.py:33 models.py:36 models.py:107
+#: models.py:11 models.py:28 models.py:31 models.py:94
 msgid "کاربر"
 msgstr "пользователь"
 
-#: models.py:14
+#: models.py:12
 msgid "نام نمایشی"
 msgstr "отображаемое имя"
 
-#: models.py:15
+#: models.py:13
 msgid "فعال / غیرفعال"
 msgstr "Активный пассивный"
 
-#: models.py:20 models.py:33 models.py:37 models.py:90 models.py:106
+#: models.py:18 models.py:28 models.py:32 models.py:77 models.py:93
 msgid "پشتیبان"
 msgstr "поддерживать"
 
-#: models.py:21
+#: models.py:19
 msgid "پشتیبان ها"
 msgstr "Сторонники"
 
-#: models.py:28 models.py:56 models.py:82 models.py:122
-msgid "تاریخ ثبت رکورد"
-msgstr "Дата записи"
-
-#: models.py:35
+#: models.py:30
 msgid "پاسخ"
 msgstr "Ответ"
 
-#: models.py:38
+#: models.py:33
 msgid "ارسال کننده"
 msgstr "отправитель"
 
-#: models.py:39
+#: models.py:34
 msgid "متن پیام"
 msgstr "Текст сообщения"
 
-#: models.py:40
+#: models.py:35
 msgid "آیا این پیام دیده شده است؟"
 msgstr "Это сообщение видели?"
 
-#: models.py:41
+#: models.py:36
 msgid "آیا این پیام ویرایش شده است؟"
 msgstr "Это сообщение было отредактировано?"
 
-#: models.py:42
+#: models.py:37
 msgid "متن پیام قبل از ویرایش"
 msgstr "Текст сообщения перед редактированием"
 
-#: models.py:43
+#: models.py:38
 msgid "آیا این پیام حذف شده است؟"
 msgstr "Это сообщение было удалено?"
 
-#: models.py:49
+#: models.py:44
 msgid "چت های کاربر و پشتیبان"
 msgstr "Чаты пользователей и поддержки"
 
-#: models.py:62
+#: models.py:53
 msgid "آیدی چت کاربر"
 msgstr "Идентификатор чата пользователя"
 
-#: models.py:63
+#: models.py:54
 msgid "آیا پشتیبان دارد؟"
 msgstr "У него есть резервная копия?"
 
-#: models.py:64
+#: models.py:55
 msgid "نام"
 msgstr "имя"
 
-#: models.py:65
+#: models.py:56
 msgid "نام خانوادگی"
 msgstr "фамилия"
 
-#: models.py:66
+#: models.py:57
 msgid "ایمیل"
 msgstr "электронная почта"
 
-#: models.py:67
+#: models.py:58
 msgid "شماره تماس"
 msgstr "Номер телефона"
 
-#: models.py:68
+#: models.py:59
 msgid "آیا مسدود شده است؟"
 msgstr "Он заблокирован?"
 
-#: models.py:69
+#: models.py:60
 msgid "تعداد گزارش ها"
 msgstr "Количество отчетов"
 
-#: models.py:74
+#: models.py:65
 msgid "اطلاعات کاربر"
 msgstr "Информация о пользователе"
 
-#: models.py:75
+#: models.py:66
 msgid "اطلاعات کاربران"
 msgstr "Информация о пользователе"
 
-#: models.py:88
+#: models.py:75
 msgid "عنوان"
 msgstr "Заголовок"
 
-#: models.py:89
+#: models.py:76
 msgid "محتوا"
 msgstr "содержание"
 
-#: models.py:91
+#: models.py:78
 msgid "آیا برای تمامی پشتیبان ها نمایش داده شود؟"
 msgstr "Будет ли он отображаться для всех резервных копий?"
 
-#: models.py:95
+#: models.py:82
 msgid "پیام آماده ی پشتیبان"
 msgstr "Сообщение о готовности резервного копирования"
 
-#: models.py:96
+#: models.py:83
 msgid "پیام های آماده ی پشتیبان ها"
 msgstr "Готовые сообщения для резервного копирования"
 
-#: models.py:105
+#: models.py:92
 msgid "استفاده از کلمات نامناسب"
 msgstr "Использование неподходящих слов"
 
-#: models.py:105
+#: models.py:92
 msgid "دلایل دیگر"
 msgstr "Другие причины"
 
-#: models.py:108
+#: models.py:95
 msgid "دلیل گزارش"
 msgstr "Причина отчета"
 
-#: models.py:109
+#: models.py:96
 msgid "متن گزارش"
 msgstr "Текст доклада"
 
-#: models.py:114
+#: models.py:101
 msgid "گزارش کاربر"
 msgstr "Пользовательский отчет"
 
-#: models.py:115
+#: models.py:102
 msgid "گزارش کاربران"
 msgstr "Пользовательский отчет"
+
+#: templates/supporter.html:10
+msgid "صفحه‌ی پشتیبان"
+msgstr "Страница резервного копирования"

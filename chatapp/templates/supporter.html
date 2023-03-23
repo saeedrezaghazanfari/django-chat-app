@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="fa">
 <head>
@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>صفحه‌ی پشتیبان</title>
+    <title>{% translate 'صفحه‌ی پشتیبان' %}</title>
 
     <!-- External files2 -->
     <link rel="stylesheet" href="{% static 'django_chatapp/css/supporter.css' %}">
@@ -34,7 +34,7 @@
                     <div class="header__info">
                         <img src="{% static 'django_chatapp/img/supporter.png' %}" alt="supporter image">
                         <div>
-                            <span v-if="client_id" :title="client_id.slice(0,3) + '****' + client_id.slice(7,11)">[[ client_name ]]</span>
+                            <span v-if="client_id" :title="client_id.slice(0,3) + '****' + client_id.slice(7,11)">[[ client_name.slice(0,35) ]]</span>
                             <span v-if="client_id">[[ receiver_status == 'online' ? $t('online') : $t('last seen recently') ]]</span>
                             <span v-else>[[ $t('WelCome to Supporter Panel') ]]</span>
                         </div>
@@ -42,6 +42,12 @@
 
                     <div class="header__option">
                         <div class="wrapper_btns">
+
+                            <button class="btns_base" v-if="!client_id && $i18n.locale != 'en'" @click="change_lang('en')">En</button>
+                            <button class="btns_base" v-if="!client_id && $i18n.locale != 'fa'" @click="change_lang('fa')">Fa</button>
+                            <button class="btns_base" v-if="!client_id && $i18n.locale != 'ar'" @click="change_lang('ar')">Ar</button>
+                            <button class="btns_base" v-if="!client_id && $i18n.locale != 'ru'" @click="change_lang('ru')">Ru</button>
+                            
                             <button class="btns_base" v-if="client_id" @click="open_report_box"><img src="{% static 'django_chatapp/img/report.png' %}" alt="report user"></button>
                             <button class="btns_base" v-if="client_id" @click="openclose_copyreadymsg"><img src="{% static 'django_chatapp/img/copy.png' %}" alt="copy msg box"></button>
                             <button class="btns_base" v-if="client_id" @click="reset_close_chat_box"><img src="{% static 'django_chatapp/img/close.png' %}" alt="close chat box"></button>
@@ -71,7 +77,7 @@
 
                                 <div class="wrapper_boxes">
 
-                                    <div class="msg_item" v-for="ready_msg in ready_msgs" :key="ready_msg.id">
+                                    <div class="msg_item" v-for="ready_msg in ready_msgs" v-if="ready_msgs" :key="ready_msg.id">
                                         <p :title="ready_msg.content">[[ ready_msg.subject ]]</p>
                                         <div class="wrapper_btns_msgs">
                                             <button v-if="ready_msg.supporter__supporter_uid == supporter_uid && !ready_msg.is_public" @click="delete_ready_msg(ready_msg.id)"><img src="{% static 'django_chatapp/img/delete.png' %}" alt="delete ready msg item"></button>
@@ -80,6 +86,9 @@
                                                 <button @click="copy_ready_msg(ready_msg.content)"><img src="{% static 'django_chatapp/img/copy.png' %}" alt="copy to clipboard"></button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="msg_item" v-if="ready_msgs.length == 0">
+                                        <p>[[ $t('There are no ready messages.') ]]</p>
                                     </div>
 
                                 </div>
@@ -96,10 +105,18 @@
 
             <!-- + tabbar -->
             <div class="msg__tabbar">
-                <div class="tab_item" :class="tab_id_active == 'menu' ? 'tab_active' : ''" @click="open_tab_data('menu')">[[ $t('Home') ]]</div>
-                <div class="tab_item" :class="tab_id_active == 'yourunreads' ? 'tab_active' : ''" @click="open_tab_data('yourunreads')">[[ $t('Your unread Messages') ]]</div>
-                <div class="tab_item" :class="tab_id_active == 'unreads' ? 'tab_active' : ''" @click="open_tab_data('unreads')">[[ $t('Other unread Messages') ]]</div>
-                <div class="tab_item" :class="tab_id_active == 'allpages' ? 'tab_active' : ''" @click="open_tab_data('allpages')">[[ $t('All Users') ]]</div>
+                <div class="tab_item" :class="tab_id_active == 'menu' ? 'tab_active' : ''" @click="open_tab_data('menu')">
+                    [[ $t('Home') ]]
+                </div>
+                <div class="tab_item" :class="tab_id_active == 'yourunreads' ? 'tab_active' : ''" @click="open_tab_data('yourunreads')">
+                    [[ $t('Your unread Messages') ]] <span v-if="this_supporter_counter_tab > 0">[[ this_supporter_counter_tab ]]</span>
+                </div>
+                <div class="tab_item" :class="tab_id_active == 'unreads' ? 'tab_active' : ''" @click="open_tab_data('unreads')">
+                    [[ $t('Other unread Messages') ]] <span v-if="no_supoorter_counter_tab > 0">[[ no_supoorter_counter_tab ]]</span>
+                </div>
+                <div class="tab_item" :class="tab_id_active == 'allpages' ? 'tab_active' : ''" @click="open_tab_data('allpages')">
+                    [[ $t('All Users') ]]
+                </div>
             </div>
             <!-- - tabbar -->
 
@@ -111,13 +128,13 @@
                         
                         <!-- links -->
                         <div class="wrapper_buttons">
-                            <p><a @click="menu_active_tab = 'addnewmsg'">[[ $t('Register a Ready Message') ]]</a></p>
+                            <p><a>[[ $t('Register a Ready Message') ]]</a></p>
                         </div>
 
                         <!-- outputs -->
-                        <div class="wrapper_output" v-if="menu_active_tab">
+                        <div class="wrapper_output">
 
-                            <form novalidate @submit.prevent="submit_new_readymsg" v-if="menu_active_tab == 'addnewmsg'">
+                            <form novalidate @submit.prevent="submit_new_readymsg">
                                 
                                 <div class="chatapp_formcontrol" style="margin-bottom: 17px !important; margin-top: 7px;">
                                     <label>[[ $t('Subject') ]]</label>
@@ -140,13 +157,20 @@
                         
                         <!-- list pages -->
                         <div class="wrapper__chatboxes">
-                            <template v-for="(msg, index) in unreads_thissupporter" :key="msg">
-                                <div class="chat__box" :class="'page1_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
+                            <template v-if="unreads_thissupporter.length != 0" v-for="(msg, index) in unreads_thissupporter" :key="msg">
+                                <div class="chat__box" :class="['page1_item_' + index,  msg.status == 'online' ? 'border_green' : 'border_red']" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page1_item_${index}`, 'thissupporter', index)">
                                     <div class="user_date_div">
-                                        <div>[[ msg.owner_name ]]</div>
-                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7,11) ]] - [[ msg.status == 'online' ? $t('online') : $t('last seen recently') ]]</div>
+                                        <div :title="msg.owner_id.slice(0,3) + '****' + msg.owner_id.slice(7,11)">[[ msg.owner_name.slice(0,25) ]]</div>
+                                        <div>[[ msg.status == 'online' ? $t('online') : $t('last seen recently') ]]</div>
                                     </div>
                                     <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="chat__box">
+                                    <div class="user_date_div no__data">
+                                        <div>[[ $t('There are no unread messages for you') ]]</div>
+                                    </div>
                                 </div>
                             </template>
                         </div>
@@ -157,13 +181,20 @@
 
                         <!-- list pages -->
                         <div class="wrapper__chatboxes">
-                            <template v-for="(msg, index) in unreads_nosupoorter" :key="msg">
-                                <div class="chat__box" :class="'page2_item_' + index" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
+                            <template v-if="unreads_nosupoorter.length != 0" v-for="(msg, index) in unreads_nosupoorter" :key="msg">
+                                <div class="chat__box" :class="['page2_item_' + index, msg.status == 'online' ? 'border_green' : 'border_red']" @click="show_user_chat_page(msg.owner_id, msg.owner_name, `page2_item_${index}`, 'nosupoorter', index)">
                                     <div class="user_date_div">
-                                        <div>[[ msg.owner_name ]]</div>
-                                        <div>[[ msg.owner_id.slice(0,3) ]]****[[ msg.owner_id.slice(7,11) ]] [[ msg.status == 'online' ? $t('online') : $t('last seen recently') ]]</div>
+                                        <div :title="msg.owner_id.slice(0,3) + '****' + msg.owner_id.slice(7,11)">[[ msg.owner_name.slice(0,25)]]</div>
+                                        <div>[[ msg.status == 'online' ? $t('online') : $t('last seen recently') ]]</div>
                                     </div>
                                     <div class="unreadmsg_counter">[[ msg.counter ]]</div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="chat__box">
+                                    <div class="user_date_div no__data">
+                                        <div>[[ $t('There are no unread messages') ]]</div>
+                                    </div>
                                 </div>
                             </template>
                         </div>
@@ -174,11 +205,18 @@
 
                         <!-- list pages -->
                         <div class="wrapper__chatboxes">
-                            <template v-for="(chat, index) in chat_to_all" :key="chat">
+                            <template v-if="chat_to_all.length != 0" v-for="(chat, index) in chat_to_all" :key="chat">
                                 <div class="chat__box" :class="'page3_item_' + index" @click="show_user_chat_page(chat.user_chat_uid, `${chat.first_name} ${chat.last_name}`, `page3_item_${index}`, 'anyone', index)">
                                     <div class="user_date_div">
-                                        <div>[[ chat.first_name ]] [[ chat.last_name ]]</div>
+                                        <div>[[ (chat.first_name + chat.last_name).slice(0,25) ]]</div>
                                         <div>[[ chat.user_chat_uid.slice(0,3) ]]****[[ chat.user_chat_uid.slice(7,11) ]]</div>
+                                    </div>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="chat__box">
+                                    <div class="user_date_div no__data">
+                                        <div>[[ $t('There are no Users') ]]</div>
                                     </div>
                                 </div>
                             </template>

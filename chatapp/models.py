@@ -19,7 +19,10 @@ class SupporterModel(models.Model):
         verbose_name_plural = _('پشتیبان ها')
     
     def __str__(self):
-        return str(self.supporter_uid)
+        try:
+            return f'{self.full_name} ({str(self.supporter_uid)})'
+        except:
+            return f'{str(self.supporter_uid)}'
 
 
 class ChatModel(models.Model):

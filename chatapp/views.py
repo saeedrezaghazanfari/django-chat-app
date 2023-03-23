@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .utils import get_hour_min, get_settings
 from .models import (
     SupporterModel,
@@ -12,13 +12,6 @@ from .models import (
     ReadyChatModel,
     ReportUserModel
 )
-
-
-# url: / 
-def home(request):
-    #TODO delete this view
-    """ for test client section """
-    return render(request, 'test.html')
 
 
 def ready_message_list(supporter) -> list:
@@ -31,6 +24,18 @@ def ready_message_list(supporter) -> list:
         'id', 'subject', 'content', 'supporter__supporter_uid', 'is_public'
     ))
     return msgs_list
+
+
+# url: /django-chatapp/chat/supporter/login-required/
+def loginrequired_page(request):
+    """ go to supporter login page OR show h3 html tag """
+
+    try:
+        login_url = settings.CHATAPP_SUPPORTER_LOGIN_URL
+        return redirect(login_url)
+    except:
+        login_url = None
+        return HttpResponse('<h3>Login Required.</h3>')
 
 
 # url: /django-chatapp/auth/check/userid/
@@ -152,7 +157,7 @@ def setting_chat(request):
 
 
 # url: /django-chatapp/chat/supporter/
-@login_required
+@login_required(login_url='chatapp:login-required')
 def supporter_homepage(request):
     """ check supporter in db and show panel """
 
@@ -169,7 +174,7 @@ def supporter_homepage(request):
 
 
 # url: /django-chatapp/chat/supporter/unreads/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def supporter_unreads(request):
     """ 
@@ -260,7 +265,7 @@ def supporter_unreads(request):
 
 
 # url: /django-chatapp/chat/supporter/read-all/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def supporter_read_all(request):
     """ 
@@ -358,7 +363,7 @@ def supporter_read_all(request):
 
 
 # url: /django-chatapp/chat/supporter/report/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def report_user(request):
     """ report a client via supporter """
@@ -405,7 +410,7 @@ def report_user(request):
                 
 
 # url: /django-chatapp/chat/supporter/ready-msg/get/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def get_ready_msg(request):
     """ send list of ready message to supporter panel """
@@ -426,7 +431,7 @@ def get_ready_msg(request):
 
             
 # url: /django-chatapp/chat/supporter/ready-msg/del/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def delete_ready_msg(request):
     """ 
@@ -456,7 +461,7 @@ def delete_ready_msg(request):
 
 
 # url: /django-chatapp/chat/supporter/ready-msg/create/
-@login_required
+@login_required(login_url='chatapp:login-required')
 @csrf_exempt
 def create_ready_msg(request):
     """ 

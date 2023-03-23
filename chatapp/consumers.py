@@ -297,6 +297,13 @@ class ChatConsumer(WebsocketConsumer):
                 if self.user.have_supporter:
                     chat_obj.supporter = self.user.have_supporter
 
+                if len(text_data_json.get('supporter_uid')) > 1 and not chat_obj.supporter:
+                    try:
+                        supporter_found = SupporterModel.objects.get(supporter_uid=text_data_json.get('supporter_uid'))
+                        chat_obj.supporter = supporter_found
+                    except:
+                        pass
+
                 if text_data_json['reply_id']:
                     chat_obj.reply = ChatModel.objects.get(
                         id=text_data_json['reply_id']
@@ -312,9 +319,9 @@ class ChatConsumer(WebsocketConsumer):
                     text_data_json['reply_title'] = chat_obj.reply.sender
                     text_data_json['reply_msg'] = chat_obj.reply.msg
                     text_data_json['reply_id'] = chat_obj.reply.id
-                if self.user.have_supporter:
+                if len(text_data_json.get('supporter_uid')) > 1 or self.user.have_supporter:
                     text_data_json['client_have_supporter'] = 'yes'
-                elif not self.user.have_supporter:
+                else:
                     text_data_json['client_have_supporter'] = 'no'
                 text_data = json.dumps(text_data_json)
 
@@ -334,6 +341,27 @@ class ChatConsumer(WebsocketConsumer):
                         'message': text_data
                     }
                 )
+
+            # send supporterID to client
+            elif self.type == 'supporter' and text_data_json.get('_type_request') == 'set_supporter_for_client':
+
+                try:
+                    supporter_found = SupporterModel.objects.get(supporter_uid=text_data_json.get('supporter_id'))
+                    client_found = UserChatModel.objects.get(user_chat_uid=text_data_json.get('client_id'))
+                    client_found.have_supporter = supporter_found
+                    client_found.save()
+                except:
+                    pass
+
+                # Echo msg client
+                user_group_name = f"chat_client_{text_data_json.get('client_id')}"    
+                async_to_sync(self.channel_layer.group_send)(
+                    user_group_name, {
+                        'type': 'send_msg',
+                        'message': text_data
+                    }
+                )
+
     
 
     def send_msg(self, event):

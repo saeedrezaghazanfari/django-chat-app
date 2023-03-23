@@ -67,9 +67,21 @@ section.chatapp {
         right: 14px;
         border-radius: 10px;
         bottom: 87px;
-        box-shadow: $boxshadow;
+        box-shadow: 0 5px 13px 3px rgba(0, 0, 0, 0.1);
         transition: all 0.5s ease;
         background-color: white;
+
+        &::after {
+            content: '';
+            height: 0;
+            width: 0;
+            position: absolute;
+            bottom: -9px;
+            right: 22px;
+            border-left: 10px solid rgba(0,0,0,0);
+            border-right: 10px solid rgba(0,0,0,0);
+            border-top: 10px solid white;
+        }
 
         .msg__header {
             background-color: $primary;
@@ -490,6 +502,12 @@ section.chatapp {
                                 background-color: white;
                                 transition: all 0.3s linear;
                             }
+                            p.form_error {
+                                color: red;
+                                font-size: 12px;
+                                margin: 0px;
+                                margin-top: 5px;
+                            }
                         }
                         .mbnone__chatapp {margin-bottom: unset !important;}
                         .chatapp_button {
@@ -546,7 +564,7 @@ section.chatapp {
             }
         }
         .body__inputs {
-            padding: 8px 10px;
+            padding: 0px 10px;
             padding-top: 4px !important;
             background-color: white;
             border-radius: 0 0 10px 10px;
@@ -736,6 +754,11 @@ section.chatapp__ltr {
         border-radius: 10px;
         bottom: 87px;
         box-shadow: $boxshadow;
+
+        &::after {
+            right: unset !important;
+            left: 22px;
+        }
     }
     .msg__info__status img {
         margin-right: 5px;
@@ -818,9 +841,6 @@ section.chatapp__ltr {
     }
 }
 @media screen and (max-width: 1000px) {
-    .chatapp__msg .msg__header .msg__wrapper {
-        width: 280px !important;
-    }
     .chatapp__msg .msg__header .msg__wrapper .header__info div span:nth-child(1) {
         font-size: 12pt !important;
     }

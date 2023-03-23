@@ -38,8 +38,15 @@ const translated_messages = {
         "You": "شما",
         "Client": "کاربر",
         "This message has been deleted.": "این پیام حذف شده است.",
-        "Your message has been saved successfully. You can use this message when chatting with users.": "پیام شما با موفقیت ذخیره شد. شما میتوانید هنگام چت با کاربران از این پیام استفاده کنید."
-    }   ,
+        "Your message has been saved successfully. You can use this message when chatting with users.": "پیام شما با موفقیت ذخیره شد. شما میتوانید هنگام چت با کاربران از این پیام استفاده کنید.",
+        "Subject must be more than 4 characters.": "عنوان باید بیشتر از ۴ کاراکتر باشد.",
+        "Content must be more than 4 characters.": "متن  باید بیشتر از ۴ کاراکتر باشد.",
+        "There are no ready messages.": "هیچ پیام آماده‌ای وجود ندارد.",
+        "User successfully reported.": "کاربر با موفقیت گزارش شد",
+        "There are no unread messages for you": "پیام ناخوانده‌ای برای شما وجود ندارد",
+        "There are no unread messages": "پیام ناخوانده‌ای وجود ندارد",
+        "There are no Users": "هیچ کاربری وجود ندارد",
+    },
     en: {
         "WelCome to Supporter Panel": "WelCome to Supporter Panel",
         "Home": "Home",
@@ -67,7 +74,14 @@ const translated_messages = {
         "You": "You",
         "Client": "Client",
         "This message has been deleted.": "This message has been deleted.",
-        "Your message has been saved successfully. You can use this message when chatting with users.": "Your message has been saved successfully. You can use this message when chatting with users."
+        "Your message has been saved successfully. You can use this message when chatting with users.": "Your message has been saved successfully. You can use this message when chatting with users.",
+        "Subject must be more than 4 characters.": "Subject must be more than 4 characters.",
+        "Content must be more than 4 characters.": "Content must be more than 4 characters.",
+        "There are no ready messages.": "There are no ready messages.",
+        "User successfully reported.": "User successfully reported.",
+        "There are no unread messages for you": "There are no unread messages for you",
+        "There are no unread messages": "There are no unread messages",
+        "There are no Users": "There are no Users",
     },
     ar: {
         "WelCome to Supporter Panel": "مرحبا بكم في لوحة الداعمين",
@@ -96,7 +110,14 @@ const translated_messages = {
         "You": "أنت",
         "Client": "عميل",
         "This message has been deleted.": "تم حذف هذه الرسالة.",
-        "Your message has been saved successfully. You can use this message when chatting with users.": "تم حفظ رسالتك بنجاح. يمكنك استخدام هذه الرسالة عند الدردشة مع المستخدمين."
+        "Your message has been saved successfully. You can use this message when chatting with users.": "تم حفظ رسالتك بنجاح. يمكنك استخدام هذه الرسالة عند الدردشة مع المستخدمين.",
+        "Subject must be more than 4 characters.": "يجب أن يكون الموضوع أكثر من 4 أحرف.",
+        "Content must be more than 4 characters.": "يجب أن يكون المحتوى أكثر من 4 أحرف.",
+        "There are no ready messages.": "لا توجد رسائل معدة.",
+        "User successfully reported.": "أبلغ المستخدم بنجاح.",
+        "There are no unread messages for you": "لا توجد رسائل غير مقروءة لك",
+        "There are no unread messages": "لا توجد رسائل غير مقروءة",
+        "There are no Users": "لا يوجد مستخدمون",
     },
     ru: {
         "WelCome to Supporter Panel": "Добро пожаловать в панель поддержки",
@@ -125,7 +146,14 @@ const translated_messages = {
         "You": "Ты",
         "Client": "Клиент",
         "This message has been deleted.": "Это сообщение было удалено.",
-        "Your message has been saved successfully. You can use this message when chatting with users.": "Ваше сообщение было успешно сохранено. Вы можете использовать это сообщение при общении с пользователями."
+        "Your message has been saved successfully. You can use this message when chatting with users.": "Ваше сообщение было успешно сохранено. Вы можете использовать это сообщение при общении с пользователями.",
+        "Subject must be more than 4 characters.": "Тема должна состоять более чем из 4 символов.",
+        "Content must be more than 4 characters.": "Содержание должно быть более 4 символов.",
+        "There are no ready messages.": "Нет готовых сообщений.",
+        "User successfully reported.": "Пользователь успешно сообщил",
+        "There are no unread messages for you": "Для вас нет непрочитанных сообщений",
+        "There are no unread messages": "Непрочитанных сообщений нет",
+        "There are no Users": "Нет пользователей",
     }
 }
 
@@ -168,7 +196,8 @@ const vue_app = Vue.createApp({
             tab_id_active: 'yourunreads',
             tab_data_is_show: true,
             show_msg_container: false,
-            menu_active_tab: '',
+            this_supporter_counter_tab: 0,
+            no_supoorter_counter_tab: 0,
 
             message_status_is_edit: false,
 
@@ -187,8 +216,20 @@ const vue_app = Vue.createApp({
     },
 
     created() {
-        this.$i18n.locale = this.get_locale();
+        this.$root.$i18n.locale = this.get_locale();
         this.set_setting();
+    },
+
+    watch: {
+
+        unreads_thissupporter(newval, oldval) {
+            this.get_tab_counter('this_sup', newval);
+        },
+
+        unreads_nosupoorter(newval, oldval) {
+            this.get_tab_counter('no_sup', newval);
+        },
+
     },
 
     mounted() {
@@ -198,22 +239,91 @@ const vue_app = Vue.createApp({
     },
 
     methods: {
+
+        clear_chat_objects_thissupporter() {
+
+            this.unreads_thissupporter.forEach((item, index, object) => {
+                if(item.owner_id == this.client_id)
+                    object.splice(index, 1)
+            })
+            for(let i=0 ; i <= this.unreads_thissupporter_pre.length; i++) {
+                this.unreads_thissupporter_pre.forEach((item, index, object) => {
+                    if(item.owner_id == this.client_id)
+                        object.splice(index, 1)
+                })
+            }
+        },
+
+        clear_chat_objects_nosupporter() {
+            
+            this.unreads_nosupoorter.forEach((item, index, object) => {
+                if(item.owner_id == this.client_id)
+                    object.splice(index, 1)
+            })
+            for(let i=0 ; i <= this.unreads_nosupoorter_pre.length; i++) {
+                this.unreads_nosupoorter_pre.forEach((item, index, object) => {
+                    if(item.owner_id == this.client_id)
+                        object.splice(index, 1)
+                })
+            }
+        },
+
+        get_tab_counter(counter_type, newval) {
+
+            let msg_counter = 0;
+
+            if(counter_type == 'this_sup') {
+
+                newval.forEach((el) => {
+                    if(el.owner_id == this.client_id) {
+                        this.this_supporter_counter_tab = 0;
+                        return;
+                    }
+                    else
+                        msg_counter += el.counter;
+                });
+                this.this_supporter_counter_tab = msg_counter;
+            }
+
+            else if(counter_type == 'no_sup') {
+
+                newval.forEach((el) => {
+                    if(el.owner_id == this.client_id){
+                        this.no_supoorter_counter_tab = 0;
+                        return;
+                    }
+                    msg_counter += el.counter;
+                });
+                this.no_supoorter_counter_tab = msg_counter;
+            }
+        },
+
+        change_lang(lang) {
+            let have_lang = this.get_prefix_lang_url();
+            
+            if(have_lang.length > 1)
+                window.location.href = '/' + lang + window.location.pathname.slice(3) || '';
+            
+            else {
+                this.$root.$i18n.locale = lang;
+            }
+        },
         
         get_prefix_lang_url(){
-            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let first_second_lang = window.location.pathname.slice(0,4);
             let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
 
             if(langs.includes(first_second_lang))
-                return first_second_lang.slice(0,3);
+                return first_second_lang.slice(0,3);  /* return '/fa' */
             return '';
         },
 
         get_locale(){
-            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let first_second_lang = window.location.pathname.slice(0,4);
             let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
 
             if(langs.includes(first_second_lang))
-                return first_second_lang.slice(1,3);
+                return first_second_lang.slice(1,3);  /* return 'fa' */
             return 'en';
         },
 
@@ -307,10 +417,10 @@ const vue_app = Vue.createApp({
                         // setting for language
                         let languages_list = ['en', 'fa', 'ar', 'ru'];
                         if(languages_list.includes(this.env_lang)){
-                            this.$i18n.locale = this.env_lang;
+                            this.$root.$i18n.locale = this.env_lang;
                         }
                         else if(this.env_lang == 'auto') {
-                            this.$i18n.locale = this.get_locale();
+                            this.$root.$i18n.locale = this.get_locale();
                         }
                     }
                 })
@@ -538,6 +648,8 @@ const vue_app = Vue.createApp({
                             }
                         }
                         mythis.unreads_thissupporter = thissupporter_result;
+                        
+                        mythis.clear_chat_objects_thissupporter();
                     }
                     else if(message.client_have_supporter == 'no') {
 
@@ -563,6 +675,8 @@ const vue_app = Vue.createApp({
                             }
                         }
                         mythis.unreads_nosupoorter = nosupoorter_result;
+
+                        mythis.clear_chat_objects_nosupporter();
                     }
 
                     setTimeout(()=> {
@@ -632,10 +746,31 @@ const vue_app = Vue.createApp({
                         this.message_list = response.data;
                         // console.log(response);
 
-                        if(msg_type == 'thissupporter')
+                        if(msg_type == 'thissupporter') {
+
                             this.unreads_thissupporter[index_item].counter = 0;
-                        else if(msg_type == 'nosupoorter')
+                            
+                            this.clear_chat_objects_thissupporter();
+
+                            this.get_tab_counter('this_sup', this.unreads_thissupporter);
+                        }
+                        else if(msg_type == 'nosupoorter'){
+
                             this.unreads_nosupoorter[index_item].counter = 0;
+
+                            this.clear_chat_objects_nosupporter();
+
+                            this.get_tab_counter('no_sup', this.unreads_nosupoorter);
+
+                            // send supporterID to client
+                            let mythis = this;
+                            this.socket.send(JSON.stringify({
+                                '_type_request': 'set_supporter_for_client',
+                                'supporter_id': mythis.supporter_uid,
+                                'client_id': mythis.client_id,
+                            }));
+    
+                        }
 
                         setTimeout(()=> {
                             this.go_to_bottom_of_box();
@@ -798,6 +933,14 @@ const vue_app = Vue.createApp({
         },
 
         send_report() {
+
+            if(this.report_cause.length < 4){
+                this.alert = this.$t('Content must be more than 4 characters.');
+                setTimeout(() => {
+                    this.alert = '';
+                }, 3000);
+                return;
+            }
             
             let formdata = new FormData();
             formdata.append('supporter_uid', this.supporter_uid);
@@ -818,11 +961,19 @@ const vue_app = Vue.createApp({
                     if(response.status == 200) {
 
                         if(response.is_blocked) {
-                            window.location.reload()
+                            window.location.reload();
                         }
 
                         this.report_item = 'badterms';
                         this.report_cause = '';
+
+                        this.open_report_box();
+
+                        this.alert = this.$t('User successfully reported.');
+                        setTimeout(() => {
+                            this.alert = '';
+                        }, 3000);
+                        return;
                     }
                 })
                 .catch(err => {
@@ -923,12 +1074,22 @@ const vue_app = Vue.createApp({
 
         submit_new_readymsg() {
 
-            if(this.new_readymsg_subject.length < 4)
+            if(this.new_readymsg_subject.length < 4){
+                this.alert = this.$t('Subject must be more than 4 characters.');
+                setTimeout(() => {
+                    this.alert = '';
+                }, 3000);
                 return;
+            }
 
-            if(this.new_readymsg_content.length < 4)
+            if(this.new_readymsg_content.length < 4){
+                this.alert = this.$t('Content must be more than 4 characters.');
+                setTimeout(() => {
+                    this.alert = '';
+                }, 3000);
                 return;
-            
+            }
+
             let formdata = new FormData();
             formdata.append('supporter_uid', this.supporter_uid);
             formdata.append('subject', this.new_readymsg_subject);

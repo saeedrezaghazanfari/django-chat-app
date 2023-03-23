@@ -3,7 +3,7 @@
 
 document.getElementById('chatapp').addEventListener('click', (ev)=> {
     if(!ev.target.closest('span.toggle_mneubar')){
-        document.querySelectorAll('.chatapp ul.msg-menu-bar').forEach(element => {
+        document.querySelectorAll('section.chatapp ul.msg-menu-bar').forEach(element => {
             if(!element.classList.contains('d-none'))
                 element.classList.add('d-none');
         });
@@ -35,6 +35,9 @@ const translated_messages = {
         'Remove': 'حذف کردن',
         'reply': 'پاسخ دادن',
         'more': 'بیشتر',
+        "Firstname must be more than 2 characters.": "تعداد کاراکترهای نام باید بیشتر از ۲ کاراکتر باشد.",
+        "Lastname must be more than 2 characters.": "تعداد کاراکترهای نام‌خانوادگی باید بیشتر از ۲ کاراکتر باشد.",
+        "The entered pattern is not valid.": "الگوی وارد شده صحیح نیست.",
     },
     en: {
         'online': 'online',
@@ -60,6 +63,9 @@ const translated_messages = {
         'Remove': 'Remove',
         'reply': 'reply',
         'more': 'more',
+        "Firstname must be more than 2 characters.": "Firstname must be more than 2 characters.",
+        "Lastname must be more than 2 characters.": "Lastname must be more than 2 characters.",
+        "The entered pattern is not valid.": "The entered pattern is not valid.",
     },
     ar: {
         'online': 'متصل',
@@ -85,6 +91,9 @@ const translated_messages = {
         'Remove': 'يزيل',
         "reply": "رد",
         "more": "أكثر",
+        "Firstname must be more than 2 characters.": "يجب أن يكون الاسم الأول أكثر من حرفين.",
+        "Lastname must be more than 2 characters.": "يجب أن يكون اسم العائلة أكثر من حرفين.",
+        "The entered pattern is not valid.": "النمط الذي تم إدخاله غير صالح.",
     },
     ru: {
         'online': 'В сети',
@@ -110,6 +119,9 @@ const translated_messages = {
         'Remove': 'Удалять',
         "reply": "отвечать",
         "more": "более",
+        "Firstname must be more than 2 characters.": "Имя должно состоять более чем из 2 символов.",
+        "Lastname must be more than 2 characters.": "Фамилия должна состоять более чем из 2 символов.",
+        "The entered pattern is not valid.": "Введенный шаблон недействителен.",
     }
 }
 
@@ -142,6 +154,7 @@ const vue_app = Vue.createApp({
 
             user_is_logged: false,
             user_id: '',
+            supporter_id: '',
 
             is_open_box: false,
             counter_new_msg: 0,
@@ -154,6 +167,12 @@ const vue_app = Vue.createApp({
             msg_input: '',
 
             message_list: [],
+
+            form_errors: {
+                fname: '',
+                lname: '',
+                phone_email: '',
+            },
         }
     },
 
@@ -176,20 +195,20 @@ const vue_app = Vue.createApp({
     methods: {
         
         get_prefix_lang_url(){
-            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let first_second_lang = window.location.pathname.slice(0,4);
             let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
 
             if(langs.includes(first_second_lang))
-                return first_second_lang.slice(0,3);
+                return first_second_lang.slice(0,3); /* return '/fa' */
             return '';
         },
 
         get_locale(){
-            let first_second_lang = window.location.pathname[0] + window.location.pathname[1] + window.location.pathname[2] + window.location.pathname[3];
+            let first_second_lang = window.location.pathname.slice(0,4);
             let langs = ['/fa/', '/en/', '/ar/', '/ru/'];
 
             if(langs.includes(first_second_lang))
-                return first_second_lang.slice(1,3);
+                return first_second_lang.slice(1,3); /* return 'fa' */
             return 'en';
         },
 
@@ -210,7 +229,7 @@ const vue_app = Vue.createApp({
         show_menu_bar(elementID) {
 
             if(document.getElementById(elementID).classList.contains('d-none')) {
-                document.querySelectorAll('.chatapp .msg-menu-bar').forEach(element => {
+                document.querySelectorAll('section.chatapp .msg-menu-bar').forEach(element => {
                     element.classList.add('d-none');
                 });
                 document.getElementById(elementID).classList.remove('d-none');
@@ -281,18 +300,18 @@ const vue_app = Vue.createApp({
                         }
 
                         // setting for title and subtitle
-                        document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
-                        document.querySelector('.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
+                        document.querySelector('section.chatapp .chatapp__msg .header__info div span:nth-child(1)').innerText = this.env_title;
+                        document.querySelector('section.chatapp .chatapp__msg .header__info div span:nth-child(2)').innerText = this.env_subtitle;
 
                         // setting for game
                         if(!this.env_game)
-                            document.querySelector('.chatapp .body__inputs .show_game').classList.add('d-none');
+                            document.querySelector('section.chatapp .body__inputs .show_game').classList.add('d-none');
 
                         // setting for email or phone
                         if(this.env_auth_fields == 'email')
-                            document.querySelector('.chatapp .chatapp_control_email').classList.remove('d-none');
+                            document.querySelector('section.chatapp .chatapp_control_email').classList.remove('d-none');
                         else if(this.env_auth_fields == 'phone')
-                            document.querySelector('.chatapp .chatapp_control_phone').classList.remove('d-none');
+                            document.querySelector('section.chatapp .chatapp_control_phone').classList.remove('d-none');
 
                     } else if(response.status == 401) {
                         localStorage.removeItem('chatapp_client_id');
@@ -305,7 +324,7 @@ const vue_app = Vue.createApp({
         },
 
         go_to_bottom_of_box() {
-            document.querySelector('.msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
+            document.querySelector('section.chatapp .msg__body .body__wrapper').scrollIntoView({ behavior: "smooth", block: "end"});
         },
 
         goback_chat_btn() {
@@ -397,8 +416,8 @@ const vue_app = Vue.createApp({
                                 this.user_is_logged = true;
                                 this.user_id = stored_userid;
 
-                                document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
-                                document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+                                document.querySelector('section.chatapp .all__msg__wrapper').classList.remove('d-none');
+                                document.querySelector('section.chatapp .body__inputs form').classList.remove('d-none');
 
                                 setTimeout(()=> {
                                     this.go_to_bottom_of_box();
@@ -434,7 +453,7 @@ const vue_app = Vue.createApp({
                     }, 1500);
                 }
                 else {
-                    document.querySelector('.chatapp__form').classList.remove('d-none');
+                    document.querySelector('section.chatapp .chatapp__form').classList.remove('d-none');
                     setTimeout(() => {
                         document.querySelector('section.chatapp .chatapp__form input#chatapp__fname').focus();
                     }, 200);
@@ -495,25 +514,25 @@ const vue_app = Vue.createApp({
             let msgbox = document.getElementById(elementId);
             let reply_writer = '';
             let reply_id = msgId;
-            let reply_content = document.querySelector(`#${elementId} .msg__content`).innerText;
+            let reply_content = document.querySelector(`section.chatapp #${elementId} .msg__content`).innerText;
 
             if(msgbox.classList.contains('msg__right'))
                 reply_writer = this.$t('You');
             else
                 reply_writer = this.$t('Supporter');
 
-            document.querySelector('.body__inputs .reply_msg_wrapper').classList.remove('d-none');
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = reply_content;
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = reply_id;
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper').classList.remove('d-none');
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__writer').innerText = reply_writer;
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__content').innerText = reply_content;
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__reply_id').innerText = reply_id;
         },
         
         close_replybar() {
             this.message_status_is_edit = false;
-            document.querySelector('.body__inputs .reply_msg_wrapper').classList.add('d-none');
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText = '';
-            document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText = '';
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper').classList.add('d-none');
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__writer').innerText = '';
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__content').innerText = '';
+            document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__reply_id').innerText = '';
         },
 
         msg_replied(scholl_msg) {
@@ -542,6 +561,12 @@ const vue_app = Vue.createApp({
     
         chatapp_submitform() {
 
+            this.form_errors = {
+                fname: '',
+                lname: '',
+                phone_email: '',
+            }
+
             let fname = document.getElementById('chatapp__fname');
             let lname = document.getElementById('chatapp__lname');
             let email_phone;
@@ -554,11 +579,14 @@ const vue_app = Vue.createApp({
             const phone_regex = /^\d{11,12}$/i;
             let formdata;
             
-            if(!fname.value.length >= 1)
+            if(fname.value.length <= 2){
+                this.form_errors.fname = this.$t('Firstname must be more than 2 characters.');
                 return;
-            
-            if(!lname.value.length >= 1)
+            }
+            if(lname.value.length <= 2){
+                this.form_errors.lname = this.$t('Lastname must be more than 2 characters.');
                 return;
+            }
             
             if(email_phone.value.match(email_regex)) {
                 formdata = new FormData();
@@ -573,6 +601,7 @@ const vue_app = Vue.createApp({
                 formdata.append('phone', email_phone.value);
             }
             else {
+                this.form_errors.phone_email = this.$t('The entered pattern is not valid.');
                 return;
             }
 
@@ -594,10 +623,10 @@ const vue_app = Vue.createApp({
                         );
                         this.start_socket();
                         
-                        document.querySelector('.chatapp__form').classList.add('d-none');
+                        document.querySelector('section.chatapp .chatapp__form').classList.add('d-none');
                         // document.querySelector('section.chatapp .btn_last_msg').classList.remove('d-none');
-                        document.querySelector('.chatapp .all__msg__wrapper').classList.remove('d-none');
-                        document.querySelector('.chatapp .body__inputs form').classList.remove('d-none');
+                        document.querySelector('section.chatapp .all__msg__wrapper').classList.remove('d-none');
+                        document.querySelector('section.chatapp .body__inputs form').classList.remove('d-none');
                         setTimeout(()=> {
                             this.focus_msg_input();
                         }, 500);
@@ -629,6 +658,11 @@ const vue_app = Vue.createApp({
                         }
                     });
 
+                    return;
+                }
+
+                else if(message._type_request == 'set_supporter_for_client') {  /* just set supporter for client */
+                    mythis.supporter_id = message.supporter_id;
                     return;
                 }
 
@@ -695,8 +729,8 @@ const vue_app = Vue.createApp({
                 
             if(this.message_status_is_edit) { /* just edit message */
 
-                let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
-                let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+                let content = document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__content').innerText;
+                let reply_id = document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                 let mythis = this;
                 this.socket.send(JSON.stringify({
                     '_type_request': 'edit',
@@ -732,8 +766,9 @@ const vue_app = Vue.createApp({
                 return;
             }
 
-            if(document.querySelector('.body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
+            if(document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper').classList.contains('d-none')) {
                 let mythis = this;
+
                 this.socket.send(JSON.stringify({
                     '_type_request': 'send',
                     'owner_id': mythis.user_id,
@@ -745,6 +780,7 @@ const vue_app = Vue.createApp({
                     'reply_msg': '', 
                     'is_seen': 0,
                     'created': '',
+                    'supporter_uid': mythis.supporter_id,
                     'text': mythis.msg_input
                 }));    
 
@@ -756,9 +792,9 @@ const vue_app = Vue.createApp({
                 }, 500);
 
             } else {
-                let writer = document.querySelector('.body__inputs .reply_msg_wrapper .reply__writer').innerText;
-                let content = document.querySelector('.body__inputs .reply_msg_wrapper .reply__content').innerText;
-                let reply_id = document.querySelector('.body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
+                let writer = document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__writer').innerText;
+                let content = document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__content').innerText;
+                let reply_id = document.querySelector('section.chatapp .body__inputs .reply_msg_wrapper .reply__reply_id').innerText;
                 let mythis = this;
                 this.socket.send(JSON.stringify({
                     '_type_request': 'send',
@@ -771,6 +807,7 @@ const vue_app = Vue.createApp({
                     'reply_msg': content, 
                     'is_seen': 0,
                     'created': '',
+                    'supporter_uid': mythis.supporter_id,
                     'text': mythis.msg_input
                 }));
 
@@ -812,116 +849,116 @@ let oimg = document.getElementById('oimage_game').getAttribute('src');
 let ximg = document.getElementById('ximage_game').getAttribute('src');
 
 // start a step with Human
-document.querySelectorAll('.btn_game').forEach((btn) => {
+document.querySelectorAll('section.chatapp .btn_game').forEach((btn) => {
 
-btn.addEventListener('click', (e) => {
-    
-    let btnId = e.target.getAttribute('id');
-    if(!selected.find(el => el == btnId)) {
+    btn.addEventListener('click', (e) => {
         
-        selected.push(btnId);
-        set_image_in_btn(btnId, 'O');
-        set_config(btnId, 'O');
-        check_winner('O');
+        let btnId = e.target.getAttribute('id');
+        if(!selected.find(el => el == btnId)) {
+            
+            selected.push(btnId);
+            set_image_in_btn(btnId, 'O');
+            set_config(btnId, 'O');
+            check_winner('O');
 
-        if(endGame == false && final == false) { // computer select
-            computer_select();
-            check_winner('X');
+            if(endGame == false && final == false) { // computer select
+                computer_select();
+                check_winner('X');
+            }
+            else if(endGame == true && final == false) { // clear buttons
+                setTimeout(() => {
+                    reset_game();
+                }, 2000);
+            }
         }
-        else if(endGame == true && final == false) { // clear buttons
-            setTimeout(() => {
-                reset_game();
-            }, 2000);
-        }
-    }
-});
+    });
 });
 
 // computer or human selections, set a image in the buttons
 set_image_in_btn = (btnId, human_computer) => {
-let new_img = document.createElement("img");
+    let new_img = document.createElement("img");
 
-if(human_computer == 'O')
-    new_img.setAttribute('src', oimg);
-else if(human_computer == 'X')
-    new_img.setAttribute('src', ximg);
+    if(human_computer == 'O')
+        new_img.setAttribute('src', oimg);
+    else if(human_computer == 'X')
+        new_img.setAttribute('src', ximg);
 
-if(human_computer == 'null') {
-    document.getElementById(btnId).innerHTML = '';
-}
-if(human_computer != 'null') {
-    document.getElementById(btnId).appendChild(new_img);
-}
+    if(human_computer == 'null') {
+        document.getElementById(btnId).innerHTML = '';
+    }
+    if(human_computer != 'null') {
+        document.getElementById(btnId).appendChild(new_img);
+    }
 }
 
 // set X or O in row1, row2 and row3 arrays
 set_config = (btnId, human_computer) => {
 
-if(btnId == 'btn11') 
-    row1[0] = human_computer;
-if(btnId == 'btn12') 
-    row1[1] = human_computer;
-if(btnId == 'btn13') 
-    row1[2] = human_computer;
+    if(btnId == 'btn11') 
+        row1[0] = human_computer;
+    if(btnId == 'btn12') 
+        row1[1] = human_computer;
+    if(btnId == 'btn13') 
+        row1[2] = human_computer;
 
-if(btnId == 'btn21') 
-    row2[0] = human_computer;
-if(btnId == 'btn22') 
-    row2[1] = human_computer;
-if(btnId == 'btn23') 
-    row2[2] = human_computer;
+    if(btnId == 'btn21') 
+        row2[0] = human_computer;
+    if(btnId == 'btn22') 
+        row2[1] = human_computer;
+    if(btnId == 'btn23') 
+        row2[2] = human_computer;
 
-if(btnId == 'btn31') 
-    row3[0] = human_computer;
-if(btnId == 'btn32') 
-    row3[1] = human_computer;
-if(btnId == 'btn33') 
-    row3[2] = human_computer;
+    if(btnId == 'btn31') 
+        row3[0] = human_computer;
+    if(btnId == 'btn32') 
+        row3[1] = human_computer;
+    if(btnId == 'btn33') 
+        row3[2] = human_computer;
 }
 
 check_winner = (human_computer) => {
-if(human_computer == 'O'){
-    // win in rows
-    if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == 'O')
-        human_win('btn11', 'btn12', 'btn13');
-    if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == 'O')
-        human_win('btn21', 'btn22', 'btn23');
-    if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == 'O')
-        human_win('btn31', 'btn32', 'btn33');
-    // win in columns
-    if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == 'O')
-        human_win('btn11', 'btn21', 'btn31');
-    if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == 'O')
-        human_win('btn12', 'btn22', 'btn32');
-    if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == 'O')
-        human_win('btn13', 'btn23', 'btn33');        
-    // win in *
-    if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == 'O')
-        human_win('btn11', 'btn22', 'btn33');
-    if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == 'O')
-        human_win('btn13', 'btn22', 'btn31');
-}
-else if(human_computer == 'X'){
-    // win in rows
-    if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == 'X')
-        computer_win('btn11', 'btn12', 'btn13');
-    if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == 'X')
-        computer_win('btn21', 'btn22', 'btn23');
-    if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == 'X')
-        computer_win('btn31', 'btn32', 'btn33');
-    // win in columns
-    if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == 'X')
-        computer_win('btn11', 'btn21', 'btn31');
-    if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == 'X')
-        computer_win('btn12', 'btn22', 'btn32');
-    if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == 'X')
-        computer_win('btn13', 'btn23', 'btn33');        
-    // win in *
-    if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == 'X')
-        computer_win('btn11', 'btn22', 'btn33');
-    if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == 'X')
-        computer_win('btn13', 'btn22', 'btn31');
-}
+    if(human_computer == 'O'){
+        // win in rows
+        if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == 'O')
+            human_win('btn11', 'btn12', 'btn13');
+        if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == 'O')
+            human_win('btn21', 'btn22', 'btn23');
+        if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == 'O')
+            human_win('btn31', 'btn32', 'btn33');
+        // win in columns
+        if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == 'O')
+            human_win('btn11', 'btn21', 'btn31');
+        if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == 'O')
+            human_win('btn12', 'btn22', 'btn32');
+        if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == 'O')
+            human_win('btn13', 'btn23', 'btn33');        
+        // win in *
+        if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == 'O')
+            human_win('btn11', 'btn22', 'btn33');
+        if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == 'O')
+            human_win('btn13', 'btn22', 'btn31');
+    }
+    else if(human_computer == 'X'){
+        // win in rows
+        if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == 'X')
+            computer_win('btn11', 'btn12', 'btn13');
+        if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == 'X')
+            computer_win('btn21', 'btn22', 'btn23');
+        if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == 'X')
+            computer_win('btn31', 'btn32', 'btn33');
+        // win in columns
+        if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == 'X')
+            computer_win('btn11', 'btn21', 'btn31');
+        if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == 'X')
+            computer_win('btn12', 'btn22', 'btn32');
+        if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == 'X')
+            computer_win('btn13', 'btn23', 'btn33');        
+        // win in *
+        if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == 'X')
+            computer_win('btn11', 'btn22', 'btn33');
+        if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == 'X')
+            computer_win('btn13', 'btn22', 'btn31');
+    }
 }
 
 set_message_game = (index) => {
@@ -969,211 +1006,211 @@ set_message_game = (index) => {
 
 human_win = (btn1, btn2, btn3) => {
 
-bg__glass.classList.remove('d-none');
+    bg__glass.classList.remove('d-none');
 
-document.getElementById(btn1).style.backgroundColor = '#ececec';
-document.getElementById(btn2).style.backgroundColor = '#ececec';
-document.getElementById(btn3).style.backgroundColor = '#ececec';
-setTimeout(() => {
-    document.getElementById(btn1).style.backgroundColor = '#fff';
-    document.getElementById(btn2).style.backgroundColor = '#fff';
-    document.getElementById(btn3).style.backgroundColor = '#fff';
-}, 2000);
+    document.getElementById(btn1).style.backgroundColor = '#ececec';
+    document.getElementById(btn2).style.backgroundColor = '#ececec';
+    document.getElementById(btn3).style.backgroundColor = '#ececec';
+    setTimeout(() => {
+        document.getElementById(btn1).style.backgroundColor = '#fff';
+        document.getElementById(btn2).style.backgroundColor = '#fff';
+        document.getElementById(btn3).style.backgroundColor = '#fff';
+    }, 2000);
 
-human_score += 1;
-if(human_score == number_game_win) {
-    alertDiv.classList.remove('d-none');
-    alertDiv.innerHTML = set_message_game(0);
-    alertDiv.classList.add('game_alert_msg_win');
-    final = true;
-}
-document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
+    human_score += 1;
+    if(human_score == number_game_win) {
+        alertDiv.classList.remove('d-none');
+        alertDiv.innerHTML = set_message_game(0);
+        alertDiv.classList.add('game_alert_msg_win');
+        final = true;
+    }
+    document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
 
-endGame = true;
+    endGame = true;
 }
 
 computer_win = (btn1, btn2, btn3) => {
 
-bg__glass.classList.remove('d-none');
+    bg__glass.classList.remove('d-none');
 
-document.getElementById(btn1).style.backgroundColor = '#c8e7ff';
-document.getElementById(btn2).style.backgroundColor = '#c8e7ff';
-document.getElementById(btn3).style.backgroundColor = '#c8e7ff';
-setTimeout(() => {
-    document.getElementById(btn1).style.backgroundColor = '#fff';
-    document.getElementById(btn2).style.backgroundColor = '#fff';
-    document.getElementById(btn3).style.backgroundColor = '#fff';
-}, 2000);
-
-computer_score += 1;
-if(computer_score == number_game_win) {   
-    alertDiv.classList.remove('d-none');
-    alertDiv.innerHTML = set_message_game(1);
-    alertDiv.classList.add('game_alert_msg_lose');
-    final = true;
-}
-document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
-
-endGame = true;
-
-if(final == false) {
+    document.getElementById(btn1).style.backgroundColor = '#c8e7ff';
+    document.getElementById(btn2).style.backgroundColor = '#c8e7ff';
+    document.getElementById(btn3).style.backgroundColor = '#c8e7ff';
     setTimeout(() => {
-        reset_game();
+        document.getElementById(btn1).style.backgroundColor = '#fff';
+        document.getElementById(btn2).style.backgroundColor = '#fff';
+        document.getElementById(btn3).style.backgroundColor = '#fff';
     }, 2000);
 
-    setTimeout(() => {
-        computer_select();
-        check_winner('X');
-    }, 2100);
-}
+    computer_score += 1;
+    if(computer_score == number_game_win) {   
+        alertDiv.classList.remove('d-none');
+        alertDiv.innerHTML = set_message_game(1);
+        alertDiv.classList.add('game_alert_msg_lose');
+        final = true;
+    }
+    document.getElementById('score__game').innerHTML = `<div><span>${set_message_game(2)}:</span><span>${human_score}</span></div><div><span>${set_message_game(3)}:</span><span>${computer_score}</span></div>`;
+
+    endGame = true;
+
+    if(final == false) {
+        setTimeout(() => {
+            reset_game();
+        }, 2000);
+
+        setTimeout(() => {
+            computer_select();
+            check_winner('X');
+        }, 2100);
+    }
 }
 
 // set logics for computer selections - attack is first, defence is last strategy
 computer_select = () => {
-let list_selection = [];
-let computer_selection = '';
+    let list_selection = [];
+    let computer_selection = '';
 
-if(selected.length >= 0 && selected.length <= 8) {
+    if(selected.length >= 0 && selected.length <= 8) {
 
-    list_selection = all_btn.filter((item) => !selected.includes(item));
+        list_selection = all_btn.filter((item) => !selected.includes(item));
 
-    /* + ATTACK */
-    if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == '')
-        computer_selection = 'btn13';
-    else if(row1[0] == 'X' && row1[2] == 'X' && row1[1] == '')
-        computer_selection = 'btn12';
-    else if(row1[1] == 'X' && row1[2] == 'X' && row1[0] == '')
-        computer_selection = 'btn11';
+        /* + ATTACK */
+        if(row1[0] == 'X' && row1[1] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
+        else if(row1[0] == 'X' && row1[2] == 'X' && row1[1] == '')
+            computer_selection = 'btn12';
+        else if(row1[1] == 'X' && row1[2] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == '')
-        computer_selection = 'btn23';
-    else if(row2[0] == 'X' && row2[2] == 'X' && row2[1] == '')
-        computer_selection = 'btn22';    
-    else if(row2[1] == 'X' && row2[2] == 'X' && row2[0] == '')
-        computer_selection = 'btn21';    
+        else if(row2[0] == 'X' && row2[1] == 'X' && row2[2] == '')
+            computer_selection = 'btn23';
+        else if(row2[0] == 'X' && row2[2] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';    
+        else if(row2[1] == 'X' && row2[2] == 'X' && row2[0] == '')
+            computer_selection = 'btn21';    
 
-    else if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row3[0] == 'X' && row3[2] == 'X' && row3[1] == '')
-        computer_selection = 'btn32';  
-    else if(row3[1] == 'X' && row3[2] == 'X' && row3[0] == '')
-        computer_selection = 'btn31';
+        else if(row3[0] == 'X' && row3[1] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row3[0] == 'X' && row3[2] == 'X' && row3[1] == '')
+            computer_selection = 'btn32';  
+        else if(row3[1] == 'X' && row3[2] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
 
-    else if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == '')
-        computer_selection = 'btn31';
-    else if(row1[0] == 'X' && row3[0] == 'X' && row2[0] == '')
-        computer_selection = 'btn21';
-    else if(row3[0] == 'X' && row2[0] == 'X' && row1[0] == '')
-        computer_selection = 'btn11';
+        else if(row1[0] == 'X' && row2[0] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[0] == 'X' && row3[0] == 'X' && row2[0] == '')
+            computer_selection = 'btn21';
+        else if(row3[0] == 'X' && row2[0] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == '')
-        computer_selection = 'btn32';
-    else if(row1[1] == 'X' && row3[1] == 'X' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row3[1] == 'X' && row2[1] == 'X' && row1[1] == '')
-        computer_selection = 'btn12';
+        else if(row1[1] == 'X' && row2[1] == 'X' && row3[1] == '')
+            computer_selection = 'btn32';
+        else if(row1[1] == 'X' && row3[1] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row3[1] == 'X' && row2[1] == 'X' && row1[1] == '')
+            computer_selection = 'btn12';
 
-    else if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row1[2] == 'X' && row3[2] == 'X' && row2[2] == '')
-        computer_selection = 'btn23';  
-    else if(row3[2] == 'X' && row2[2] == 'X' && row1[2] == '')
-        computer_selection = 'btn13';
-    
-    else if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row1[0] == 'X' && row3[2] == 'X' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row2[1] == 'X' && row3[2] == 'X' && row1[0] == '')
-        computer_selection = 'btn11';
+        else if(row1[2] == 'X' && row2[2] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[2] == 'X' && row3[2] == 'X' && row2[2] == '')
+            computer_selection = 'btn23';  
+        else if(row3[2] == 'X' && row2[2] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
+        
+        else if(row1[0] == 'X' && row2[1] == 'X' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[0] == 'X' && row3[2] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'X' && row3[2] == 'X' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == '')
-        computer_selection = 'btn31';
-    else if(row1[2] == 'X' && row3[0] == 'X' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row2[1] == 'X' && row3[0] == 'X' && row1[2] == '')
-        computer_selection = 'btn13';
+        else if(row1[2] == 'X' && row2[1] == 'X' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[2] == 'X' && row3[0] == 'X' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'X' && row3[0] == 'X' && row1[2] == '')
+            computer_selection = 'btn13';
 
-    /* - ATTACK */
-    /* + DEFENCE */
+        /* - ATTACK */
+        /* + DEFENCE */
 
-    else if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == '')
-        computer_selection = 'btn13';
-    else if(row1[0] == 'O' && row1[2] == 'O' && row1[1] == '')
-        computer_selection = 'btn12';
-    else if(row1[1] == 'O' && row1[2] == 'O' && row1[0] == '')
-        computer_selection = 'btn11';
+        else if(row1[0] == 'O' && row1[1] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+        else if(row1[0] == 'O' && row1[2] == 'O' && row1[1] == '')
+            computer_selection = 'btn12';
+        else if(row1[1] == 'O' && row1[2] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == '')
-        computer_selection = 'btn23';
-    else if(row2[0] == 'O' && row2[2] == 'O' && row2[1] == '')
-        computer_selection = 'btn22';    
-    else if(row2[1] == 'O' && row2[2] == 'O' && row2[0] == '')
-        computer_selection = 'btn21';    
+        else if(row2[0] == 'O' && row2[1] == 'O' && row2[2] == '')
+            computer_selection = 'btn23';
+        else if(row2[0] == 'O' && row2[2] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';    
+        else if(row2[1] == 'O' && row2[2] == 'O' && row2[0] == '')
+            computer_selection = 'btn21';    
 
-    else if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row3[0] == 'O' && row3[2] == 'O' && row3[1] == '')
-        computer_selection = 'btn32';  
-    else if(row3[1] == 'O' && row3[2] == 'O' && row3[0] == '')
-        computer_selection = 'btn31';
+        else if(row3[0] == 'O' && row3[1] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row3[0] == 'O' && row3[2] == 'O' && row3[1] == '')
+            computer_selection = 'btn32';  
+        else if(row3[1] == 'O' && row3[2] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
 
-    else if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == '')
-        computer_selection = 'btn31';
-    else if(row1[0] == 'O' && row3[0] == 'O' && row2[0] == '')
-        computer_selection = 'btn21';
-    else if(row3[0] == 'O' && row2[0] == 'O' && row1[0] == '')
-        computer_selection = 'btn11';
+        else if(row1[0] == 'O' && row2[0] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[0] == 'O' && row3[0] == 'O' && row2[0] == '')
+            computer_selection = 'btn21';
+        else if(row3[0] == 'O' && row2[0] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == '')
-        computer_selection = 'btn32';
-    else if(row1[1] == 'O' && row3[1] == 'O' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row3[1] == 'O' && row2[1] == 'O' && row1[1] == '')
-        computer_selection = 'btn12';
+        else if(row1[1] == 'O' && row2[1] == 'O' && row3[1] == '')
+            computer_selection = 'btn32';
+        else if(row1[1] == 'O' && row3[1] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row3[1] == 'O' && row2[1] == 'O' && row1[1] == '')
+            computer_selection = 'btn12';
 
-    else if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row1[2] == 'O' && row3[2] == 'O' && row2[2] == '')
-        computer_selection = 'btn23';  
-    else if(row3[2] == 'O' && row2[2] == 'O' && row1[2] == '')
-        computer_selection = 'btn13';
-    
-    else if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == '')
-        computer_selection = 'btn33';
-    else if(row1[0] == 'O' && row3[2] == 'O' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row2[1] == 'O' && row3[2] == 'O' && row1[0] == '')
-        computer_selection = 'btn11';
+        else if(row1[2] == 'O' && row2[2] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[2] == 'O' && row3[2] == 'O' && row2[2] == '')
+            computer_selection = 'btn23';  
+        else if(row3[2] == 'O' && row2[2] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+        
+        else if(row1[0] == 'O' && row2[1] == 'O' && row3[2] == '')
+            computer_selection = 'btn33';
+        else if(row1[0] == 'O' && row3[2] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'O' && row3[2] == 'O' && row1[0] == '')
+            computer_selection = 'btn11';
 
-    else if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == '')
-        computer_selection = 'btn31';
-    else if(row1[2] == 'O' && row3[0] == 'O' && row2[1] == '')
-        computer_selection = 'btn22';  
-    else if(row2[1] == 'O' && row3[0] == 'O' && row1[2] == '')
-        computer_selection = 'btn13';
-    /* - DEFENCE */
+        else if(row1[2] == 'O' && row2[1] == 'O' && row3[0] == '')
+            computer_selection = 'btn31';
+        else if(row1[2] == 'O' && row3[0] == 'O' && row2[1] == '')
+            computer_selection = 'btn22';  
+        else if(row2[1] == 'O' && row3[0] == 'O' && row1[2] == '')
+            computer_selection = 'btn13';
+        /* - DEFENCE */
 
-    /* SELECT RANDOM BUTTON */
-    else {
-        computer_selection = list_selection[Math.floor(Math.random()*list_selection.length)];
+        /* SELECT RANDOM BUTTON */
+        else {
+            computer_selection = list_selection[Math.floor(Math.random()*list_selection.length)];
+        }
+
+        set_image_in_btn(computer_selection, 'X');
+        selected.push(computer_selection);
+        set_config(computer_selection, 'X');
+        
+        if(selected.length == 9) {
+            setTimeout(() => {
+                reset_game();
+            }, 1000);
+        }
     }
-
-    set_image_in_btn(computer_selection, 'X');
-    selected.push(computer_selection);
-    set_config(computer_selection, 'X');
-    
-    if(selected.length == 9) {
+    else if(selected.length == 9) {
         setTimeout(() => {
             reset_game();
         }, 1000);
     }
-}
-else if(selected.length == 9) {
-    setTimeout(() => {
-        reset_game();
-    }, 1000);
-}
 }
 
 // clear buttons, hide alertbox [scores is not resets!]

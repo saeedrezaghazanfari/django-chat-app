@@ -8,24 +8,35 @@
 # Django Chat App
 A flexible Chat Application for open source software society.
 
-View of Client:
-![client chat view](https://github.com/saeedrezaghazanfari/my_css_layouts/blob/main/shared/djangochatapp-client.png)
+## Table of Contents
+- [Screenshots](https://github.com/saeedrezaghazanfari/django-chat-app#screenshots)
+- [Features](https://github.com/saeedrezaghazanfari/django-chat-app#features)
+- [Prerequisites](https://github.com/saeedrezaghazanfari/django-chat-app#prerequisites)
+- [Quick Start](https://github.com/saeedrezaghazanfari/django-chat-app#quick-start)
+- [Customize Settings](https://github.com/saeedrezaghazanfari/django-chat-app#customize-settings)
+- [Contributing](https://github.com/saeedrezaghazanfari/django-chat-app#contributing)
+- [History](https://github.com/saeedrezaghazanfari/django-chat-app#history)
+- [License](https://github.com/saeedrezaghazanfari/django-chat-app#license)
 
-View of Supporter panel:
-![supporter panel view](https://github.com/saeedrezaghazanfari/my_css_layouts/blob/main/shared/djangochatapp-supporter.png)
+## Screenshots
+#### Client:
+![client chat view](https://github.com/saeedrezaghazanfari/my_css_layouts/blob/main/shared/djangochatapp-client-1.4.png)
 
-## Some Properties
-1. Supporter panel
-2. Play Tic-Toc-Toe game in client side
-3. Report the client
-4. Write your ready messages and use them in Supporter panel
-5. Editable, Deletable messages and show or hide deleted message in supporter panel or client side
-6. Emoji bar
-7. Reply message
-8. Rtl and Ltr template
-9. Show client or supporter status (online or last seen recently)
-10. Double check for send and seen message
-11. Easily customize settings
+#### Supporter panel:
+![supporter panel view](https://github.com/saeedrezaghazanfari/my_css_layouts/blob/main/shared/djangochatapp-supporter-1.4.png)
+
+## Features
+- Supporter panel
+- Play Tic-Toc-Toe game in client side
+- Report the client
+- Write your ready messages and use them in Supporter panel
+- Editable, Deletable messages and show or hide deleted message in supporter panel or client side
+- Emoji bar
+- Reply message
+- Rtl and Ltr template
+- Show client or supporter status (online | last seen recently)
+- Double check for send and seen message
+- Easily customize settings
 ## Prerequisites
 Your project must use ASGI engine. You can use from `channels` and `daphne`.
 for convert WSGI to ASGI, you can follow these commands.
@@ -78,29 +89,38 @@ CHANNEL_LAYERS = {
     }
 }
 ```
+6. For run the server, just enough run this command:
+```
+python3 manage.py runserver
+```
 Now, You have a Async Project. ASGI applications support synchronous and asynchronous tasks.
 
 
 
 ## Quick start
-1. Add "chatapp" to your INSTALLED_APPS in settings.py
+1. Install django-chatapp in your project:
+```
+pip install django-chatapp
+```
+2. Add "chatapp" to your INSTALLED_APPS in settings.py
 ```python
 INSTALLED_APPS = [
     ...
     'chatapp',
 ]
 ```
-2. Include the chatapp URLconf in your project urls.py like this:
+3. Include the chatapp URLconf in your project urls.py like this:
 ```python
 from chatapp.views import supporter_homepage
 
 path('django-chatapp/chat/supporter/', supporter_homepage),
-path('', include('chatapp.urls')),
+path('', include('chatapp.urls', namespace='chatapp')),
 ```
-3. Run `python manage.py migrate` to create the chatapp models.
-4. Now, You can include chatapp section to your main template:
+4. Run `python3 manage.py migrate` to create the chatapp models.
+5. Now, You can include chatapp section to your main template:
 ```
 {% load chatapp %}
+
 {% include_chatapp %}
 ```
 
@@ -115,6 +135,11 @@ CHATAPP_DIR = 'ltr'    # other value: rtl - ltr - auto
 - Set chat application language. If you don't use translation system, you can set this value. If you set `auto`, you must have translation system in your project and your urls start with /en/ or /fa/ or /ar/ or /ru/. 
 ```python
 CHATAPP_LANGUAGE = 'en'    # other value: auto - en - fa - ar - ru
+```
+
+- Set login url for supporter panel. If Supporter was not login, redirects to this url. as default, shows `<h3>Login Required.</h3>` to supporter. 
+```python
+CHATAPP_SUPPORTER_LOGIN_URL = '<your_url>'
 ```
 
 - Editable message via Client:
@@ -167,3 +192,42 @@ CHATAPP_MAX_REPORT_NUMBER = 2
 ```python
 CHATAPP_MESSAGES_COUNT = 30
 ```
+
+## Contributing
+We welcome contributions to our project! To contribute, please follow these steps:
+
+1. Fork this repository to your own account
+2. Clone your forked repository to your local machine
+3. Create a new branch for your changes
+4. Make your changes and commit them with a descriptive commit message
+5. Push your changes to your forked repository
+6. Submit a pull request :D
+
+Please ensure that your code is well-tested and follows our code style guidelines. We also welcome bug reports, feature requests, and feedback on the project.
+Thank you for contributing to our project!
+
+## History
+- Version 1.4 (2023-Mar-23) - First stable release
+
+## License
+MIT License
+
+Copyright (c) 2023 django-chatapp
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

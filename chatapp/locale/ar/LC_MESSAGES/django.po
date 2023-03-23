@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-01 11:45+0330\n"
+"POT-Creation-Date: 2023-03-20 14:22+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
 #: admin.py:14
 msgid "حذف کاربران غیرفعال در ۳۰ روز اخیر"
 msgstr "احذف المستخدمين غير النشطين في آخر 30 يومًا"
@@ -30,150 +31,151 @@ msgstr "إزالة المستخدمين المحظورين"
 msgid "آزادکردن کاربرانی که مسدود شده اند"
 msgstr "تحرير المستخدمين المحظورين"
 
-#: apps.py:8 models.py:48
+#: apps.py:8 models.py:43
 msgid "چت کاربر و پشتیبان"
 msgstr "دردشة ودعم المستخدم"
 
-#: models.py:12
+#: models.py:10
 msgid "آیدی پشتیبان"
 msgstr "معرف النسخ الاحتياطي"
 
-#: models.py:13 models.py:33 models.py:36 models.py:107
+#: models.py:11 models.py:28 models.py:31 models.py:94
 msgid "کاربر"
 msgstr "مستخدم"
 
-#: models.py:14
+#: models.py:12
 msgid "نام نمایشی"
 msgstr "اسم العرض"
 
-#: models.py:15
+#: models.py:13
 msgid "فعال / غیرفعال"
 msgstr "نشط سلبي"
 
-#: models.py:20 models.py:33 models.py:37 models.py:90 models.py:106
+#: models.py:18 models.py:28 models.py:32 models.py:77 models.py:93
 msgid "پشتیبان"
 msgstr "يدعم"
 
-#: models.py:21
+#: models.py:19
 msgid "پشتیبان ها"
 msgstr "أنصار"
 
-#: models.py:28 models.py:56 models.py:82 models.py:122
-msgid "تاریخ ثبت رکورد"
-msgstr "تاريخ التسجيل"
-
-#: models.py:35
+#: models.py:30
 msgid "پاسخ"
 msgstr "إجابة"
 
-#: models.py:38
+#: models.py:33
 msgid "ارسال کننده"
 msgstr "مرسل"
 
-#: models.py:39
+#: models.py:34
 msgid "متن پیام"
 msgstr "رسالة نصية"
 
-#: models.py:40
+#: models.py:35
 msgid "آیا این پیام دیده شده است؟"
 msgstr "هل شوهدت هذه الرسالة؟"
 
-#: models.py:41
+#: models.py:36
 msgid "آیا این پیام ویرایش شده است؟"
 msgstr "هل تم تحرير هذه الرسالة؟"
 
-#: models.py:42
+#: models.py:37
 msgid "متن پیام قبل از ویرایش"
 msgstr "نص الرسالة قبل التحرير"
 
-#: models.py:43
+#: models.py:38
 msgid "آیا این پیام حذف شده است؟"
 msgstr "هل تم حذف هذه الرسالة؟"
 
-#: models.py:49
+#: models.py:44
 msgid "چت های کاربر و پشتیبان"
 msgstr "المستخدم ودعم الدردشات"
 
-#: models.py:62
+#: models.py:53
 msgid "آیدی چت کاربر"
 msgstr "معرف الدردشة للمستخدم"
 
-#: models.py:63
+#: models.py:54
 msgid "آیا پشتیبان دارد؟"
 msgstr "هل بها نسخة احتياطية؟"
 
-#: models.py:64
+#: models.py:55
 msgid "نام"
 msgstr "اسم"
 
-#: models.py:65
+#: models.py:56
 msgid "نام خانوادگی"
 msgstr "اسم العائلة"
 
-#: models.py:66
+#: models.py:57
 msgid "ایمیل"
 msgstr "بريد إلكتروني"
 
-#: models.py:67
+#: models.py:58
 msgid "شماره تماس"
 msgstr "رقم التليفون"
 
-#: models.py:68
+#: models.py:59
 msgid "آیا مسدود شده است؟"
 msgstr "هل تم حظره؟"
 
-#: models.py:69
+#: models.py:60
 msgid "تعداد گزارش ها"
 msgstr "عدد التقارير"
 
-#: models.py:74
+#: models.py:65
 msgid "اطلاعات کاربر"
 msgstr "معلومات المستخدم"
 
-#: models.py:75
+#: models.py:66
 msgid "اطلاعات کاربران"
 msgstr "معلومات المستخدم"
 
-#: models.py:88
+#: models.py:75
 msgid "عنوان"
 msgstr "عنوان"
 
-#: models.py:89
+#: models.py:76
 msgid "محتوا"
 msgstr "محتوى"
 
-#: models.py:91
+#: models.py:78
 msgid "آیا برای تمامی پشتیبان ها نمایش داده شود؟"
 msgstr "هل سيتم عرضها لجميع النسخ الاحتياطية؟"
 
-#: models.py:95
+#: models.py:82
 msgid "پیام آماده ی پشتیبان"
 msgstr "رسالة جاهزة للنسخ الاحتياطي"
 
-#: models.py:96
+#: models.py:83
 msgid "پیام های آماده ی پشتیبان ها"
 msgstr "رسائل جاهزة للنسخ الاحتياطي"
 
-#: models.py:105
+#: models.py:92
 msgid "استفاده از کلمات نامناسب"
 msgstr "استخدام كلمات غير لائقة"
 
-#: models.py:105
+#: models.py:92
 msgid "دلایل دیگر"
 msgstr "أسباب أخرى"
 
-#: models.py:108
+#: models.py:95
 msgid "دلیل گزارش"
 msgstr "سبب التقرير"
 
-#: models.py:109
+#: models.py:96
 msgid "متن گزارش"
 msgstr "نص التقرير"
 
-#: models.py:114
+#: models.py:101
 msgid "گزارش کاربر"
 msgstr "تقرير المستخدم"
 
-#: models.py:115
+#: models.py:102
 msgid "گزارش کاربران"
 msgstr "تقرير المستخدم"
+
+#: templates/supporter.html:10
+msgid "صفحه‌ی پشتیبان"
+msgstr "صفحة النسخ الاحتياطي"
+

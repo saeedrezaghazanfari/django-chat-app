@@ -1,6 +1,6 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'django_chatapp/css/custom.css' %}">
+<link rel="stylesheet" href="{% static 'django_chatapp/css/client.css' %}">
 
 <section class="chatapp" id="chatapp">
 
@@ -140,18 +140,22 @@
                         <div class="chatapp_formcontrol">
                             <input type="text" id="chatapp__fname" autocomplete="off">
                             <label for="chatapp__fname">[[ $t('First Name') ]]</label>
+                            <p class="form_error" v-if="form_errors.fname != ''">[[ form_errors.fname ]]</p>
                         </div>
                         <div class="chatapp_formcontrol">
                             <input type="text" id="chatapp__lname" autocomplete="off">
                             <label for="chatapp__lname">[[ $t('Last Name') ]]</label>
+                            <p class="form_error" v-if="form_errors.lname != ''">[[ form_errors.lname ]]</p>
                         </div>
                         <div class="chatapp_formcontrol chatapp_control_email d-none">
                             <input type="email" id="chatapp__email" autocomplete="off">
                             <label for="chatapp__email">[[ $t('E-mail') ]]</label>
+                            <p class="form_error" v-if="form_errors.phone_email != ''">[[ form_errors.phone_email ]]</p>
                         </div>
                         <div class="chatapp_formcontrol chatapp_control_phone mbnone__chat-app d-none">
                             <input type="number" id="chatapp__phone" autocomplete="off">
                             <label for="chatapp__phone">[[ $t('Phone') ]]</label>
+                            <p class="form_error" v-if="form_errors.phone_email != ''">[[ form_errors.phone_email ]]</p>
                         </div>
 
                         <div class="chatapp_button">
