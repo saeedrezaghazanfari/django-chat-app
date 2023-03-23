@@ -20,7 +20,7 @@ setup(
     download_url='https://pypi.org/project/django-chatapp/1.4/',
     author='SaeedReza Ghazanfari',
     author_email='saeedreza.gh.1397@gmail.com',
-    keywords="django chat app",
+    keywords="django chat websocket channels asgi vuejs",
     license='MIT',
     platforms=['any'],
     install_requires=[
